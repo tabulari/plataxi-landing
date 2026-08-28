@@ -17,9 +17,9 @@ export default defineConfig({
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
-        command: "pnpm exec next dev -p 3210",
+        command: "npx next start -p 3210",
         url: "http://localhost:3210",
         reuseExistingServer: !process.env.CI,
-        timeout: 120_000,
+        timeout: 60_000,
       },
 });

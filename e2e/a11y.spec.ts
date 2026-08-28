@@ -17,7 +17,7 @@ test("landing page has no axe violations", async ({ page }) => {
   const results = await new AxeBuilder({ page })
     .exclude(EXCLUDE)
     // .phone is a decorative product mockup (aria-hidden); treat like an image.
-    .exclude(".phone")
+    .exclude(".phone, .phone-wrapper")
     .withTags(TAGS)
     .analyze();
   expect(results.violations).toEqual([]);

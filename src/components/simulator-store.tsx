@@ -87,7 +87,7 @@ export function SimulatorProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     let active = true;
-    void loadRatesConfig(config.ratesConfigEndpoint).then((nextRates) => {
+    void loadRatesConfig('/api/rates-config').then((nextRates) => {
       if (!active || nextRates === null) return;
       setRates(nextRates);
       setAmountState((current) =>

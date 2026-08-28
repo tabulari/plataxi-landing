@@ -152,12 +152,23 @@ export function ApplyModal() {
               <li key={i} className={stepDot(i)}>
                 <span className={cn(
                   'flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold',
-                  i === form.step ? 'bg-navy text-white' : i < form.step || form.submitStatus === 'success' ? 'bg-green text-white' : 'bg-border text-muted-2',
+                  i === form.step ? 'bg-navy text-white' : i < form.step || form.submitStatus === 'success' ? 'bg-green-ink text-white' : 'bg-border text-muted-2',
                 )}>{i}</span>
                 {STEP_TITLES[i]}
               </li>
             ))}
           </ol>
+
+          {/* Live announcement region for step transitions and pending network submission */}
+          <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+            {form.submitStatus === 'pending'
+              ? 'Enviando tu solicitud de crédito, por favor espera un momento...'
+              : form.submitStatus === 'success'
+              ? `Solicitud enviada exitosamente. Tu radicado es ${form.radicado}`
+              : form.submitStatus === 'error'
+              ? 'Ocurrió un error al enviar la solicitud.'
+              : `Paso ${form.step} de 3: ${STEP_TITLES[form.step]}`}
+          </div>
 
           <form
             noValidate

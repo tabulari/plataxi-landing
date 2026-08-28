@@ -185,7 +185,7 @@ export function DisbursementDesk({
               <button
                 type="button"
                 onClick={handleConfirmDisbursement}
-                className="px-6 py-2 text-xs font-extrabold rounded-xl bg-green text-white hover:bg-green-ink transition-colors shadow-sm"
+                className="px-6 py-2 text-xs font-extrabold rounded-xl bg-green-ink text-white hover:bg-green-soft-ink transition-colors shadow-sm"
               >
                 Confirmar Desembolso Definitivo
               </button>

@@ -51,8 +51,8 @@ export function HowItWorks() {
     if (cards && cards.length) {
       tl.fromTo(
         cards,
-        { y: 35, autoAlpha: 0.35, scale: 0.96 },
-        { y: 0, autoAlpha: 0.9, scale: 1, duration: 0.25, stagger: 0.06 },
+        { y: 35, autoAlpha: 1, scale: 0.96 },
+        { y: 0, autoAlpha: 1, scale: 1, duration: 0.25, stagger: 0.06 },
         0.1,
       );
     }
@@ -68,8 +68,8 @@ export function HowItWorks() {
           scale: 1.03,
           rotateX: -2,
           autoAlpha: 1,
-          borderColor: '#1e9e55',
-          boxShadow: '0 24px 48px -10px rgba(30, 158, 85, 0.18)',
+          borderColor: '#15793f',
+          boxShadow: '0 24px 48px -10px rgba(21, 121, 63, 0.18)',
           duration: 0.25,
           ease: 'power2.out',
         },
@@ -77,7 +77,7 @@ export function HowItWorks() {
       );
     }
     if (badges && badges[0]) {
-      tl.to(badges[0], { scale: 1.1, backgroundColor: '#1e9e55', color: '#ffffff', borderColor: '#137038', duration: 0.15 }, 0.2);
+      tl.to(badges[0], { scale: 1.1, backgroundColor: '#15793f', color: '#ffffff', borderColor: '#137038', duration: 0.15 }, 0.2);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -114,8 +114,8 @@ export function HowItWorks() {
           scale: 1.03,
           rotateX: -2,
           autoAlpha: 1,
-          borderColor: '#1e9e55',
-          boxShadow: '0 24px 48px -10px rgba(30, 158, 85, 0.18)',
+          borderColor: '#15793f',
+          boxShadow: '0 24px 48px -10px rgba(21, 121, 63, 0.18)',
           duration: 0.25,
           ease: 'power2.out',
         },
@@ -123,7 +123,7 @@ export function HowItWorks() {
       );
     }
     if (badges && badges[1]) {
-      tl.to(badges[1], { scale: 1.1, backgroundColor: '#1e9e55', color: '#ffffff', borderColor: '#137038', duration: 0.15 }, 0.5);
+      tl.to(badges[1], { scale: 1.1, backgroundColor: '#15793f', color: '#ffffff', borderColor: '#137038', duration: 0.15 }, 0.5);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -160,8 +160,8 @@ export function HowItWorks() {
           scale: 1.04,
           rotateX: -2,
           autoAlpha: 1,
-          borderColor: '#1e9e55',
-          boxShadow: '0 28px 55px -10px rgba(30, 158, 85, 0.22)',
+          borderColor: '#15793f',
+          boxShadow: '0 28px 55px -10px rgba(21, 121, 63, 0.22)',
           duration: 0.25,
           ease: 'power2.out',
         },
@@ -169,7 +169,7 @@ export function HowItWorks() {
       );
     }
     if (badges && badges[2]) {
-      tl.to(badges[2], { scale: 1.15, backgroundColor: '#1e9e55', color: '#ffffff', borderColor: '#137038', duration: 0.15 }, 0.78);
+      tl.to(badges[2], { scale: 1.15, backgroundColor: '#15793f', color: '#ffffff', borderColor: '#137038', duration: 0.15 }, 0.78);
     }
 
     // 04: CTA Reveal
@@ -187,7 +187,7 @@ export function HowItWorks() {
     gsap.to(card, {
       y: -10,
       scale: 1.02,
-      borderColor: '#1e9e55',
+      borderColor: '#15793f',
       boxShadow: '0 25px 50px -12px rgba(13, 42, 94, 0.14)',
       duration: 0.3,
       ease: 'power2.out',

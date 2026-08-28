@@ -48,9 +48,9 @@ export function SevenStageStepper({ currentStage }: { currentStage: StageId }) {
               <div
                 className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-extrabold transition-all tabular-nums ${
                   isCompleted
-                    ? 'bg-green text-white shadow-sm ring-4 ring-green-tint'
+                    ? 'bg-green-ink text-white shadow-sm ring-4 ring-green-tint'
                     : isCurrent
-                    ? 'bg-navy text-white ring-4 ring-navy/10 animate-pulse'
+                    ? 'bg-navy text-white ring-4 ring-navy/10 animate-pulse motion-reduce:animate-none'
                     : 'bg-white border-2 border-border text-muted-2'
                 }`}
               >

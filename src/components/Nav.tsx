@@ -9,6 +9,7 @@ import { CloseIcon, HamburgerIcon } from './icons';
 
 const LINKS = [
   { href: '#simula', label: 'Simula tu crédito' },
+  { href: '#requisitos-band', label: 'Requisitos' },
   { href: '#como-funciona', label: 'Cómo funciona' },
   { href: '#preguntas', label: 'Preguntas' },
 ];

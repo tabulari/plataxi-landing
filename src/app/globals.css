@@ -522,7 +522,9 @@ a:focus-visible {
   .animate-dialog-in,
   .animate-dialog-out,
   .animate-overlay-in,
-  .animate-overlay-out { animation: none !important; }
+  .animate-overlay-out,
+  .animate-pulse-live,
+  .animate-pulse { animation: none !important; }
   .btn-spinner { animation: none !important; }
   .flash { animation: none !important; }
   body::before { display: none; }

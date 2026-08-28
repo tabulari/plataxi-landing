@@ -61,7 +61,7 @@ export function SplitPaneKycDesk({
           <button
             type="button"
             onClick={onApprove}
-            className="px-5 py-2 rounded-xl bg-green text-white text-xs font-bold hover:bg-green-ink transition-colors shadow-xs flex items-center gap-1.5"
+            className="px-5 py-2 rounded-xl bg-green-ink text-white text-xs font-bold hover:bg-green-soft-ink transition-colors shadow-xs flex items-center gap-1.5"
           >
             <CheckIcon size={16} />
             <span>Aprobar KYC</span>

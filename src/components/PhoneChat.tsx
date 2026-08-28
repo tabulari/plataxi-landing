@@ -378,6 +378,7 @@ export function PhoneChat() {
                 <div data-wa-btns className="wa-btn-group">
                   <button
                     type="button"
+                    tabIndex={-1}
                     onClick={() => openApply('direct')}
                     className="wa-cta-btn wa-cta-btn-primary"
                   >
@@ -385,6 +386,7 @@ export function PhoneChat() {
                   </button>
                   <button
                     type="button"
+                    tabIndex={-1}
                     onClick={() => {
                       track('whatsapp_click', { ctx: 'hero' });
                       window.open(buildWhatsAppUrl('hero', sim), '_blank', 'noopener,noreferrer');

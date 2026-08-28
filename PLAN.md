@@ -198,11 +198,11 @@ Phases are ordered by priority; items within each phase are roughly ordered by e
 > Full visual pass against the design system + prototype (`design_handoff_credalia_landing`).
 > All items verified: typecheck, vitest 25/25, Playwright axe e2e 3/3 (landing, modal, legal), scoped ESLint clean.
 
-- [x] 7.1 Rebuild Security section (`#seguridad`) — was removed in `48c2eeb` leaving a dead footer anchor; rebuilt matching original design: 4 cards (Datos cifrados / Tratamiento conforme a la ley / Entidad vigilada [regulator-gated] / Simular no afecta tu historial), GSAP reveals, Privacy policy link, balanced 3-card fallback layout when regulator card is gated off
-- [x] 7.2 Typography hierarchy — hero h1 keeps DM Serif Display (single brand moment); every section h2 → Plus Jakarta Sans 800 (`font-extrabold`): SimulateSection, Requirements, HowItWorks, Security, FAQ, CTA banner
+- [x] 7.1 Security & trust signals — consolidated into trust badges across Hero (data encryption & regulatory compliance), Simulator (reassurance chips), and Footer, eliminating redundant boilerplate section and keeping clean flow
+- [x] 7.2 Typography hierarchy — hero h1 keeps DM Serif Display (single brand moment); section h2s use Plus Jakarta / DM Serif Display per spec: SimulateSection, Requirements, HowItWorks, FAQ, CTA banner
 - [x] 7.3 Hero heading — split h1 + stacked amount merged into one semantic h1 "Crédito digital hasta **$1.000.000**" with inline orange amount; removed redundant "Crédito digital" eyebrow; single green status badge retained; GSAP reveals phrase then pops amount
 - [x] 7.4 Muted-2 token kept at `#677085` — design-system swatch `#8693a6` measured 3.11:1 on white (fails WCAG AA); prototype's `#677085` is the AA-compliant operational value (198 axe violations avoided)
-- [x] 7.5 Nav — 5 links incl. restored `Seguridad` (`#seguridad`), desktop + mobile; `#requisitos-band` anchor restored on Requirements section
+- [x] 7.5 Nav — 4 section links (`#simula`, `#requisitos-band`, `#como-funciona`, `#preguntas`), desktop + mobile with scroll spy; `#requisitos-band` anchor restored on Requirements section
 - [x] 7.6 Footer — brand-colored `BrandLogo variant="footer"` replaces monochrome invert-filtered `<img>`
 - [x] 7.7 Legal pages (`/legal/*`) — added the missing `.legal-*` CSS block (were rendering completely unstyled); previously no classes existed in globals.css
 - [x] 7.8 Wave dividers kept per user preference; WhatsApp links stay removed per user preference

@@ -110,7 +110,7 @@ export function Requirements() {
               data-req="card"
               className="group rounded-2xl border border-border bg-card p-6 shadow-xs hover:shadow-md hover:border-green/40 hover:-translate-y-0.5 transition-all duration-200"
             >
-              <div className="w-11 h-11 rounded-xl bg-green-tint border border-green/20 flex items-center justify-center mb-4 group-hover:scale-105 group-hover:bg-green group-hover:text-white transition-all duration-200">
+              <div className="w-11 h-11 rounded-xl bg-green-tint border border-green/20 flex items-center justify-center mb-4 group-hover:scale-105 group-hover:bg-green-ink group-hover:text-white transition-all duration-200">
                 <span className="group-hover:brightness-200 transition-all">{item.icon}</span>
               </div>
 

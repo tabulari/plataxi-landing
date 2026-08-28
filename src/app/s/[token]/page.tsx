@@ -177,7 +177,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
             <button
               type="button"
               onClick={() => setStage(7)}
-              className="mt-4 px-6 py-2.5 rounded-xl bg-green text-white text-sm font-bold hover:bg-green-ink transition-colors focus-visible:ring-2 focus-visible:ring-ring"
+              className="mt-4 px-6 py-2.5 rounded-xl bg-green-ink text-white text-sm font-bold hover:bg-green-soft-ink transition-colors focus-visible:ring-2 focus-visible:ring-ring"
             >
               Ver Mi Crédito Activo →
             </button>
@@ -186,7 +186,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
 
         {stage === 7 && (
           <div className="bg-white border border-border rounded-xl p-6 shadow-sm text-center space-y-4">
-            <div className="w-14 h-14 rounded-full bg-green text-white flex items-center justify-center mx-auto shadow-md">
+            <div className="w-14 h-14 rounded-full bg-green-ink text-white flex items-center justify-center mx-auto shadow-md">
               <CheckIcon size={32} />
             </div>
             <h3 className="text-xl font-extrabold text-navy">¡Crédito Activo y Desembolsado!</h3>

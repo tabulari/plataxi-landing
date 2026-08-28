@@ -50,8 +50,22 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
 
   const onFieldChange = useCallback((name: FieldName, raw: string) => {
     let v = raw;
-    if (name === 'income') { const d = raw.replace(/\D/g, ''); v = d ? `$ ${fmtCOP(parseInt(d, 10))}` : ''; }
-    else if (name === 'phone') { v = raw.replace(/[^\d ]/g, '').slice(0, 13); }
+    if (name === 'income') {
+      const d = raw.replace(/\D/g, '');
+      v = d ? `$ ${fmtCOP(parseInt(d, 10))}` : '';
+    } else if (name === 'idNumber') {
+      const d = raw.replace(/\D/g, '').slice(0, 10);
+      v = d ? fmtCOP(parseInt(d, 10)) : '';
+    } else if (name === 'phone') {
+      const d = raw.replace(/\D/g, '').slice(0, 10);
+      if (d.length <= 3) {
+        v = d;
+      } else if (d.length <= 6) {
+        v = `${d.slice(0, 3)} ${d.slice(3)}`;
+      } else {
+        v = `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 10)}`;
+      }
+    }
     setValues((prev) => ({ ...prev, [name]: v }));
     setErrors((prev) => prev[name] ? { ...prev, [name]: '' } : prev);
   }, []);

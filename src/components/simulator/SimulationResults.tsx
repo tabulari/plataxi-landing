@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from 'react';
 import { fmtCOP, fmtPct, type Frequency } from '@/lib/credit';
-import { SparklesIcon } from '../icons';
 
 interface SimData {
   payment: number;
