@@ -106,7 +106,7 @@ export function Hero() {
               alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
               fill
               className="object-cover"
-              style={{ objectPosition: '70% center' }}
+              style={{ objectPosition: '75% center' }}
               priority
             />
           </div>
