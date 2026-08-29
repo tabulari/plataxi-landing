@@ -158,7 +158,7 @@ export function Nav() {
                 key={l.href}
                 href={l.href}
                 className={cn(
-                  'text-sm font-semibold transition-colors py-3.5 relative after:content-[\'\'] after:absolute after:bottom-px after:left-0 after:h-0.5 after:bg-navy after:transition-[width] after:duration-200',
+                  "text-sm font-semibold transition-colors py-3.5 relative after:content-[''] after:absolute after:bottom-px after:left-0 after:h-0.5 after:bg-green after:transition-[width] after:duration-200",
                   isActive
                     ? 'text-navy after:w-full'
                     : 'text-muted-2 hover:text-navy after:w-0 hover:after:w-full',
@@ -174,7 +174,7 @@ export function Nav() {
           <ApplyButton
             variant="default"
             size="sm"
-            className="hidden md:inline-flex min-h-[44px]"
+            className="hidden md:inline-flex min-h-[44px] bg-green text-ink hover:bg-green-bright border-0"
           >
             Iniciar solicitud
           </ApplyButton>
