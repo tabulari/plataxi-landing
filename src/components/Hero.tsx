@@ -11,22 +11,32 @@ const STATS: { value: string; label: string }[] = [
   { value: '100%', label: 'En línea' },
 ];
 
+// Clip-path: cortes en escalón en el borde IZQUIERDO de la imagen (estilo inDrive)
+// Esquina sup-izq: entra 28% horizontal × 22% vertical
+// Esquina inf-izq: entra 18% horizontal × 20% vertical
+const CLIP = 'polygon(28% 0%, 100% 0%, 100% 100%, 18% 100%, 18% 80%, 0% 80%, 0% 22%, 28% 22%)';
+
 export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative pt-10 pb-0 sm:pt-14 lg:pt-16 overflow-hidden bg-[#fffee9]"
+      className="relative overflow-hidden bg-[#fffee9]"
+      style={{ minHeight: '82vh' }}
     >
-      <div className="relative mx-auto max-w-container px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-stretch">
-        {/* ── LEFT COLUMN: value proposition ── */}
-        <div className="lg:col-span-6 flex flex-col items-start text-left space-y-6 z-10 pb-12 lg:pb-16 pt-2">
-          <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink">
+      {/* Grid sin max-w para que la columna derecha llegue al borde */}
+      <div
+        className="grid grid-cols-1 lg:grid-cols-2"
+        style={{ minHeight: 'inherit' }}
+      >
+        {/* ── LEFT COLUMN ── */}
+        <div className="flex flex-col justify-center px-6 sm:px-10 lg:px-12 xl:px-20 py-14 lg:py-20 space-y-6 z-10">
+          <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink w-fit">
             Hecho para taxistas colombianos
           </span>
 
           <h1
             id="hero-heading"
-            className="text-4xl sm:text-5xl lg:text-6xl font-display font-black tracking-tight text-navy leading-[1.1]"
+            className="text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-6xl font-display font-black tracking-tight text-navy leading-[1.1]"
           >
             Plata pa&apos;l día a día,{' '}
             <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">
@@ -34,13 +44,12 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl font-normal">
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-md font-normal">
             No necesitas contrato ni nómina. Simula tu cuota, solicita desde el celular
             y recibe la plata sin salir del carro.
           </p>
 
-          {/* CTAs — primary is yellow with black text (signature look) */}
-          <div className="flex flex-wrap items-center gap-3.5 w-full sm:w-auto pt-1">
+          <div className="flex flex-wrap items-center gap-3.5 pt-1">
             <ScrollButton
               variant="default"
               size="lg"
@@ -59,8 +68,8 @@ export function Hero() {
             </ApplyButton>
           </div>
 
-          {/* Stats row (inDrive-style) */}
-          <dl className="flex flex-wrap gap-x-8 gap-y-4 pt-4">
+          {/* Stats row */}
+          <dl className="flex flex-wrap gap-x-8 gap-y-4 pt-2">
             {STATS.map((s) => (
               <div key={s.label} className="flex flex-col">
                 <dt className="sr-only">{s.label}</dt>
@@ -74,8 +83,8 @@ export function Hero() {
             ))}
           </dl>
 
-          {/* Trust badges — dark icons for contrast on white */}
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 text-xs font-semibold text-muted-2">
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-muted-2">
             <span className="inline-flex items-center gap-1.5">
               <ShieldCheckIcon size={16} className="text-ink shrink-0" />
               Estudio 100% digital y gratuito
@@ -88,16 +97,38 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: foto con recorte escalón Plataxi ── */}
-        <div className="lg:col-span-6 flex items-center justify-end -mr-6 lg:-mr-8">
-          <Image
-            src="/taxi-hero-cut.png"
-            alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
-            width={1816}
-            height={1636}
-            className="w-full h-auto"
-            priority
-          />
+        {/* ── RIGHT COLUMN: imagen llena la mitad derecha con clip-path ── */}
+        <div className="relative hidden lg:block">
+          <div
+            className="absolute inset-0"
+            style={{ clipPath: CLIP }}
+          >
+            <Image
+              src="/taxista.jpeg"
+              alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
+              fill
+              className="object-cover"
+              style={{ objectPosition: '62% center' }}
+              priority
+            />
+          </div>
+        </div>
+
+        {/* ── MOBILE: imagen debajo del texto ── */}
+        <div className="relative lg:hidden h-[280px] sm:h-[360px] overflow-hidden">
+          <div
+            className="absolute inset-0"
+            style={{ clipPath: 'polygon(0% 0%, 82% 0%, 82% 18%, 100% 18%, 100% 100%, 0% 100%)' }}
+          >
+            <Image
+              src="/taxista.jpeg"
+              alt="Taxista colombiano con Plataxi"
+              fill
+              className="object-cover"
+              style={{ objectPosition: '62% 40%' }}
+              priority
+            />
+          </div>
         </div>
       </div>
     </section>
