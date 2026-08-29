@@ -27,7 +27,7 @@ export function Hero() {
         style={{ minHeight: 'inherit' }}
       >
         {/* ── LEFT COLUMN ── */}
-        <div className="flex flex-col justify-center pl-6 sm:pl-8 lg:pl-10 xl:pl-16 pr-4 lg:pr-6 py-14 lg:py-20 space-y-6 z-10">
+        <div className="flex flex-col justify-center pl-6 sm:pl-8 lg:pl-10 xl:pl-16 pr-8 lg:pr-14 xl:pr-20 py-14 lg:py-20 space-y-6 z-10">
           <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink w-fit">
             Hecho para taxistas colombianos
           </span>
