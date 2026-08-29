@@ -19,7 +19,7 @@ export function Hero() {
     <section
       aria-labelledby="hero-heading"
       className="relative overflow-hidden bg-[#fffee9]"
-      style={{ minHeight: '82vh' }}
+      style={{ minHeight: '70vh' }}
     >
       {/* Grid con padding lateral para dar aire a ambos lados */}
       <div
