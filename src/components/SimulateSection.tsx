@@ -28,7 +28,7 @@ export function SimulateSection({ children }: { children: React.ReactNode }) {
         {/* ── Imagen — full-height en desktop ── */}
         <div className="hidden lg:block lg:w-[40%] xl:w-[42%] shrink-0 relative self-stretch min-h-[640px]">
           <div
-            className="absolute top-8 bottom-8 left-8 xl:left-12 right-0"
+            className="absolute top-8 xl:top-12 bottom-8 xl:bottom-12 left-6 lg:left-10 xl:left-14 right-0"
             style={{ clipPath: CLIP_IMG }}
           >
             <Image
