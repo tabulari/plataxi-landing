@@ -15,21 +15,11 @@ export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative pt-10 pb-12 sm:pt-14 sm:pb-16 lg:pt-16 lg:pb-20 overflow-hidden bg-[#fffee9]"
+      className="relative pt-10 pb-0 sm:pt-14 lg:pt-16 overflow-hidden bg-[#fffee9]"
     >
-      {/* Yellow accent shapes behind the hero (inDrive-style) */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-24 -right-24 h-[420px] w-[420px] rounded-full bg-green/25 blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/3 -right-10 h-40 w-40 rounded-[36px] rotate-12 bg-green/40 hidden lg:block"
-      />
-
-      <div className="relative mx-auto max-w-container px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+      <div className="relative mx-auto max-w-container px-6 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-stretch">
         {/* ── LEFT COLUMN: value proposition ── */}
-        <div className="lg:col-span-6 flex flex-col items-start text-left space-y-6 z-10">
+        <div className="lg:col-span-6 flex flex-col items-start text-left space-y-6 z-10 pb-12 lg:pb-16 pt-2">
           <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink">
             Crédito digital en Colombia
           </span>
@@ -99,14 +89,14 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: taxi hero con recortes ya incorporados ── */}
-        <div className="lg:col-span-6 flex items-center justify-center">
+        {/* ── RIGHT COLUMN: foto taxista grande, llena la altura, foco en conductor ── */}
+        <div className="lg:col-span-6 relative h-[320px] sm:h-[420px] lg:h-auto lg:min-h-[540px] -mx-6 sm:-mx-0 lg:mx-0 rounded-t-3xl sm:rounded-3xl lg:rounded-l-3xl lg:rounded-r-none overflow-hidden">
           <Image
-            src="/taxi-hero.png"
+            src="/taxista.jpeg"
             alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
-            width={1200}
-            height={824}
-            className="w-full h-auto max-w-[540px]"
+            fill
+            className="object-cover"
+            style={{ objectPosition: '68% center' }}
             priority
           />
         </div>
