@@ -137,8 +137,8 @@ export function Nav() {
       className={cn(
         'sticky top-0 z-50 backdrop-blur-lg transition-colors duration-200',
         scrolled
-          ? 'bg-[#fffee9]/90 shadow-[0_1px_0_rgba(0,0,0,0.06)]'
-          : 'bg-[#fffee9]/0 shadow-none',
+          ? 'bg-[#fffee9] shadow-[0_1px_0_rgba(0,0,0,0.06)]'
+          : 'bg-[#fffee9] shadow-none',
       )}
     >
       <div className="mx-auto max-w-container px-6 flex items-center justify-between h-[68px]">
