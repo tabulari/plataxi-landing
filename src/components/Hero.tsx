@@ -11,10 +11,8 @@ const STATS: { value: string; label: string }[] = [
   { value: '100%', label: 'En línea' },
 ];
 
-// Clip-path inDrive: escalón en esquina SUP-IZQ y esquina INF-DER (diagonal opuesta)
-// Sup-izq: recorta 28% ancho × 22% alto
-// Inf-der: recorta 28% ancho × 22% alto
-const CLIP = 'polygon(28% 0%, 100% 0%, 100% 78%, 72% 78%, 72% 100%, 0% 100%, 0% 22%, 28% 22%)';
+// Clip-path inDrive: escalón sup-izq e inf-der. Notch reducido a 20% para acercar la imagen al texto.
+const CLIP = 'polygon(20% 0%, 100% 0%, 100% 80%, 80% 80%, 80% 100%, 0% 100%, 0% 20%, 20% 20%)';
 
 export function Hero() {
   return (
@@ -25,11 +23,11 @@ export function Hero() {
     >
       {/* Grid con padding lateral para dar aire a ambos lados */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-10 xl:px-14 gap-x-0"
+        className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-8 xl:px-10 gap-x-0"
         style={{ minHeight: 'inherit' }}
       >
         {/* ── LEFT COLUMN ── */}
-        <div className="flex flex-col justify-center px-6 sm:px-10 lg:px-12 xl:px-20 py-14 lg:py-20 space-y-6 z-10">
+        <div className="flex flex-col justify-center pl-2 sm:pl-4 lg:pl-6 pr-2 lg:pr-4 py-14 lg:py-20 space-y-6 z-10">
           <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink w-fit">
             Hecho para taxistas colombianos
           </span>
@@ -108,7 +106,7 @@ export function Hero() {
               alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
               fill
               className="object-cover"
-              style={{ objectPosition: '10% center' }}
+              style={{ objectPosition: '40% center' }}
               priority
             />
           </div>
