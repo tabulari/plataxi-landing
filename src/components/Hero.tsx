@@ -88,14 +88,14 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: foto taxista grande, llena la altura, foco en conductor ── */}
-        <div className="lg:col-span-6 relative h-[320px] sm:h-[420px] lg:h-auto lg:min-h-[540px] -mx-6 sm:-mx-0 lg:mx-0 rounded-t-3xl sm:rounded-3xl lg:rounded-l-3xl lg:rounded-r-none overflow-hidden">
+        {/* ── RIGHT COLUMN: foto con recorte escalón Plataxi ── */}
+        <div className="lg:col-span-6 flex items-center justify-center">
           <Image
-            src="/taxista.jpeg"
+            src="/taxi-hero-cut.png"
             alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
-            fill
-            className="object-cover"
-            style={{ objectPosition: '68% center' }}
+            width={2896}
+            height={1616}
+            className="w-full h-auto max-w-[600px] lg:max-w-none"
             priority
           />
         </div>
