@@ -34,17 +34,16 @@ export function Hero() {
 
           <h1
             id="hero-heading"
-            className="text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-6xl font-display font-black tracking-tight text-navy leading-[1.1]"
+            className="text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-6xl font-display font-black tracking-tight text-navy leading-[1.15]"
           >
-            Plata pa&apos;l día a día,{' '}
+            Plata pa&apos;l día a día,<br />
             <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">
               aprobada en minutos
             </span>
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-md font-normal">
-            No necesitas contrato ni nómina. Simula tu cuota, solicita desde el celular
-            y recibe la plata sin salir del carro.
+            Sin nómina ni codeudor. Solicita desde el celular y recibe la plata el mismo día.
           </p>
 
           <div className="flex flex-wrap items-center gap-3.5 pt-1">
