@@ -21,23 +21,22 @@ export function Hero() {
         {/* ── LEFT COLUMN: value proposition ── */}
         <div className="lg:col-span-6 flex flex-col items-start text-left space-y-6 z-10 pb-12 lg:pb-16 pt-2">
           <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink">
-            Crédito digital en Colombia
+            Hecho para taxistas colombianos
           </span>
 
-          {/* Display H1 — key phrase gets a yellow marker highlight (dark text stays legible) */}
           <h1
             id="hero-heading"
             className="text-4xl sm:text-5xl lg:text-6xl font-display font-black tracking-tight text-navy leading-[1.1]"
           >
-            Tu crédito,{' '}
+            Plata pa&apos;l día a día,{' '}
             <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">
-              aprobado en minutos
+              aprobada en minutos
             </span>
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl font-normal">
-            Simula tu cuota, solicita 100% en línea y recibe respuesta al instante.
-            Tasa clara y sin papeles.
+            No necesitas contrato ni nómina. Simula tu cuota, solicita desde el celular
+            y recibe la plata sin salir del carro.
           </p>
 
           {/* CTAs — primary is yellow with black text (signature look) */}
