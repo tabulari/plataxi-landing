@@ -182,12 +182,21 @@
   [role='radio']:focus-visible,
   [data-slot='button']:focus-visible,
   [data-slot='accordion-trigger']:focus-visible,
-  input:focus-visible,
-  select:focus-visible,
-  textarea:focus-visible,
   summary:focus-visible {
     outline: 2px solid #151515 !important;
     outline-offset: 2px !important;
+  }
+
+  /* Form inputs focus state: clean, vibrant brand yellow without black outer ring */
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none !important;
+    border-color: #ffdd00 !important;
+    box-shadow: 0 0 0 3px rgba(255, 221, 0, 0.35) !important;
   }
 }
 
