@@ -11,10 +11,10 @@ const STATS: { value: string; label: string }[] = [
   { value: '100%', label: 'En línea' },
 ];
 
-// Clip-path: cortes en escalón en el borde IZQUIERDO de la imagen (estilo inDrive)
-// Esquina sup-izq: entra 28% horizontal × 22% vertical
-// Esquina inf-izq: entra 18% horizontal × 20% vertical
-const CLIP = 'polygon(28% 0%, 100% 0%, 100% 100%, 18% 100%, 18% 80%, 0% 80%, 0% 22%, 28% 22%)';
+// Clip-path inDrive: escalón en esquina SUP-IZQ y esquina INF-DER (diagonal opuesta)
+// Sup-izq: recorta 28% ancho × 22% alto
+// Inf-der: recorta 28% ancho × 22% alto
+const CLIP = 'polygon(28% 0%, 100% 0%, 100% 78%, 72% 78%, 72% 100%, 0% 100%, 0% 22%, 28% 22%)';
 
 export function Hero() {
   return (
