@@ -143,7 +143,7 @@ export function Simulator() {
         >
           {sim.valid ? '' : sim.message}
         </p>
-        <ApplyButton origin="simulator" variant="default" size="block" disabled={!sim.valid} className="w-full min-h-[52px] h-[52px] shadow-md hover:shadow-lg transition-all text-base font-bold">
+        <ApplyButton origin="simulator" variant="default" size="block" disabled={!sim.valid} className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-md hover:shadow-lg transition-all text-base font-bold border-0">
           Solicitar crédito
         </ApplyButton>
         <p className="text-xs text-center text-muted-2">

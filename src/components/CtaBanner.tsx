@@ -83,12 +83,12 @@ export function CtaBanner() {
         <div
           ref={panelRef}
           data-cta="panel"
-          className="relative flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-14 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-8 sm:p-10 lg:p-14 backdrop-blur-xl shadow-2xl overflow-hidden"
+          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-10 sm:p-12 lg:p-16 backdrop-blur-xl shadow-2xl overflow-hidden"
         >
           <span className="cta-sheen" aria-hidden="true" />
 
           {/* Left Column: Pure, Saturated Value Anchor */}
-          <div className="flex-1 min-w-0 relative space-y-3 text-left">
+          <div className="flex-1 min-w-0 relative space-y-5 text-left">
             <p
               data-cta="eyebrow"
               className="text-xs font-semibold uppercase tracking-widest text-green"

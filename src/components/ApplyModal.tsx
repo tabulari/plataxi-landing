@@ -227,6 +227,7 @@ export function ApplyModal() {
                   size="default"
                   disabled={form.submitStatus === 'pending'}
                   onClick={() => form.onNext(frozen)}
+                  className="bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40"
                 >
                   {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
                     : form.step === 3 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
