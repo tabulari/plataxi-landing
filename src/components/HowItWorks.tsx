@@ -235,7 +235,7 @@ export function HowItWorks() {
       ref={containerRef}
       id="como-funciona"
       aria-labelledby="hiw-heading"
-      className="py-14 sm:py-16 lg:py-20 bg-green-soft relative overflow-hidden"
+      className="py-14 sm:py-16 lg:py-20 bg-[#fffee9] relative overflow-hidden"
     >
       <div className="mx-auto max-w-container px-6">
         {/* Section Header: Seamless Scale & Hierarchy */}

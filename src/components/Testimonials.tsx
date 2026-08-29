@@ -88,7 +88,7 @@ export function Testimonials() {
       ref={containerRef}
       id="testimonios"
       aria-labelledby="testimonials-heading"
-      className="py-16 sm:py-20 lg:py-24 bg-[#fffee9]"
+      className="py-16 sm:py-20 lg:py-24 bg-white"
     >
       <div className="mx-auto max-w-container px-6">
         <div className="max-w-xl mx-auto text-center mb-12 space-y-2">

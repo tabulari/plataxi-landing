@@ -59,7 +59,7 @@ export function Benefits() {
       ref={containerRef}
       id="beneficios"
       aria-labelledby="benefits-heading"
-      className="py-16 sm:py-20 lg:py-24 bg-white"
+      className="py-16 sm:py-20 lg:py-24 bg-[#fffee9]"
     >
       <div className="mx-auto max-w-container px-6">
         <div className="max-w-xl mx-auto text-center mb-12 space-y-2">

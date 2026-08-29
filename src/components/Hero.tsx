@@ -15,7 +15,7 @@ export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative pt-10 pb-12 sm:pt-14 sm:pb-16 lg:pt-16 lg:pb-20 overflow-hidden bg-white"
+      className="relative pt-10 pb-12 sm:pt-14 sm:pb-16 lg:pt-16 lg:pb-20 overflow-hidden bg-[#fffee9]"
     >
       {/* Yellow accent shapes behind the hero (inDrive-style) */}
       <div
@@ -99,26 +99,16 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: taxista con estilo de recortes superpuestos ── */}
+        {/* ── RIGHT COLUMN: taxi hero con recortes ya incorporados ── */}
         <div className="lg:col-span-6 flex items-center justify-center">
-          <div className="relative w-full max-w-[460px]">
-            {/* Bloque de color amarillo — detrás, desplazado abajo-derecha */}
-            <div
-              aria-hidden="true"
-              className="absolute -bottom-5 -right-5 left-8 top-8 bg-green rounded-2xl"
-            />
-            {/* Foto taxista — recortada a proporción retrato, foco en conductor */}
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl aspect-[4/5]">
-              <Image
-                src="/taxista.jpeg"
-                alt="Taxista colombiano con Plataxi"
-                fill
-                className="object-cover"
-                style={{ objectPosition: '72% center' }}
-                priority
-              />
-            </div>
-          </div>
+          <Image
+            src="/taxi-hero.png"
+            alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
+            width={1200}
+            height={824}
+            className="w-full h-auto max-w-[540px]"
+            priority
+          />
         </div>
       </div>
     </section>
