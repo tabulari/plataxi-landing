@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { config } from '@/lib/config';
 import { WhatsAppLink } from './WhatsAppLink';
+import { PlataxiWordmark } from './icons';
 
 export function Footer() {
   return (
@@ -11,13 +11,7 @@ export function Footer() {
         <div className="sm:col-span-2 flex flex-col justify-between space-y-5">
           <div className="space-y-3">
             <a href="#top" aria-label={`${config.brandName} — inicio`} className="inline-flex items-center">
-              <Image
-                src="/plataxi-logo.jpeg"
-                alt="Plataxi"
-                width={140}
-                height={52}
-                className="h-12 w-auto object-contain rounded-md"
-              />
+              <PlataxiWordmark variant="white" height={40} />
             </a>
             <p className="text-sm text-white/70 leading-relaxed max-w-sm">
               Crédito digital simple, ágil y 100% transparente en Colombia.

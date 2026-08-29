@@ -658,9 +658,57 @@ export function BoltIcon({ size = 16, className }: IconProps) {
 }
 
 /**
+ * Plataxi horizontal lockup — inline SVG, fondo transparente.
+ * variant='dark'  → #2E2A28 sobre fondo claro (Nav, Hero)
+ * variant='white' → #FFFFFF sobre fondo oscuro (Footer)
+ */
+export function PlataxiWordmark({
+  variant = 'dark',
+  height = 40,
+  className,
+}: {
+  variant?: 'dark' | 'white';
+  height?: number;
+  className?: string;
+}) {
+  const color = variant === 'white' ? '#ffffff' : '#2E2A28';
+  // viewBox 170×44: icono hexagonal 38px + gap 12px + wordmark ~118px
+  const vw = 170;
+  const vh = 44;
+  const w = Math.round((height / vh) * vw);
+
+  return (
+    <svg
+      width={w}
+      height={height}
+      viewBox={`0 0 ${vw} ${vh}`}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Plataxi"
+      role="img"
+      className={className}
+    >
+      {/* Símbolo: hexágono tipo badge de taxi (más ancho que alto, vértices izq/der) */}
+      <path d="M2 22L12 4H30L40 22L30 40H12L2 22Z" fill={color} />
+      {/* Wordmark */}
+      <text
+        x="52"
+        y="31"
+        fontFamily="var(--font-jakarta), Roboto, 'Arial Black', sans-serif"
+        fontWeight="900"
+        fontSize="23"
+        letterSpacing="1.5"
+        fill={color}
+      >
+        PLATAXI
+      </text>
+    </svg>
+  );
+}
+
+/**
  * Plataxi wordmark — TEMPORARY text-based placeholder lockup (a yellow rounded
- * mark + "Plataxi"). The final brand asset will be supplied by the client and
- * can replace this component / the /plataxi-logo*.svg files.
+ * mark + "Plataxi"). Kept for ModalSidebar usage.
  */
 export function BrandLogo({
   height = 32,
