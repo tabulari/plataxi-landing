@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { LockIcon, CheckIcon, ShieldCheckIcon, CloseIcon } from '../icons';
 import { fmtCOP } from '@/lib/credit';
+import { config } from '@/lib/config';
 
 interface OtpContractModalProps {
   isOpen: boolean;
@@ -151,7 +152,7 @@ export function OtpContractModal({
               PAGARÉ NÚMERO CR-{new Date().getFullYear()}-009182
             </p>
             <p>
-              Por medio del presente instrumento, el suscrito <strong>{borrowerName}</strong> identificado con C.C. <strong>{borrowerId}</strong> declara que debe y pagará incondicionalmente a la orden de <strong>Credalia S.A.S.</strong> la suma de <strong>${fmtCOP(amount)} COP</strong> más los intereses corrientes estipulados conforme a la reglamentación de la Superintendencia Financiera de Colombia.
+              Por medio del presente instrumento, el suscrito <strong>{borrowerName}</strong> identificado con C.C. <strong>{borrowerId}</strong> declara que debe y pagará incondicionalmente a la orden de <strong>{config.company.legalName}</strong> la suma de <strong>${fmtCOP(amount)} COP</strong> más los intereses corrientes estipulados conforme a la reglamentación de la Superintendencia Financiera de Colombia.
             </p>
             <p>
               Autorizo expresamente el diligenciamiento de este Pagaré conforme a la Carta de Instrucciones adjunta en caso de mora o incumplimiento en el plan de cuotas acordado.

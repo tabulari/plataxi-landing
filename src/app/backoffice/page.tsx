@@ -68,11 +68,16 @@ const INITIAL_APPLICATIONS: BackofficeApplication[] = [
   },
 ];
 
+// Demo operator identity for this prototype console. Declared once so the audit
+// entries below cannot drift from each other; admin@credalia.co matches the
+// operator credential documented in docs/dev/DEV-002 and docs/qa.
+const DEMO_OPERATOR_EMAIL = 'admin@credalia.co';
+
 const INITIAL_AUDIT_LOGS: AuditEntry[] = [
   {
     id: 'log-1',
     radicado: 'CR-2026-008990',
-    actor: 'operador_principal@credalia.com',
+    actor: DEMO_OPERATOR_EMAIL,
     actorRole: 'Analista Senior de Crédito',
     action: 'Ejecución de Desembolso Manual',
     previousState: 'verified',
@@ -102,7 +107,7 @@ export default function OperatorBackofficePage() {
     const newLog: AuditEntry = {
       id: `log-${Date.now()}`,
       radicado: selectedApp.radicado,
-      actor: 'operador_principal@credalia.com',
+      actor: DEMO_OPERATOR_EMAIL,
       actorRole: 'Analista de Verificación KYC',
       action: 'Aprobación Manual KYC',
       previousState: selectedApp.status,
@@ -124,7 +129,7 @@ export default function OperatorBackofficePage() {
     const newLog: AuditEntry = {
       id: `log-${Date.now()}`,
       radicado: selectedApp.radicado,
-      actor: 'operador_principal@credalia.com',
+      actor: DEMO_OPERATOR_EMAIL,
       actorRole: 'Analista de Verificación KYC',
       action: 'Observación / Rechazo KYC',
       previousState: selectedApp.status,
@@ -146,7 +151,7 @@ export default function OperatorBackofficePage() {
     const newLog: AuditEntry = {
       id: `log-${Date.now()}`,
       radicado: selectedApp.radicado,
-      actor: 'operador_principal@credalia.com',
+      actor: DEMO_OPERATOR_EMAIL,
       actorRole: 'Tesorero / Administrador de Desembolsos',
       action: 'Ejecución de Desembolso 2-Step',
       previousState: selectedApp.status,
@@ -181,7 +186,7 @@ export default function OperatorBackofficePage() {
                 </span>
               </div>
               <p className="text-xs text-muted-2 mt-0.5">
-                Consola de atención y dictamen de créditos en tiempo real. Operador: <b>operador_principal@credalia.com</b>
+                Consola de atención y dictamen de créditos en tiempo real. Operador: <b>{DEMO_OPERATOR_EMAIL}</b>
               </p>
             </div>
           </div>

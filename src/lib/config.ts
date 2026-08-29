@@ -97,36 +97,42 @@ export function assertProductionConfig(env: Env = process.env): void {
 
 /** Typed, resolved configuration consumed by the app. */
 export const config = {
-  whatsappPhone: readStr(process.env.NEXT_PUBLIC_WHATSAPP_PHONE, "573001234567"),
+  /**
+   * Pilot disposition (BRAND-001 §2.4): identity, contact and social facts are
+   * compiled-in constants, never environment values. The marketing site is the
+   * Credalia-facing surface, and env overrides previously made it possible for
+   * the three surfaces to drift. A future client rebrand edits these literals.
+   */
+  whatsappPhone: "573001234567",
   /** Canonical site origin — drives sitemap, robots, OG, JSON-LD, canonical. */
-  siteUrl: readStr(process.env.NEXT_PUBLIC_SITE_URL, "https://credalia.rubrica.dev"),
+  siteUrl: "https://credalia.rubrica.dev",
   company: {
-    legalName: readStr(process.env.NEXT_PUBLIC_COMPANY_LEGAL_NAME, "Credalia S.A.S."),
-    nit: readStr(process.env.NEXT_PUBLIC_COMPANY_NIT, "XXX.XXX.XXX-X"),
-    address: readStr(process.env.NEXT_PUBLIC_COMPANY_ADDRESS, "Domicilio pendiente, Colombia"),
-    contactPhone: readStr(process.env.NEXT_PUBLIC_CONTACT_PHONE, "+573001234567"),
+    legalName: "Credalia S.A.S.",
+    nit: "XXX.XXX.XXX-X",
+    address: "Domicilio pendiente, Colombia",
+    contactPhone: "+573001234567",
   },
 
   /** Brand display name — used in nav, footer, legal pages, WhatsApp messages, etc. */
-  brandName: readStr(process.env.NEXT_PUBLIC_BRAND_NAME, "Credalia"),
+  brandName: "Credalia",
 
   /** Contact email shown in footer. */
-  contactEmail: readStr(process.env.NEXT_PUBLIC_CONTACT_EMAIL, "hola@credalia.co"),
+  contactEmail: "hola@credalia.co",
 
   /** Contact hours shown in footer. */
-  contactHours: readStr(process.env.NEXT_PUBLIC_CONTACT_HOURS, "Lun a Vie, 8:00–18:00"),
+  contactHours: "Lun a Vie, 8:00–18:00",
 
   /** Regulator display name (e.g. "Superintendencia Financiera de Colombia"). */
-  regulatorName: readStr(process.env.NEXT_PUBLIC_REGULATOR_NAME, "Superintendencia Financiera de Colombia"),
+  regulatorName: "Superintendencia Financiera de Colombia",
 
   /** Short regulator name (e.g. "Superfinanciera"). */
-  regulatorShortName: readStr(process.env.NEXT_PUBLIC_REGULATOR_SHORT_NAME, "Superfinanciera"),
+  regulatorShortName: "Superfinanciera",
 
   social: {
-    facebook: readStr(process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK, "https://facebook.com/credalia"),
-    instagram: readStr(process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM, "https://instagram.com/credalia"),
-    linkedin: readStr(process.env.NEXT_PUBLIC_SOCIAL_LINKEDIN, "https://www.linkedin.com/company/credalia"),
-    youtube: readStr(process.env.NEXT_PUBLIC_SOCIAL_YOUTUBE, "https://www.youtube.com/@credalia"),
+    facebook: "https://facebook.com/credalia",
+    instagram: "https://instagram.com/credalia",
+    linkedin: "https://www.linkedin.com/company/credalia",
+    youtube: "https://www.youtube.com/@credalia",
   },
   /** Server-only: where app/api/application forwards the submitted application. */
   applicationEndpoint: read("APPLICATION_ENDPOINT", process.env.APPLICATION_ENDPOINT),

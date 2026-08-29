@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { fmtCOP } from '@/lib/credit';
+import { config } from '@/lib/config';
 import { CheckIcon, CalendarIcon, DocUploadIcon, ReturnArrowIcon, VerifiedCircleIcon } from '@/components/icons';
 
 export default function ActiveCreditPage() {
@@ -134,7 +135,7 @@ export default function ActiveCreditPage() {
                   </div>
                   <div>
                     <h4 className="text-sm font-bold text-navy">Nequi</h4>
-                    <p className="text-xs text-muted-2">Convenio Credalia • Celular 300 900 1122</p>
+                    <p className="text-xs text-muted-2">Convenio {config.brandName} • Celular 300 900 1122</p>
                   </div>
                 </div>
                 <span className="text-xs font-bold text-navy bg-white border border-border px-2.5 py-1 rounded-md">
