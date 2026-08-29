@@ -97,7 +97,7 @@ export function Hero() {
         {/* ── RIGHT COLUMN: imagen llena la mitad derecha con clip-path ── */}
         <div className="relative hidden lg:block">
           <div
-            className="absolute top-8 xl:top-12 bottom-0 left-0 right-0"
+            className="absolute top-8 xl:top-12 bottom-0 left-0 right-6 lg:right-10 xl:right-14"
             style={{ clipPath: CLIP }}
           >
             <Image
