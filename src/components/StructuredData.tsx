@@ -2,8 +2,6 @@ import { config } from "@/lib/config";
 import { fmtCOP } from "@/lib/credit";
 import { FAQS } from "@/lib/faqs";
 
-const BRAND_ASSET_VERSION = '3ef966e';
-
 /**
  * JSON-LD structured data (ported from the prototype <head>): FinancialService
  * + FAQPage (eligible for Google rich results). URLs/telephone/address are

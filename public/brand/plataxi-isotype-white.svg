@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 370 200" width="370" height="200" fill="none">
+
+  <!-- Top Roof / Hood Trapezoid -->
+  <polygon points="97,0 273,0 317,77 53,77" fill="#FFFFFF" />
+  <!-- Left Wing -->
+  <polygon points="0,98 62,98 95,148 28,148" fill="#FFFFFF" />
+  <!-- Right Wing -->
+  <polygon points="308,98 370,98 342,148 275,148" fill="#FFFFFF" />
+  <!-- Bottom Center Trapezoid -->
+  <polygon points="95,148 275,148 242,198 128,198" fill="#FFFFFF" />
+
+</svg>

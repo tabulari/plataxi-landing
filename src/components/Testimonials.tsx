@@ -113,7 +113,7 @@ export function Testimonials() {
               <Stars n={t.rating} />
 
               <blockquote className="text-sm text-foreground leading-relaxed flex-1">
-                "{t.quote}"
+                &ldquo;{t.quote}&rdquo;
               </blockquote>
 
               {/* Author row — avatar initials on yellow */}

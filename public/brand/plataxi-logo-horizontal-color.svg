@@ -3,13 +3,13 @@
   <g transform="translate(0, 0)">
 
   <!-- Top Roof / Hood Trapezoid -->
-  <polygon points="97,0 273,0 317,77 53,77" fill="#151515" />
+  <polygon points="97,0 273,0 317,77 53,77" fill="#FFDD00" />
   <!-- Left Wing -->
-  <polygon points="0,98 62,98 95,148 28,148" fill="#151515" />
+  <polygon points="0,98 62,98 95,148 28,148" fill="#FFDD00" />
   <!-- Right Wing -->
-  <polygon points="308,98 370,98 342,148 275,148" fill="#151515" />
+  <polygon points="308,98 370,98 342,148 275,148" fill="#FFDD00" />
   <!-- Bottom Center Trapezoid -->
-  <polygon points="95,148 275,148 242,198 128,198" fill="#151515" />
+  <polygon points="95,148 275,148 242,198 128,198" fill="#FFDD00" />
 
   </g>
   <!-- Wordmark PLATAXI -->

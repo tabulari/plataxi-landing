@@ -659,22 +659,23 @@ export function BoltIcon({ size = 16, className }: IconProps) {
 
 /**
  * Plataxi horizontal lockup — inline SVG, fondo transparente.
- * variant='dark'  → #2E2A28 sobre fondo claro (Nav, Hero)
+ * variant='dark'  → #151515 sobre fondo claro (Nav, Hero)
  * variant='white' → #FFFFFF sobre fondo oscuro (Footer)
+ * variant='color' → #FFDD00 isotipo + #151515 tipografía
  */
 export function PlataxiWordmark({
   variant = 'dark',
-  height = 40,
+  height = 36,
   className,
 }: {
-  variant?: 'dark' | 'white';
+  variant?: 'dark' | 'white' | 'color';
   height?: number;
   className?: string;
 }) {
-  const color = variant === 'white' ? '#ffffff' : '#2E2A28';
-  // viewBox 170×44: icono hexagonal 38px + gap 12px + wordmark ~118px
-  const vw = 170;
-  const vh = 44;
+  const isotypeColor = variant === 'white' ? '#ffffff' : variant === 'color' ? '#ffdd00' : '#151515';
+  const textColor = variant === 'white' ? '#ffffff' : '#151515';
+  const vw = 1050;
+  const vh = 200;
   const w = Math.round((height / vh) * vw);
 
   return (
@@ -688,17 +689,20 @@ export function PlataxiWordmark({
       role="img"
       className={className}
     >
-      {/* Símbolo: hexágono tipo badge de taxi (más ancho que alto, vértices izq/der) */}
-      <path d="M2 22L12 4H30L40 22L30 40H12L2 22Z" fill={color} />
-      {/* Wordmark */}
+      {/* Símbolo Isotipo Plataxi: taxi facetado oficial */}
+      <polygon points="97,0 273,0 317,77 53,77" fill={isotypeColor} />
+      <polygon points="0,98 62,98 95,148 28,148" fill={isotypeColor} />
+      <polygon points="308,98 370,98 342,148 275,148" fill={isotypeColor} />
+      <polygon points="95,148 275,148 242,198 128,198" fill={isotypeColor} />
+      {/* Wordmark PLATAXI */}
       <text
-        x="52"
-        y="31"
-        fontFamily="var(--font-jakarta), Roboto, 'Arial Black', sans-serif"
+        x="420"
+        y="148"
+        fontFamily="var(--font-jakarta), 'Montserrat', 'Roboto', 'Arial Black', sans-serif"
         fontWeight="900"
-        fontSize="23"
-        letterSpacing="1.5"
-        fill={color}
+        fontSize="150"
+        letterSpacing="4"
+        fill={textColor}
       >
         PLATAXI
       </text>
@@ -746,31 +750,39 @@ export function BrandLogo({
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontFamily: 'var(--font-display), Roboto, system-ui, sans-serif',
-          fontWeight: 900,
-          fontSize: Math.round(height * 0.62),
-          lineHeight: 1,
+          padding: Math.round(height * 0.16),
         }}
       >
-        P
+        <svg
+          viewBox="0 0 370 200"
+          width="100%"
+          height="100%"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <polygon points="97,0 273,0 317,77 53,77" fill={markFg} />
+          <polygon points="0,98 62,98 95,148 28,148" fill={markFg} />
+          <polygon points="308,98 370,98 342,148 275,148" fill={markFg} />
+          <polygon points="95,148 275,148 242,198 128,198" fill={markFg} />
+        </svg>
       </span>
       <span
         style={{
-          fontFamily: 'var(--font-display), Roboto, system-ui, sans-serif',
-          fontWeight: 800,
-          fontSize: Math.round(height * 0.7),
-          letterSpacing: '-0.02em',
+          fontFamily: "var(--font-jakarta), 'Montserrat', 'Roboto', 'Arial Black', sans-serif",
+          fontWeight: 900,
+          fontSize: Math.round(height * 0.72),
+          letterSpacing: '0.02em',
           color: textColor,
           lineHeight: 1,
         }}
       >
-        Plataxi
+        PLATAXI
       </span>
     </span>
   );
 }
 
-/** Plataxi diamond/mark placeholder — yellow rounded square with a dark "P". */
+/** Plataxi official brand mark — yellow rounded square with faceted taxi isotype. */
 export function PlataxiLogo({ size = 48, className }: IconProps) {
   return (
     <svg
@@ -782,18 +794,12 @@ export function PlataxiLogo({ size = 48, className }: IconProps) {
       style={{ height: 'auto', aspectRatio: '1 / 1' }}
     >
       <rect x="16" y="16" width="480" height="480" rx="128" fill="#ffdd00" />
-      <text
-        x="256"
-        y="256"
-        textAnchor="middle"
-        dominantBaseline="central"
-        fontFamily="Roboto, system-ui, sans-serif"
-        fontWeight="900"
-        fontSize="320"
-        fill="#151515"
-      >
-        P
-      </text>
+      <g transform="translate(108, 176) scale(0.8)">
+        <polygon points="97,0 273,0 317,77 53,77" fill="#151515" />
+        <polygon points="0,98 62,98 95,148 28,148" fill="#151515" />
+        <polygon points="308,98 370,98 342,148 275,148" fill="#151515" />
+        <polygon points="95,148 275,148 242,198 128,198" fill="#151515" />
+      </g>
     </svg>
   );
 }

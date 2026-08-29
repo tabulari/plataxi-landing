@@ -141,13 +141,13 @@ export function Nav() {
           : 'bg-[#fffee9] shadow-none',
       )}
     >
-      <div className="mx-auto max-w-container px-6 flex items-center justify-between h-[68px]">
+      <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 flex items-center justify-between h-[68px]">
         <a
           href="#top"
           aria-label={`${config.brandName} — inicio`}
           className="flex items-center py-2 text-navy"
         >
-          <PlataxiWordmark height={36} variant="dark" />
+          <PlataxiWordmark height={28} variant="dark" />
         </a>
 
         <nav aria-label="Navegación principal" className="hidden md:flex items-center gap-6">
@@ -193,20 +193,32 @@ export function Nav() {
       </div>
 
       <nav aria-label="Navegación principal" className="md:hidden">
+        {/* Backdrop Scrim */}
+        {open && (
+          <div
+            className="fixed inset-0 top-[68px] bg-black/25 backdrop-blur-[2px] z-40 md:hidden animate-fade-in"
+            onClick={close}
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Floating Overlay Menu Panel */}
         <div
           id="navMobile"
           ref={mobilePanelRef}
           inert={!open || undefined}
           className={cn(
-            'md:hidden overflow-hidden transition-[max-height,border-color] duration-200',
-            open ? 'max-h-[600px] border-t border-border' : 'max-h-0 border-t border-transparent',
+            'absolute top-full left-0 right-0 z-50 bg-[#fffee9] border-b border-border/80 shadow-2xl transition-all duration-200 ease-out',
+            open
+              ? 'opacity-100 translate-y-0 pointer-events-auto visible'
+              : 'opacity-0 -translate-y-2 pointer-events-none invisible',
           )}
           onClick={(e) => {
             if ((e.target as HTMLElement).closest('a, button'))
               close();
           }}
         >
-          <div className="px-6 py-4 flex flex-col gap-1 bg-[#fffee9]">
+          <div className="px-6 py-5 flex flex-col gap-1.5 border-t border-border/40">
             {LINKS.map((l, i) => {
               const isActive = activeId === l.href.slice(1);
               return (
@@ -215,17 +227,17 @@ export function Nav() {
                   href={l.href}
                   ref={i === 0 ? firstLinkRef : undefined}
                   className={cn(
-                    'text-sm font-semibold py-3.5 px-2 -mx-2 rounded-lg transition-colors',
+                    'text-base font-semibold py-3 px-3 rounded-xl transition-colors',
                     isActive
-                      ? 'text-navy bg-green-tint font-bold'
-                      : 'text-muted-2 hover:text-navy',
+                      ? 'text-navy bg-green/25 font-bold'
+                      : 'text-muted-2 hover:text-navy hover:bg-black/5',
                   )}
                 >
                   {l.label}
                 </a>
               );
             })}
-            <ApplyButton variant="default" size="default" className="w-full mt-2">
+            <ApplyButton variant="default" size="lg" className="w-full min-h-[50px] mt-3 font-bold">
               Iniciar solicitud
             </ApplyButton>
           </div>

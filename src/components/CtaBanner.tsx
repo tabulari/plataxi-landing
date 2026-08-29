@@ -99,7 +99,7 @@ export function CtaBanner() {
             <h2
               id="cta-heading"
               data-cta="heading"
-              className="text-3xl sm:text-4xl lg:text-[42px] font-display tracking-tight text-white leading-[1.15]"
+              className="text-3xl sm:text-4xl lg:text-[42px] font-display tracking-tight text-white leading-[1.15] mb-2"
             >
               Tu dinero en minutos, <br className="hidden sm:inline" />
               <mark className="bg-green text-ink rounded-sm px-1" style={{background:'#ffdd00',color:'#151515',padding:'0 0.2em'}}>sin fiador ni trámites.</mark>

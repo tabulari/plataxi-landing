@@ -21,13 +21,13 @@ export function Hero() {
       className="relative overflow-hidden bg-[#fffee9]"
       style={{ minHeight: '70vh' }}
     >
-      {/* Grid con padding lateral para dar aire a ambos lados */}
+      {/* Grid con padding lateral sincronizado con el Navbar */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-8 xl:px-10 gap-x-0"
+        className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-10 xl:px-14 max-w-[1536px] mx-auto gap-x-0"
         style={{ minHeight: 'inherit' }}
       >
         {/* ── LEFT COLUMN ── */}
-        <div className="flex flex-col justify-center pl-6 sm:pl-8 lg:pl-[13rem] pr-8 lg:pr-14 xl:pr-20 py-14 lg:pt-[210px] lg:pb-20 space-y-6 z-10">
+        <div className="flex flex-col justify-center px-2 sm:px-4 lg:pl-0 lg:pr-12 xl:pr-16 py-12 lg:pt-[190px] lg:pb-20 space-y-6 z-10">
           <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink w-fit">
             Hecho para taxistas colombianos
           </span>
