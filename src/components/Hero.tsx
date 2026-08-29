@@ -25,7 +25,7 @@ export function Hero() {
     >
       {/* Grid con padding lateral para dar aire a ambos lados */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-10 xl:px-14 gap-x-6"
+        className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-10 xl:px-14 gap-x-0"
         style={{ minHeight: 'inherit' }}
       >
         {/* ── LEFT COLUMN ── */}
@@ -108,7 +108,7 @@ export function Hero() {
               alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
               fill
               className="object-cover"
-              style={{ objectPosition: '30% center' }}
+              style={{ objectPosition: '10% center' }}
               priority
             />
           </div>
