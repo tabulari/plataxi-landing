@@ -5,7 +5,6 @@ import { Simulator } from "@/components/Simulator";
 import { Benefits } from "@/components/Benefits";
 import { Requirements } from "@/components/Requirements";
 import { HowItWorks } from "@/components/HowItWorks";
-import { Testimonials } from "@/components/Testimonials";
 import { Faq } from "@/components/Faq";
 import { CtaBanner } from "@/components/CtaBanner";
 import { Footer } from "@/components/Footer";
@@ -38,12 +37,8 @@ export default function Home() {
         <SectionDivider amplitude="medium" from="#ffffff" to="#fffee9" />
         <HowItWorks />
 
-        {/* 6. Testimonios / Impacto */}
+        {/* 6. FAQ — 2-column accordion */}
         <SectionDivider amplitude="soft" from="#fffee9" to="#ffffff" />
-        <Testimonials />
-
-        {/* 7. FAQ — 2-column accordion */}
-        <SectionDivider amplitude="soft" from="#ffffff" to="#fffee9" />
         <Faq />
 
         {/* 8. CTA final — yellow banner */}
