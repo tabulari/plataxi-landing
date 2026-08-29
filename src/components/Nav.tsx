@@ -4,7 +4,8 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { ApplyButton } from './ApplyButton';
 import { cn } from '@/lib/utils';
 import { config } from '@/lib/config';
-import { CloseIcon, HamburgerIcon, BrandLogo } from './icons';
+import Image from 'next/image';
+import { CloseIcon, HamburgerIcon } from './icons';
 
 const LINKS = [
   { href: '#simula', label: 'Simula tu crédito' },
@@ -147,7 +148,14 @@ export function Nav() {
           aria-label={`${config.brandName} — inicio`}
           className="flex items-center py-2 text-navy"
         >
-          <BrandLogo height={34} />
+          <Image
+            src="/plataxi-logo.jpeg"
+            alt="Plataxi — Liquidez para tu día a día"
+            width={160}
+            height={60}
+            className="h-10 w-auto object-contain rounded-md"
+            priority
+          />
         </a>
 
         <nav aria-label="Navegación principal" className="hidden md:flex items-center gap-6">
