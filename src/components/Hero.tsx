@@ -89,13 +89,13 @@ export function Hero() {
         </div>
 
         {/* ── RIGHT COLUMN: foto con recorte escalón Plataxi ── */}
-        <div className="lg:col-span-6 flex items-center justify-center">
+        <div className="lg:col-span-6 flex items-center justify-end -mr-6 lg:-mr-8">
           <Image
             src="/taxi-hero-cut.png"
             alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
-            width={2896}
-            height={1616}
-            className="w-full h-auto max-w-[600px] lg:max-w-none"
+            width={1816}
+            height={1636}
+            className="w-full h-auto"
             priority
           />
         </div>
