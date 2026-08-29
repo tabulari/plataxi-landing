@@ -99,31 +99,24 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: app mockup + lifestyle photo ── */}
-        <div className="lg:col-span-6 flex items-center justify-center relative">
-          <div className="relative w-full max-w-[520px]">
-            {/* Foto conductor — fondo de la composición */}
-            <Image
-              src="/hero-conductor.jpeg"
-              alt="Conductor colombiano usando Plataxi"
-              width={780}
-              height={520}
-              className="w-full h-auto rounded-3xl object-cover shadow-2xl"
-              priority
+        {/* ── RIGHT COLUMN: taxista con estilo de recortes superpuestos ── */}
+        <div className="lg:col-span-6 flex items-center justify-center">
+          <div className="relative w-full max-w-[460px]">
+            {/* Bloque de color amarillo — detrás, desplazado abajo-derecha */}
+            <div
+              aria-hidden="true"
+              className="absolute -bottom-5 -right-5 left-8 top-8 bg-green rounded-2xl"
             />
-            {/* Mockup app flotando sobre la foto */}
-            <div className="absolute -bottom-6 -left-4 sm:-left-8 w-[45%] sm:w-[42%] shadow-2xl rounded-3xl overflow-hidden border-4 border-white">
+            {/* Foto taxista — recortada a proporción retrato, foco en conductor */}
+            <div className="relative overflow-hidden rounded-2xl shadow-2xl aspect-[4/5]">
               <Image
-                src="/hero-app-mockup.jpeg"
-                alt="App Plataxi — saldo disponible"
-                width={400}
-                height={500}
-                className="w-full h-auto object-cover"
+                src="/taxista.jpeg"
+                alt="Taxista colombiano con Plataxi"
+                fill
+                className="object-cover"
+                style={{ objectPosition: '72% center' }}
+                priority
               />
-            </div>
-            {/* Badge flotante superior derecho */}
-            <div className="absolute -top-3 -right-3 bg-green text-ink text-xs font-black px-3 py-2 rounded-2xl shadow-lg leading-tight">
-              Respuesta<br />en minutos
             </div>
           </div>
         </div>
