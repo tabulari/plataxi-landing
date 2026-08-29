@@ -69,9 +69,9 @@ const INITIAL_APPLICATIONS: BackofficeApplication[] = [
 ];
 
 // Demo operator identity for this prototype console. Declared once so the audit
-// entries below cannot drift from each other; admin@credalia.co matches the
+// entries below cannot drift from each other; admin@plataxi.co matches the
 // operator credential documented in docs/dev/DEV-002 and docs/qa.
-const DEMO_OPERATOR_EMAIL = 'admin@credalia.co';
+const DEMO_OPERATOR_EMAIL = 'admin@plataxi.co';
 
 const INITIAL_AUDIT_LOGS: AuditEntry[] = [
   {

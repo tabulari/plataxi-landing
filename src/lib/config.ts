@@ -1,5 +1,5 @@
 /**
- * Credalia — centralized runtime configuration.
+ * Plataxi — centralized runtime configuration.
  *
  * Identity, contact, and social facts (site URL, WhatsApp line, legal name/NIT,
  * address, phone, social profile URLs) are CONSTANTS compiled into the build,
@@ -100,24 +100,24 @@ export const config = {
   /**
    * Pilot disposition (BRAND-001 §2.4): identity, contact and social facts are
    * compiled-in constants, never environment values. The marketing site is the
-   * Credalia-facing surface, and env overrides previously made it possible for
+   * Plataxi-facing surface, and env overrides previously made it possible for
    * the three surfaces to drift. A future client rebrand edits these literals.
    */
   whatsappPhone: "573001234567",
   /** Canonical site origin — drives sitemap, robots, OG, JSON-LD, canonical. */
-  siteUrl: "https://credalia.rubrica.dev",
+  siteUrl: "https://plataxi.rubrica.dev",
   company: {
-    legalName: "Credalia S.A.S.",
+    legalName: "Plataxi S.A.S.",
     nit: "XXX.XXX.XXX-X",
     address: "Domicilio pendiente, Colombia",
     contactPhone: "+573001234567",
   },
 
   /** Brand display name — used in nav, footer, legal pages, WhatsApp messages, etc. */
-  brandName: "Credalia",
+  brandName: "Plataxi",
 
   /** Contact email shown in footer. */
-  contactEmail: "hola@credalia.co",
+  contactEmail: "hola@plataxi.co",
 
   /** Contact hours shown in footer. */
   contactHours: "Lun a Vie, 8:00–18:00",
@@ -129,10 +129,10 @@ export const config = {
   regulatorShortName: "Superfinanciera",
 
   social: {
-    facebook: "https://facebook.com/credalia",
-    instagram: "https://instagram.com/credalia",
-    linkedin: "https://www.linkedin.com/company/credalia",
-    youtube: "https://www.youtube.com/@credalia",
+    facebook: "https://facebook.com/plataxi",
+    instagram: "https://instagram.com/plataxi",
+    linkedin: "https://www.linkedin.com/company/plataxi",
+    youtube: "https://www.youtube.com/@plataxi",
   },
   /** Server-only: where app/api/application forwards the submitted application. */
   applicationEndpoint: read("APPLICATION_ENDPOINT", process.env.APPLICATION_ENDPOINT),
@@ -163,7 +163,7 @@ export const config = {
     termOptions: readNumList(process.env.NEXT_PUBLIC_SIM_TERM_OPTIONS, [3, 6, 9, 12, 18, 24]),
   },
 
-  /** --- Credit rate (interim — will come from Credalia dashboard API) --- */
+  /** --- Credit rate (interim — will come from Plataxi dashboard API) --- */
   credit: {
     /** Monthly interest rate as decimal (e.g. 0.026 = 2.6%). */
     monthlyRate: readNum(process.env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE, 0.026),
@@ -193,9 +193,9 @@ export const config = {
 
   /** --- Brand colors (CSS hex, used for manifest/theme-color) --- */
   colors: {
-    navy: readStr(process.env.NEXT_PUBLIC_COLOR_NAVY, "#0d2a5e"),
-    orange: readStr(process.env.NEXT_PUBLIC_COLOR_ORANGE, "#f5601b"),
-    green: readStr(process.env.NEXT_PUBLIC_COLOR_GREEN, "#1e9e55"),
+    navy: readStr(process.env.NEXT_PUBLIC_COLOR_NAVY, "#151515"),
+    orange: readStr(process.env.NEXT_PUBLIC_COLOR_ORANGE, "#ffdd00"),
+    green: readStr(process.env.NEXT_PUBLIC_COLOR_GREEN, "#ffdd00"),
   },
 
   /** --- Disbursement time claim (e.g. "24 horas"). Empty = no claim shown (compliance-safe). --- */
@@ -212,7 +212,7 @@ export const config = {
 if (
   process.env.NODE_ENV === "production" &&
   typeof window === "undefined" &&
-  process.env.NEXT_PUBLIC_CREDALIA_ALLOW_PLACEHOLDERS !== "true"
+  process.env.NEXT_PUBLIC_PLATAXI_ALLOW_PLACEHOLDERS !== "true"
 ) {
   assertProductionConfig();
 }
@@ -222,10 +222,10 @@ if (
   process.env.NODE_ENV === "production" &&
   typeof window !== "undefined" &&
   config.credit.monthlyRate === 0.026 &&
-  process.env.NEXT_PUBLIC_CREDALIA_ALLOW_PLACEHOLDERS !== "true"
+  process.env.NEXT_PUBLIC_PLATAXI_ALLOW_PLACEHOLDERS !== "true"
 ) {
   console.warn(
-    "⚠️ Credalia: running in production with the placeholder monthly rate (2.6%). " +
+    "⚠️ Plataxi: running in production with the placeholder monthly rate (2.6%). " +
     "Set NEXT_PUBLIC_CREDIT_MONTHLY_RATE to the real value."
   );
 }

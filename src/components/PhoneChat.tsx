@@ -231,7 +231,7 @@ export function PhoneChat() {
                 </svg>
               </div>
 
-              {/* Official Credalia Vector Logo in circle */}
+              {/* Official Plataxi Vector Logo in circle */}
               <div className="wa-avatar">
                 <svg viewBox="0 0 512 512" className="w-full h-full">
                   <defs>
@@ -322,7 +322,7 @@ export function PhoneChat() {
                   </div>
                 </div>
 
-                {/* ── GROUP 2: Credalia (Incoming Sequence) ────────── */}
+                {/* ── GROUP 2: Plataxi (Incoming Sequence) ────────── */}
                 {/* 2.1 First Message with Left Tail */}
                 <div data-wa-bubble className="wa-bubble wa-bubble-them wa-has-tail mt-1">
                   ¡Hola Laura! Te comparto el cálculo preliminar para tu crédito:
@@ -366,7 +366,7 @@ export function PhoneChat() {
                   </div>
                 </div>
 
-                {/* ── GROUP 4: Credalia (Incoming with Tail) ───────── */}
+                {/* ── GROUP 4: Plataxi (Incoming with Tail) ───────── */}
                 <div data-wa-bubble className="wa-bubble wa-bubble-them wa-has-tail mt-1">
                   Elige cómo prefieres continuar:
                   <div className="wa-meta">

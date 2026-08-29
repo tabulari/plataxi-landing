@@ -109,7 +109,7 @@ export function ApplyModal() {
   const stepDot = (i: number) =>
     cn(
       'flex items-center gap-1.5 text-sm font-semibold',
-      i === form.step ? 'text-navy' : i < form.step || form.submitStatus === 'success' ? 'text-green' : 'text-muted-2',
+      i === form.step ? 'text-navy' : i < form.step || form.submitStatus === 'success' ? 'text-ink' : 'text-muted-2',
     );
 
   return (

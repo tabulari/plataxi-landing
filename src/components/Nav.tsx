@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import Image from 'next/image';
 import { ApplyButton } from './ApplyButton';
 import { cn } from '@/lib/utils';
 import { config } from '@/lib/config';
-import { CloseIcon, HamburgerIcon } from './icons';
+import { CloseIcon, HamburgerIcon, BrandLogo } from './icons';
 
 const LINKS = [
   { href: '#simula', label: 'Simula tu crédito' },
@@ -148,15 +147,7 @@ export function Nav() {
           aria-label={`${config.brandName} — inicio`}
           className="flex items-center py-2 text-navy"
         >
-          <Image
-            src="/brand_Logo.svg"
-            alt=""
-            aria-hidden="true"
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="h-auto w-[240px]"
-          />
+          <BrandLogo height={34} />
         </a>
 
         <nav aria-label="Navegación principal" className="hidden md:flex items-center gap-6">

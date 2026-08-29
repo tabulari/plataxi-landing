@@ -15,25 +15,25 @@ interface RequirementItem {
 const REQUIREMENTS_DATA: RequirementItem[] = [
   {
     id: 'age',
-    icon: <PersonIcon size={22} className="text-green" />,
+    icon: <PersonIcon size={22} className="text-ink" />,
     title: 'Tener más de 18 años',
     detail: 'Vivir en Colombia.',
   },
   {
     id: 'id',
-    icon: <IdCardIcon size={22} className="text-green" />,
+    icon: <IdCardIcon size={22} className="text-ink" />,
     title: 'Cédula de ciudadanía',
     detail: 'Física o digital, que esté vigente.',
   },
   {
     id: 'bank',
-    icon: <CreditCardIcon size={22} className="text-green" />,
+    icon: <CreditCardIcon size={22} className="text-ink" />,
     title: 'Tu cuenta o Nequi',
     detail: 'A tu nombre, para enviarte el dinero.',
   },
   {
     id: 'income',
-    icon: <DocumentIcon size={22} className="text-green" />,
+    icon: <DocumentIcon size={22} className="text-ink" />,
     title: 'Soporte de ingresos',
     detail: 'Un extracto o colilla reciente.',
   },
@@ -95,7 +95,7 @@ export function Requirements() {
             id="req-heading"
             className="text-3xl sm:text-4xl lg:text-5xl font-display tracking-tight text-navy leading-[1.12]"
           >
-            Solo necesitas <span className="text-orange">4 cosas</span>
+            Solo necesitas <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">4 cosas</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground font-normal leading-relaxed max-w-lg mx-auto">
             Sin fiador ni papeleos. Puedes pedirlo desde tu celular en 5 minutos.
@@ -110,11 +110,11 @@ export function Requirements() {
               data-req="card"
               className="group rounded-2xl border border-border bg-card p-6 shadow-xs hover:shadow-md hover:border-green/40 hover:-translate-y-0.5 transition-all duration-200"
             >
-              <div className="w-11 h-11 rounded-xl bg-green-tint border border-green/20 flex items-center justify-center mb-4 group-hover:scale-105 group-hover:bg-green-ink group-hover:text-white transition-all duration-200">
-                <span className="group-hover:brightness-200 transition-all">{item.icon}</span>
+              <div className="w-11 h-11 rounded-xl bg-green border border-green/20 flex items-center justify-center mb-4 group-hover:scale-105 transition-all duration-200">
+                {item.icon}
               </div>
 
-              <h3 className="text-base sm:text-lg font-bold text-navy mb-1 group-hover:text-green-ink transition-colors">
+              <h3 className="text-base sm:text-lg font-bold text-navy mb-1">
                 {item.title}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">

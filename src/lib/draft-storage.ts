@@ -1,4 +1,4 @@
-const DRAFT_KEY = 'credalia_draft_v1';
+const DRAFT_KEY = 'plataxi_draft_v1';
 
 function encode(data: object): string {
   try {

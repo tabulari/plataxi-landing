@@ -34,7 +34,7 @@ const WAVES = {
 
 export function SectionDivider({
   from,
-  to = '#f7f9fa',
+  to = '#f7f7f5',
   amplitude = 'medium',
   flip = false,
   className = '',
@@ -44,7 +44,7 @@ export function SectionDivider({
   const secondaryWaveRef = useRef<SVGPathElement>(null);
   const { viewBox, d, dSecondary } = WAVES[amplitude];
 
-  const isDarkTo = to === '#0a2150' || to?.includes('0a2150') || to?.includes('042851');
+  const isDarkTo = to === '#151515' || to === '#0a0a0a' || to?.includes('151515') || to?.includes('0a0a0a');
 
   useGSAP(() => {
     if (typeof window === 'undefined') return;
@@ -104,7 +104,7 @@ export function SectionDivider({
         <path
           ref={secondaryWaveRef}
           d={dSecondary}
-          fill={isDarkTo ? '#1e9e55' : to}
+          fill={isDarkTo ? '#ffdd00' : to}
           opacity={isDarkTo ? '0.22' : '0.35'}
         />
         {/* Primary Solid Surface Wave */}
