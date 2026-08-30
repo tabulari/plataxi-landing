@@ -25,7 +25,9 @@ export function SimulateSection({ children }: { children: React.ReactNode }) {
           ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 80%',
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
           },
         },
       );
@@ -44,6 +46,8 @@ export function SimulateSection({ children }: { children: React.ReactNode }) {
           scrollTrigger: {
             trigger: cardRef.current,
             start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
           },
         },
       );

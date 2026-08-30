@@ -32,7 +32,12 @@ export function Faq() {
           autoAlpha: 1,
           duration: 0.6,
           ease: 'power3.out',
-          scrollTrigger: { trigger: leftCol, start: 'top 82%' },
+          scrollTrigger: {
+            trigger: leftCol,
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
         },
       );
     }
@@ -47,7 +52,12 @@ export function Faq() {
           stagger: 0.08,
           duration: 0.55,
           ease: 'power3.out',
-          scrollTrigger: { trigger: items[0], start: 'top 85%' },
+          scrollTrigger: {
+            trigger: items[0],
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
         },
       );
     }

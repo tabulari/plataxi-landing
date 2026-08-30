@@ -55,7 +55,12 @@ export function Requirements() {
           autoAlpha: 1,
           duration: 0.6,
           ease: 'power2.out',
-          scrollTrigger: { trigger: heading, start: 'top 85%' },
+          scrollTrigger: {
+            trigger: heading,
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
         },
       );
     }
@@ -70,7 +75,12 @@ export function Requirements() {
           scale: 1,
           duration: 0.6,
           ease: 'power2.out',
-          scrollTrigger: { trigger: containerRef.current, start: 'top 78%' },
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 82%',
+            end: 'bottom 18%',
+            toggleActions: 'play reverse play reverse',
+          },
         },
       );
     }
@@ -85,7 +95,12 @@ export function Requirements() {
           stagger: 0.08,
           duration: 0.5,
           ease: 'power3.out',
-          scrollTrigger: { trigger: containerRef.current, start: 'top 78%' },
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 82%',
+            end: 'bottom 18%',
+            toggleActions: 'play reverse play reverse',
+          },
         },
       );
     }

@@ -8,6 +8,7 @@ import { SiteUiProvider } from "@/components/site-ui";
 import { SimulatorProvider } from "@/components/simulator-store";
 import { RevealController } from "@/components/RevealController";
 import { GsapProvider } from "@/components/GsapProvider";
+import { PageLoader } from "@/components/PageLoader";
 import "./globals.css";
 
 // Roboto is the Plataxi typeface. Both CSS vars map to Roboto so existing
@@ -113,6 +114,7 @@ export default function RootLayout({
 
         <SiteUiProvider>
           <GsapProvider>
+            <PageLoader />
             <SimulatorProvider>{children}</SimulatorProvider>
           </GsapProvider>
         </SiteUiProvider>

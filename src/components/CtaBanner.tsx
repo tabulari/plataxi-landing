@@ -23,7 +23,12 @@ export function CtaBanner() {
 
     const tl = gsap.timeline({
       defaults: { ease: 'power3.out' },
-      scrollTrigger: { trigger: panel, start: 'top 85%' },
+      scrollTrigger: {
+        trigger: panel,
+        start: 'top 85%',
+        end: 'bottom 15%',
+        toggleActions: 'play reverse play reverse',
+      },
     });
 
     // 1. Panel entrance

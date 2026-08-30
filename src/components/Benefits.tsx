@@ -49,7 +49,12 @@ export function Benefits() {
           autoAlpha: 1,
           duration: 0.6,
           ease: 'power3.out',
-          scrollTrigger: { trigger: containerRef.current, start: 'top 80%' },
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
         },
       );
     }
@@ -66,7 +71,12 @@ export function Benefits() {
           stagger: 0.12,
           duration: 0.65,
           ease: 'power3.out',
-          scrollTrigger: { trigger: cards[0], start: 'top 85%' },
+          scrollTrigger: {
+            trigger: cards[0],
+            start: 'top 85%',
+            end: 'bottom 15%',
+            toggleActions: 'play reverse play reverse',
+          },
         },
       );
     }
