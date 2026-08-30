@@ -29,7 +29,15 @@ export function Hero() {
     const textItems = textColRef.current?.querySelectorAll('[data-hero-anim]');
     const imageContainer = imageColRef.current;
 
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+    const tl = gsap.timeline({
+      defaults: { ease: 'power3.out' },
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top 85%',
+        end: 'bottom 15%',
+        toggleActions: 'play reverse play reverse',
+      },
+    });
 
     if (textItems && textItems.length > 0) {
       tl.fromTo(
