@@ -141,7 +141,7 @@ export function Nav() {
           : 'bg-[#fffee9] shadow-none',
       )}
     >
-      <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 flex items-center justify-between h-[68px]">
+      <div className="mx-auto max-w-container px-6 flex items-center justify-between h-[68px]">
         <a
           href="#top"
           aria-label={`${config.brandName} — inicio`}

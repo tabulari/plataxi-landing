@@ -21,20 +21,20 @@ export function Hero() {
       className="relative overflow-hidden bg-[#fffee9]"
       style={{ minHeight: '70vh' }}
     >
-      {/* Grid con padding lateral sincronizado con el Navbar y distribución fluida 7/5 */}
+      {/* Grid centrado en max-w-container estilo Credalia */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-12 px-4 sm:px-6 lg:px-10 xl:px-14 max-w-[1536px] mx-auto gap-8 lg:gap-8 items-center"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto max-w-container px-6 py-12 lg:py-16"
         style={{ minHeight: 'inherit' }}
       >
-        {/* ── LEFT COLUMN: Texto amplio y contundente (7 cols) ── */}
-        <div className="lg:col-span-7 flex flex-col justify-center py-12 lg:py-16 xl:py-20 space-y-6 z-10 max-w-2xl">
+        {/* ── LEFT COLUMN ── */}
+        <div className="flex flex-col justify-center space-y-6 z-10 max-w-lg">
           <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink w-fit">
             Hecho para taxistas colombianos
           </span>
 
           <h1
             id="hero-heading"
-            className="text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-display font-black tracking-tight text-navy leading-[1.12]"
+            className="text-4xl sm:text-5xl lg:text-[3.25rem] font-display font-black tracking-tight text-navy leading-[1.12]"
           >
             Plata pa&apos;l día a día,<br />
             <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">
@@ -42,7 +42,7 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl font-normal">
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed font-normal">
             Sin nómina ni codeudor. Solicita desde el celular y recibe la plata el mismo día.
           </p>
 
@@ -94,10 +94,10 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: imagen integrada y conectada (5 cols) ── */}
-        <div className="lg:col-span-5 relative hidden lg:block h-[460px] xl:h-[520px] w-full">
+        {/* ── RIGHT COLUMN: imagen centrada e integrada ── */}
+        <div className="relative hidden lg:block h-[460px] xl:h-[500px] w-full">
           <div
-            className="absolute inset-0 shadow-2xl rounded-2xl overflow-hidden"
+            className="absolute inset-0 shadow-2xl rounded-3xl overflow-hidden"
             style={{ clipPath: CLIP }}
           >
             <Image

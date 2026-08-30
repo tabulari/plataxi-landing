@@ -6,7 +6,7 @@ import { PlataxiWordmark } from './icons';
 export function Footer() {
   return (
     <footer data-slot="footer" className="bg-gradient-to-b from-[#151515] to-[#0a0a0a] text-white border-t border-white/10">
-      <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 pt-12 pb-10 lg:pt-16 lg:pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+      <div className="mx-auto max-w-container px-6 pt-12 pb-10 lg:pt-16 lg:pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
         {/* Brand & Social */}
         <div className="sm:col-span-2 flex flex-col justify-between space-y-5">
           <div className="space-y-3">
@@ -77,7 +77,7 @@ export function Footer() {
 
       {/* Single Unified Compliance Bar */}
       <div className="border-t border-white/10">
-        <div className="w-full max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 xl:px-14 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55 text-center sm:text-left">
+        <div className="mx-auto max-w-container px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55 text-center sm:text-left">
           <p>© {new Date().getFullYear()} {config.brandName}. Todos los derechos reservados.</p>
           <p>Sujeto a la Ley 1581 de 2012 (Habeas Data).</p>
         </div>
