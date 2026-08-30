@@ -23,7 +23,12 @@ export function CtaBanner() {
 
     const tl = gsap.timeline({
       defaults: { ease: 'power3.out' },
-      scrollTrigger: { trigger: panel, start: 'top 85%' },
+      scrollTrigger: {
+        trigger: panel,
+        start: 'top 85%',
+        end: 'bottom 15%',
+        toggleActions: 'play reverse play reverse',
+      },
     });
 
     // 1. Panel entrance
@@ -61,7 +66,7 @@ export function CtaBanner() {
       ref={containerRef}
       id="cta"
       aria-labelledby="cta-heading"
-      className="bg-navy-deep text-white py-16 lg:py-24 relative z-10 -mt-2 overflow-hidden"
+      className="bg-[#151515] text-white py-16 lg:py-24 relative z-10 -mt-2 overflow-hidden"
     >
       {/* Background Dot-Grid Texture */}
       <div
@@ -83,15 +88,15 @@ export function CtaBanner() {
         <div
           ref={panelRef}
           data-cta="panel"
-          className="relative flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-14 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-8 sm:p-10 lg:p-14 backdrop-blur-xl shadow-2xl overflow-hidden"
+          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-10 sm:p-12 lg:p-16 backdrop-blur-xl shadow-2xl overflow-hidden"
         >
           <span className="cta-sheen" aria-hidden="true" />
 
           {/* Left Column: Pure, Saturated Value Anchor */}
-          <div className="flex-1 min-w-0 relative space-y-3 text-left">
+          <div className="flex-1 min-w-0 relative space-y-5 text-left">
             <p
               data-cta="eyebrow"
-              className="text-xs font-semibold uppercase tracking-widest text-green-bright"
+              className="text-xs font-semibold uppercase tracking-widest text-green"
             >
               Comienza ahora
             </p>
@@ -99,10 +104,10 @@ export function CtaBanner() {
             <h2
               id="cta-heading"
               data-cta="heading"
-              className="text-3xl sm:text-4xl lg:text-[42px] font-display tracking-tight text-white leading-[1.15]"
+              className="text-3xl sm:text-4xl lg:text-[42px] font-display tracking-tight text-white leading-[1.15] mb-2"
             >
               Tu dinero en minutos, <br className="hidden sm:inline" />
-              <span className="text-orange">sin fiador ni trámites.</span>
+              <mark className="bg-green text-ink rounded-sm px-1" style={{background:'#ffdd00',color:'#151515',padding:'0 0.2em'}}>sin fiador ni trámites.</mark>
             </h2>
 
             <p
@@ -122,7 +127,7 @@ export function CtaBanner() {
             <ApplyButton
               origin="cta_banner"
               size="lg"
-              className="w-full min-h-[54px] h-14 bg-white text-navy-deep font-bold shadow-[0_12px_28px_-6px_rgba(255,255,255,0.2),0_8px_10px_-6px_rgba(0,0,0,0.4)] ring-1 ring-white/80 hover:bg-white/95 hover:scale-[1.01] active:scale-[0.98] transition-all text-base rounded-2xl border-0 flex items-center justify-center gap-2"
+              className="w-full min-h-[54px] h-14 bg-green text-ink font-bold shadow-[0_12px_28px_-6px_rgba(255,221,0,0.35),0_8px_10px_-6px_rgba(0,0,0,0.4)] hover:bg-green-bright hover:scale-[1.01] active:scale-[0.98] transition-all text-base rounded-2xl border-0 flex items-center justify-center gap-2"
             >
               <span>Solicitar crédito</span>
             </ApplyButton>

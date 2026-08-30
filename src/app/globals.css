@@ -5,45 +5,48 @@
 /* ===== design tokens (ShadCN semantic vars mapped to brand colors) ===== */
 @layer base {
   :root {
-    /* Brand palette */
-    --navy: #0d2a5e;
-    --navy-deep: #0a2150;
-    --navy-ink: #11213f;
-    --orange: #f5601b;
-    --orange-ink: #c2440a; /* darker orange for AA text contrast on light tints */
-    --green: #1e9e55;
-    --green-bright: #2bbd6a; /* brighter green for AA contrast on dark/navy surfaces */
-    --green-ink: #15793f;
-    --green-soft: #e8f2dd;
-    --green-soft-ink: #137038;
-    --green-tint: #e7faf4;
-    --ink: #14213d;
-    --muted-2: #677085; /* tertiary / labels — AA 4.5:1 on white & soft */
-    --bg-soft: #f7f9fa;
-    --border-2: #eef1f4;
+    /* Brand palette — Plataxi mono-accent (yellow #FFDD00 + neutrals).
+       Token NAMES are kept (navy/orange/green) so ~28 downstream files keep
+       working; only VALUES changed. Yellow is a fill/highlight color — text on
+       it must be dark (#151515), never white or yellow. */
+    --navy: #151515;        /* structure / dark ink (was navy) */
+    --navy-deep: #0a0a0a;
+    --navy-ink: #151515;
+    --orange: #ffdd00;      /* folded into the single yellow accent */
+    --orange-ink: #151515;  /* readable text on light tints */
+    --green: #ffdd00;       /* PRIMARY ACCENT — yellow fill/highlight */
+    --green-bright: #ffe84d; /* lighter yellow for hover/glow */
+    --green-ink: #151515;   /* was a readable green text color → now dark */
+    --green-soft: #fffbe0;  /* pale-yellow tint surface */
+    --green-soft-ink: #151515;
+    --green-tint: #fffee9;  /* cream */
+    --ink: #151515;
+    --muted-2: #797979;     /* tertiary / labels */
+    --bg-soft: #f7f7f5;
+    --border-2: #ececec;
     --error: #c5392c;
-    --hint-ink: #9a4a16;
-    --hint-bg: #fff4ed;
+    --hint-ink: #8a6d00;    /* dark gold for warning text on light tint */
+    --hint-bg: #fffbe0;
 
     /* Semantic surface tokens */
     --surface-primary: #ffffff;
-    --surface-secondary: #f7f9fa;
-    --surface-tertiary: #f0f4f8;
-    --surface-dark: #0d2a5e;
-    --surface-dark-card: #11213f;
+    --surface-secondary: #f7f7f5;
+    --surface-tertiary: #fffee9;
+    --surface-dark: #151515;
+    --surface-dark-card: #1f1f1f;
 
     /* Semantic text tokens */
-    --text-primary: #14213d;
-    --text-secondary: #5d6b82;
-    --text-muted: #677085;
+    --text-primary: #151515;
+    --text-secondary: #5a5a5a;
+    --text-muted: #797979;
     --text-inverse: #ffffff;
 
     /* Semantic brand tokens */
-    --brand-primary: #0d2a5e;
-    --brand-accent: #1e9e55;
-    --brand-orange: #f5601b;
+    --brand-primary: #151515;
+    --brand-accent: #ffdd00;
+    --brand-orange: #ffdd00;
 
-    /* Semantic status tokens */
+    /* Semantic status tokens (success stays green — functional, not brand) */
     --status-success: #1e9e55;
     --status-success-bg: #e7faf4;
     --status-success-text: #137038;
@@ -59,24 +62,24 @@
 
     /* ShadCN semantic tokens */
     --background: #ffffff;
-    --foreground: #14213d;
+    --foreground: #151515;
     --card: #ffffff;
-    --card-foreground: #14213d;
+    --card-foreground: #151515;
     --popover: #ffffff;
-    --popover-foreground: #14213d;
-    --primary: #0d2a5e;
+    --popover-foreground: #151515;
+    --primary: #151515;
     --primary-foreground: #ffffff;
-    --secondary: #f7f9fa;
-    --secondary-foreground: #14213d;
-    --muted: #f7f9fa;
-    --muted-foreground: #5d6b82;
-    --accent: #e8f2dd;
-    --accent-foreground: #15793f;
+    --secondary: #f7f7f5;
+    --secondary-foreground: #151515;
+    --muted: #f7f7f5;
+    --muted-foreground: #5a5a5a;
+    --accent: #fffbe0;
+    --accent-foreground: #151515;
     --destructive: #d4483b;
     --destructive-foreground: #ffffff;
-    --border: #e5e9ee;
-    --input: #e5e9ee;
-    --ring: #1e9e55;
+    --border: #e6e6e3;
+    --input: #e6e6e3;
+    --ring: #151515;
     --radius: 0.75rem;
   }
 
@@ -88,7 +91,7 @@
   html {
     scroll-behavior: smooth;
     scroll-padding-top: 68px;
-    font-family: var(--font-jakarta), 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+    font-family: var(--font-jakarta), 'Roboto', Inter, system-ui, sans-serif;
   }
 
   body {
@@ -179,12 +182,21 @@
   [role='radio']:focus-visible,
   [data-slot='button']:focus-visible,
   [data-slot='accordion-trigger']:focus-visible,
+  summary:focus-visible {
+    outline: 2px solid #151515 !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Form inputs focus state: clean, vibrant brand yellow without black outer ring */
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible,
-  summary:focus-visible {
-    outline: 2px solid #1e9e55 !important;
-    outline-offset: 2px !important;
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none !important;
+    border-color: #ffdd00 !important;
+    box-shadow: 0 0 0 3px rgba(255, 221, 0, 0.35) !important;
   }
 }
 
@@ -373,9 +385,9 @@ a:focus-visible {
 }
 .hero-atmosphere {
   background:
-    radial-gradient(ellipse 60% 70% at 20% 50%, rgba(13,42,94,0.04), transparent),
-    radial-gradient(ellipse 50% 60% at 75% 55%, rgba(30,158,85,0.03), transparent),
-    radial-gradient(ellipse 40% 50% at 30% 70%, rgba(245,96,27,0.015), transparent),
+    radial-gradient(ellipse 60% 70% at 20% 50%, rgba(21,21,21,0.035), transparent),
+    radial-gradient(ellipse 50% 60% at 75% 55%, rgba(255,221,0,0.14), transparent),
+    radial-gradient(ellipse 40% 50% at 30% 70%, rgba(255,221,0,0.06), transparent),
     #ffffff;
 }
 
@@ -413,16 +425,16 @@ a:focus-visible {
   background: var(--bg-soft);
 }
 .chip:focus-visible {
-  outline: 2px solid var(--green);
+  outline: 2px solid #151515;
   outline-offset: 2px;
 }
 .chip .ck { display: none; line-height: 0; }
 .chip.active {
   background: var(--green-soft);
   border-color: var(--green);
-  color: #137038;
+  color: #151515;
   font-weight: 700;
-  box-shadow: inset 0 0 0 1px var(--green), 0 0 8px rgba(30,158,85,0.15);
+  box-shadow: inset 0 0 0 1.5px var(--green), 0 0 10px rgba(255,221,0,0.45);
 }
 .chip.active .ck { display: inline-flex; }
 
@@ -460,7 +472,7 @@ a:focus-visible {
   opacity: 0.5;
 }
 .cta-glow--green {
-  background: radial-gradient(circle, rgba(43, 189, 106, 0.5), rgba(43, 189, 106, 0) 70%);
+  background: radial-gradient(circle, rgba(255, 221, 0, 0.6), rgba(255, 221, 0, 0) 70%);
 }
 /* One-shot sheen that sweeps across the panel ring on entrance (driven by GSAP) */
 .cta-sheen {
@@ -501,8 +513,8 @@ a:focus-visible {
     135deg,
     rgba(255, 255, 255, 0.25) 0%,
     rgba(255, 255, 255, 0.05) 40%,
-    rgba(30, 158, 85, 0.2) 70%,
-    rgba(245, 96, 27, 0.15) 100%
+    rgba(255, 221, 0, 0.28) 70%,
+    rgba(255, 221, 0, 0.14) 100%
   );
 }
 

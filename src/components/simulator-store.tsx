@@ -20,7 +20,7 @@ import {
 } from "@/lib/rates-config";
 
 /**
- * Shared simulator store (ported from the prototype's window.Credalia bridge).
+ * Shared simulator store (ported from the prototype's window.Plataxi bridge).
  * `useSimulator()` is the single source of truth read by the Simulator island,
  * the sticky payment bar, the apply modal (which freezes a snapshot on open),
  * the resume nudge, and the WhatsApp links.

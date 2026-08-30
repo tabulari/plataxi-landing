@@ -2,6 +2,7 @@ import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { SimulateSection } from "@/components/SimulateSection";
 import { Simulator } from "@/components/Simulator";
+import { Benefits } from "@/components/Benefits";
 import { Requirements } from "@/components/Requirements";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Faq } from "@/components/Faq";
@@ -15,23 +16,38 @@ export default function Home() {
     <>
       <Nav />
       <main>
+        {/* 1. Hero — split layout, yellow accents, stats */}
         <Hero />
-        <SectionDivider amplitude="soft" from="#ffffff" to="#f7f9fa" />
+
+        {/* 2. Simulador de crédito (preserved intact) */}
+        <SectionDivider amplitude="soft" from="#fffee9" to="#ffffff" />
         <SimulateSection>
           <Simulator />
         </SimulateSection>
-        <SectionDivider amplitude="soft" from="#f7f9fa" to="#ffffff" />
+
+        {/* 3. Beneficios — 3-up cards (inDrive-style) */}
+        <SectionDivider amplitude="soft" from="#ffffff" to="#fffee9" />
+        <Benefits />
+
+        {/* 4. Requisitos — 2×2 grid */}
+        <SectionDivider amplitude="soft" from="#fffee9" to="#ffffff" />
         <Requirements />
-        <SectionDivider amplitude="medium" from="#ffffff" to="#e8f2dd" />
+
+        {/* 5. Cómo funciona — numbered journey */}
+        <SectionDivider amplitude="medium" from="#ffffff" to="#fffee9" />
         <HowItWorks />
-        <SectionDivider amplitude="medium" from="#e8f2dd" to="#ffffff" />
+
+        {/* 6. FAQ — 2-column accordion */}
+        <SectionDivider amplitude="soft" from="#fffee9" to="#ffffff" />
         <Faq />
-        <SectionDivider amplitude="bold" from="#ffffff" to="#0a2150" />
+
+        {/* 8. CTA final — yellow banner */}
+        <SectionDivider amplitude="bold" from="#fffee9" to="#151515" />
         <CtaBanner />
       </main>
       <Footer />
 
-      {/* landing-only overlays */}
+      {/* landing-only overlays (sticky bar, resume nudge, apply modal) */}
       <LandingOverlays />
     </>
   );

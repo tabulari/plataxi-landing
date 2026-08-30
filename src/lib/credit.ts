@@ -1,5 +1,5 @@
 /**
- * Credalia — isolated credit logic (PURE).
+ * Plataxi — isolated credit logic (PURE).
  *
  * Ported verbatim from the design prototype `app.js` (sections 1 & 2). All
  * credit math + eligibility rules live here and nowhere else, so the real

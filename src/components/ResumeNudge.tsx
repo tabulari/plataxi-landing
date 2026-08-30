@@ -36,7 +36,7 @@ export function ResumeNudge() {
           show ? 'translate-y-0' : 'translate-y-[140%]',
         )}
       >
-        <span className="shrink-0 flex items-center justify-center w-10 h-10 rounded-[11px] bg-green-tint text-green" aria-hidden="true">
+        <span className="shrink-0 flex items-center justify-center w-10 h-10 rounded-[11px] bg-green text-ink" aria-hidden="true">
           <ReturnArrowIcon size={20} />
         </span>
         <div className="flex flex-col gap-0.5 min-w-0 flex-1">

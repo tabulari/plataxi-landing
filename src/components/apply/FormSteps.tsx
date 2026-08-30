@@ -247,7 +247,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
 
           <div className="flex-1 overflow-y-auto py-3 space-y-2.5 text-xs text-muted-foreground leading-relaxed pr-1">
             <p>
-              <strong className="text-navy font-semibold">1. Marco Legal:</strong> Credalia trata sus datos personales de acuerdo con la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 y demás normas que la modifiquen o complementen.
+              <strong className="text-navy font-semibold">1. Marco Legal:</strong> Plataxi trata sus datos personales de acuerdo con la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 y demás normas que la modifiquen o complementen.
             </p>
             <p>
               <strong className="text-navy font-semibold">2. Finalidad del Tratamiento:</strong> Los datos recolectados se utilizarán exclusivamente para: (i) validar su identidad, (ii) evaluar el perfil crediticio y capacidad de pago, (iii) gestionar el desembolso a la cuenta indicada, y (iv) prevenir el fraude y suplantación de identidad.

@@ -2,8 +2,6 @@ import { config } from "@/lib/config";
 import { fmtCOP } from "@/lib/credit";
 import { FAQS } from "@/lib/faqs";
 
-const BRAND_ASSET_VERSION = '3ef966e';
-
 /**
  * JSON-LD structured data (ported from the prototype <head>): FinancialService
  * + FAQPage (eligible for Google rich results). URLs/telephone/address are
@@ -20,7 +18,7 @@ export function StructuredData() {
     description:
       `Crédito digital en Colombia hasta $${fmtCOP(config.simulator.amountMax).replace(',00','')}. Respuesta en minutos, tasa clara y sin papeles. Simula tu cuota y solicita 100% en línea.`,
     url: `${base}/`,
-    logo: `${base}/credalia-logo.svg?v=${BRAND_ASSET_VERSION}`,
+    logo: `${base}/plataxi-logo.jpeg`,
     image: `${base}/og-image.png`,
     areaServed: { "@type": "Country", name: "Colombia" },
     currenciesAccepted: "COP",

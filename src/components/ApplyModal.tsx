@@ -109,7 +109,7 @@ export function ApplyModal() {
   const stepDot = (i: number) =>
     cn(
       'flex items-center gap-1.5 text-sm font-semibold',
-      i === form.step ? 'text-navy' : i < form.step || form.submitStatus === 'success' ? 'text-green' : 'text-muted-2',
+      i === form.step ? 'text-navy' : i < form.step || form.submitStatus === 'success' ? 'text-ink' : 'text-muted-2',
     );
 
   return (
@@ -227,6 +227,7 @@ export function ApplyModal() {
                   size="default"
                   disabled={form.submitStatus === 'pending'}
                   onClick={() => form.onNext(frozen)}
+                  className="bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40"
                 >
                   {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
                     : form.step === 3 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)

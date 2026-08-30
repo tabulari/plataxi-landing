@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Plus_Jakarta_Sans, DM_Serif_Display } from "next/font/google";
+import { Roboto } from "next/font/google";
 import Script from "next/script";
 import { config } from "@/lib/config";
 import { fmtCOP } from "@/lib/credit";
@@ -10,16 +10,18 @@ import { RevealController } from "@/components/RevealController";
 import { GsapProvider } from "@/components/GsapProvider";
 import "./globals.css";
 
-const jakarta = Plus_Jakarta_Sans({
+// Roboto is the Plataxi typeface. Both CSS vars map to Roboto so existing
+// `font-sans` / `font-display` usages keep working (display = heavy weights).
+const jakarta = Roboto({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
+  weight: ["300", "400", "500", "700", "900"],
   variable: "--font-jakarta",
   display: "swap",
 });
 
-const display = DM_Serif_Display({
+const display = Roboto({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["700", "900"],
   variable: "--font-display",
   display: "swap",
 });
