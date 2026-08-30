@@ -21,32 +21,33 @@ export function Faq() {
     if (reduceMotion) return;
 
     const leftCol = containerRef.current?.querySelector('[data-faq="left"]');
-    const rightCol = containerRef.current?.querySelector('[data-faq="right"]');
+    const items = containerRef.current?.querySelectorAll('[data-faq="item"]');
 
     if (leftCol) {
       gsap.fromTo(
         leftCol,
-        { y: 24, autoAlpha: 0 },
-        {
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.5,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: leftCol, start: 'top 85%' },
-        },
-      );
-    }
-
-    if (rightCol) {
-      gsap.fromTo(
-        rightCol,
         { y: 28, autoAlpha: 0 },
         {
           y: 0,
           autoAlpha: 1,
+          duration: 0.6,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: leftCol, start: 'top 82%' },
+        },
+      );
+    }
+
+    if (items && items.length) {
+      gsap.fromTo(
+        items,
+        { y: 24, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          stagger: 0.08,
           duration: 0.55,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: rightCol, start: 'top 85%' },
+          ease: 'power3.out',
+          scrollTrigger: { trigger: items[0], start: 'top 85%' },
         },
       );
     }

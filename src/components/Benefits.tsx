@@ -34,21 +34,39 @@ const BENEFITS: Benefit[] = [
 
 export function Benefits() {
   const containerRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
 
   useGSAP(() => {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
+
+    if (headerRef.current) {
+      gsap.fromTo(
+        headerRef.current,
+        { y: 24, autoAlpha: 0 },
+        {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.6,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: containerRef.current, start: 'top 80%' },
+        },
+      );
+    }
+
     const cards = containerRef.current?.querySelectorAll('[data-benefit="card"]');
     if (cards?.length) {
       gsap.fromTo(
         cards,
-        { y: 28, autoAlpha: 0 },
+        { y: 36, scale: 0.96, autoAlpha: 0 },
         {
-          y: 0, autoAlpha: 1,
-          stagger: 0.1,
-          duration: 0.55,
+          y: 0,
+          scale: 1,
+          autoAlpha: 1,
+          stagger: 0.12,
+          duration: 0.65,
           ease: 'power3.out',
-          scrollTrigger: { trigger: containerRef.current, start: 'top 78%' },
+          scrollTrigger: { trigger: cards[0], start: 'top 85%' },
         },
       );
     }
@@ -62,7 +80,7 @@ export function Benefits() {
       className="py-16 sm:py-20 lg:py-24 bg-[#fffee9]"
     >
       <div className="mx-auto max-w-container px-6">
-        <div className="max-w-xl mx-auto text-center mb-12 space-y-2">
+        <div ref={headerRef} className="max-w-xl mx-auto text-center mb-12 space-y-2">
           <p className="text-xs font-bold uppercase tracking-widest text-muted-2">
             Beneficios
           </p>
