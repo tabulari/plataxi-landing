@@ -11,8 +11,8 @@ const STATS: { value: string; label: string }[] = [
   { value: '100%', label: 'En línea' },
 ];
 
-// Clip-path inDrive: escalón sup-izq e inf-der. Notch reducido a 20% para acercar la imagen al texto.
-const CLIP = 'polygon(20% 0%, 100% 0%, 100% 80%, 80% 80%, 80% 100%, 0% 100%, 0% 20%, 20% 20%)';
+// Clip-path inDrive: escalón sup-izq e inf-der estilizado y compacto (10%) para acercar la imagen al texto.
+const CLIP = 'polygon(10% 0%, 100% 0%, 100% 90%, 90% 90%, 90% 100%, 0% 100%, 0% 10%, 10% 10%)';
 
 export function Hero() {
   return (
@@ -21,20 +21,20 @@ export function Hero() {
       className="relative overflow-hidden bg-[#fffee9]"
       style={{ minHeight: '70vh' }}
     >
-      {/* Grid con padding lateral sincronizado con el Navbar */}
+      {/* Grid con padding lateral sincronizado con el Navbar y distribución fluida 7/5 */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-2 px-4 sm:px-6 lg:px-10 xl:px-14 max-w-[1536px] mx-auto gap-x-0"
+        className="grid grid-cols-1 lg:grid-cols-12 px-4 sm:px-6 lg:px-10 xl:px-14 max-w-[1536px] mx-auto gap-8 lg:gap-8 items-center"
         style={{ minHeight: 'inherit' }}
       >
-        {/* ── LEFT COLUMN ── */}
-        <div className="flex flex-col justify-center px-2 sm:px-4 lg:pl-0 lg:pr-12 xl:pr-16 py-12 lg:pt-[190px] lg:pb-20 space-y-6 z-10">
+        {/* ── LEFT COLUMN: Texto amplio y contundente (7 cols) ── */}
+        <div className="lg:col-span-7 flex flex-col justify-center py-12 lg:py-16 xl:py-20 space-y-6 z-10 max-w-2xl">
           <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink w-fit">
             Hecho para taxistas colombianos
           </span>
 
           <h1
             id="hero-heading"
-            className="text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-6xl font-display font-black tracking-tight text-navy leading-[1.15]"
+            className="text-4xl sm:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] font-display font-black tracking-tight text-navy leading-[1.12]"
           >
             Plata pa&apos;l día a día,<br />
             <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">
@@ -42,7 +42,7 @@ export function Hero() {
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-md font-normal">
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-xl font-normal">
             Sin nómina ni codeudor. Solicita desde el celular y recibe la plata el mismo día.
           </p>
 
@@ -94,10 +94,10 @@ export function Hero() {
           </div>
         </div>
 
-        {/* ── RIGHT COLUMN: imagen llena la mitad derecha con clip-path ── */}
-        <div className="relative hidden lg:block">
+        {/* ── RIGHT COLUMN: imagen integrada y conectada (5 cols) ── */}
+        <div className="lg:col-span-5 relative hidden lg:block h-[460px] xl:h-[520px] w-full">
           <div
-            className="absolute top-8 xl:top-12 bottom-0 left-0 right-6 lg:right-10 xl:right-14"
+            className="absolute inset-0 shadow-2xl rounded-2xl overflow-hidden"
             style={{ clipPath: CLIP }}
           >
             <Image
@@ -105,17 +105,17 @@ export function Hero() {
               alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
               fill
               className="object-cover"
-              style={{ objectPosition: '75% center' }}
+              style={{ objectPosition: '70% center' }}
               priority
             />
           </div>
         </div>
 
         {/* ── MOBILE: imagen debajo del texto ── */}
-        <div className="relative lg:hidden h-[280px] sm:h-[360px] overflow-hidden">
+        <div className="relative lg:hidden h-[280px] sm:h-[360px] overflow-hidden mt-2">
           <div
             className="absolute inset-0"
-            style={{ clipPath: 'polygon(0% 0%, 82% 0%, 82% 18%, 100% 18%, 100% 100%, 0% 100%)' }}
+            style={{ clipPath: 'polygon(0% 0%, 88% 0%, 88% 12%, 100% 12%, 100% 100%, 0% 100%)' }}
           >
             <Image
               src="/taxista.jpeg"
