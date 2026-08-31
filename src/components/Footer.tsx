@@ -5,7 +5,7 @@ import { PlataxiWordmark } from './icons';
 
 export function Footer() {
   return (
-    <footer data-slot="footer" className="bg-gradient-to-b from-[#151515] to-[#0a0a0a] text-white border-t border-white/10">
+    <footer data-slot="footer" className="bg-gradient-to-b from-primary-dark to-[#0a0a0a] text-white border-t border-white/10">
       <div className="mx-auto max-w-container px-6 pt-12 pb-10 lg:pt-16 lg:pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
         {/* Brand & Social */}
         <div className="sm:col-span-2 flex flex-col justify-between space-y-5">

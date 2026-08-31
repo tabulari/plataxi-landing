@@ -153,7 +153,7 @@ export function Requirements() {
                 data-req="card"
                 className="group flex items-center gap-4 rounded-2xl border border-neutral-100 bg-white p-4 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-green/50 hover:-translate-y-0.5 transition-all duration-200"
               >
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#fff8e6] border border-[#ffdd00]/30 flex items-center justify-center flex-shrink-0 text-navy group-hover:bg-green transition-colors duration-200">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-secondary-surface border border-primary-brand/30 flex items-center justify-center flex-shrink-0 text-navy group-hover:bg-primary-brand transition-colors duration-200">
                   <CheckIcon size={20} className="text-navy stroke-[3]" />
                 </div>
 

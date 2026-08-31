@@ -51,24 +51,24 @@ export function PlataxiLogo({
   ariaLabel = 'Plataxi',
 }: PlataxiLogoProps) {
   // Resolve colors based on variant
-  let isotypeColor = '#151515';
-  let textColor = '#151515';
-  let taglineColor = '#151515';
+  let isotypeColor = '#111110';
+  let textColor = '#111110';
+  let taglineColor = '#111110';
 
   if (variant === 'white') {
     isotypeColor = '#ffffff';
     textColor = '#ffffff';
     taglineColor = '#ffffff';
   } else if (variant === 'color') {
-    isotypeColor = '#ffdd00';
-    textColor = '#151515';
-    taglineColor = '#151515';
+    isotypeColor = '#f5e15b';
+    textColor = '#111110';
+    taglineColor = '#111110';
   } else if (variant === 'yellow') {
-    isotypeColor = '#ffdd00';
-    textColor = '#ffdd00';
-    taglineColor = '#ffdd00';
+    isotypeColor = '#f5e15b';
+    textColor = '#f5e15b';
+    taglineColor = '#f5e15b';
   } else if (variant === 'yellow-white') {
-    isotypeColor = '#ffdd00';
+    isotypeColor = '#f5e15b';
     textColor = '#ffffff';
     taglineColor = '#ffffff';
   }

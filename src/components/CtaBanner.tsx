@@ -66,7 +66,7 @@ export function CtaBanner() {
       ref={containerRef}
       id="cta"
       aria-labelledby="cta-heading"
-      className="bg-[#151515] text-white py-16 lg:py-24 relative z-10 -mt-2 overflow-hidden"
+      className="bg-primary-dark text-white py-16 lg:py-24 relative z-10 -mt-2 overflow-hidden"
     >
       {/* Background Dot-Grid Texture */}
       <div
@@ -107,7 +107,7 @@ export function CtaBanner() {
               className="text-3xl sm:text-4xl lg:text-[42px] font-display tracking-tight text-white leading-[1.15] mb-2"
             >
               Tu dinero en minutos, <br className="hidden sm:inline" />
-              <mark className="bg-green text-ink rounded-sm px-1" style={{background:'#ffdd00',color:'#151515',padding:'0 0.2em'}}>sin fiador ni trámites.</mark>
+              <mark className="bg-primary-brand text-primary-dark rounded-sm px-1" style={{background:'#f5e15b',color:'#111110',padding:'0 0.2em'}}>sin fiador ni trámites.</mark>
             </h2>
 
             <p

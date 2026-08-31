@@ -68,8 +68,8 @@ export function HowItWorks() {
           scale: 1.03,
           rotateX: -2,
           autoAlpha: 1,
-          borderColor: '#ffdd00',
-          boxShadow: '0 24px 48px -10px rgba(255,221,0,0.20)',
+          borderColor: '#f5e15b',
+          boxShadow: '0 24px 48px -10px rgba(245,225,91,0.20)',
           duration: 0.25,
           ease: 'power2.out',
         },
@@ -77,7 +77,7 @@ export function HowItWorks() {
       );
     }
     if (badges && badges[0]) {
-      tl.to(badges[0], { scale: 1.1, backgroundColor: '#ffdd00', color: '#151515', borderColor: '#ffdd00', duration: 0.15 }, 0.2);
+      tl.to(badges[0], { scale: 1.1, backgroundColor: '#f5e15b', color: '#111110', borderColor: '#f5e15b', duration: 0.15 }, 0.2);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -114,8 +114,8 @@ export function HowItWorks() {
           scale: 1.03,
           rotateX: -2,
           autoAlpha: 1,
-          borderColor: '#ffdd00',
-          boxShadow: '0 24px 48px -10px rgba(255,221,0,0.20)',
+          borderColor: '#f5e15b',
+          boxShadow: '0 24px 48px -10px rgba(245,225,91,0.20)',
           duration: 0.25,
           ease: 'power2.out',
         },
@@ -123,7 +123,7 @@ export function HowItWorks() {
       );
     }
     if (badges && badges[1]) {
-      tl.to(badges[1], { scale: 1.1, backgroundColor: '#ffdd00', color: '#151515', borderColor: '#ffdd00', duration: 0.15 }, 0.5);
+      tl.to(badges[1], { scale: 1.1, backgroundColor: '#f5e15b', color: '#111110', borderColor: '#f5e15b', duration: 0.15 }, 0.5);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -160,8 +160,8 @@ export function HowItWorks() {
           scale: 1.04,
           rotateX: -2,
           autoAlpha: 1,
-          borderColor: '#ffdd00',
-          boxShadow: '0 28px 55px -10px rgba(255,221,0,0.25)',
+          borderColor: '#f5e15b',
+          boxShadow: '0 28px 55px -10px rgba(245,225,91,0.25)',
           duration: 0.25,
           ease: 'power2.out',
         },
@@ -169,7 +169,7 @@ export function HowItWorks() {
       );
     }
     if (badges && badges[2]) {
-      tl.to(badges[2], { scale: 1.15, backgroundColor: '#ffdd00', color: '#151515', borderColor: '#ffdd00', duration: 0.15 }, 0.78);
+      tl.to(badges[2], { scale: 1.15, backgroundColor: '#f5e15b', color: '#111110', borderColor: '#f5e15b', duration: 0.15 }, 0.78);
     }
 
     // 04: CTA Reveal
@@ -187,7 +187,7 @@ export function HowItWorks() {
     gsap.to(card, {
       y: -10,
       scale: 1.02,
-      borderColor: '#ffdd00',
+      borderColor: '#f5e15b',
       boxShadow: '0 25px 50px -12px rgba(13, 42, 94, 0.14)',
       duration: 0.3,
       ease: 'power2.out',
@@ -235,7 +235,7 @@ export function HowItWorks() {
       ref={containerRef}
       id="como-funciona"
       aria-labelledby="hiw-heading"
-      className="py-14 sm:py-16 lg:py-20 bg-[#fffee9] relative overflow-hidden"
+      className="py-14 sm:py-16 lg:py-20 bg-white relative overflow-hidden"
     >
       <div className="mx-auto max-w-container px-6">
         {/* Section Header: Seamless Scale & Hierarchy */}
@@ -274,7 +274,7 @@ export function HowItWorks() {
             />
             <div
               ref={pulseOrbRef}
-              className="absolute -top-[5.5px] w-3.5 h-3.5 -ml-[7px] rounded-full bg-green border-2 border-white shadow-[0_0_14px_#ffdd00] z-20 will-change-transform"
+              className="absolute -top-[5.5px] w-3.5 h-3.5 -ml-[7px] rounded-full bg-green border-2 border-white shadow-[0_0_14px_#f5e15b] z-20 will-change-transform"
             />
           </div>
 
@@ -289,7 +289,7 @@ export function HowItWorks() {
             />
             <div
               ref={mobilePulseOrbRef}
-              className="absolute -left-[5.5px] w-3.5 h-3.5 -mt-[7px] rounded-full bg-green border-2 border-white shadow-[0_0_14px_#ffdd00] z-20 will-change-transform"
+              className="absolute -left-[5.5px] w-3.5 h-3.5 -mt-[7px] rounded-full bg-green border-2 border-white shadow-[0_0_14px_#f5e15b] z-20 will-change-transform"
             />
           </div>
 

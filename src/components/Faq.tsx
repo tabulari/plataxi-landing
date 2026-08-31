@@ -68,7 +68,7 @@ export function Faq() {
       ref={containerRef}
       id="preguntas"
       aria-labelledby="faq-heading"
-      className="py-14 sm:py-16 lg:py-20 bg-[#fffee9] relative"
+      className="py-14 sm:py-16 lg:py-20 bg-white relative"
     >
       <div className="mx-auto max-w-container px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">

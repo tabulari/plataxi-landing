@@ -62,7 +62,7 @@ export function Hero() {
     <section
       ref={containerRef}
       aria-labelledby="hero-heading"
-      className="relative overflow-hidden bg-[#fffee9]"
+      className="relative overflow-hidden bg-white"
       style={{ minHeight: '70vh' }}
     >
       {/* Grid centrado en max-w-container estilo Credalia */}

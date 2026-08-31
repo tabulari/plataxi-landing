@@ -672,8 +672,8 @@ export function PlataxiWordmark({
   height?: number;
   className?: string;
 }) {
-  const isotypeColor = variant === 'white' ? '#ffffff' : variant === 'color' ? '#ffdd00' : '#151515';
-  const textColor = variant === 'white' ? '#ffffff' : '#151515';
+  const isotypeColor = variant === 'white' ? '#ffffff' : variant === 'color' ? '#f5e15b' : '#111110';
+  const textColor = variant === 'white' ? '#ffffff' : '#111110';
   const vw = 1050;
   const vh = 200;
   const w = Math.round((height / vh) * vw);
@@ -728,9 +728,9 @@ export function BrandLogo({
   variant?: 'default' | 'footer';
 }) {
   const onDark = variant === 'footer';
-  const textColor = monochrome ? 'currentColor' : onDark ? '#ffffff' : '#151515';
-  const markBg = monochrome ? 'transparent' : '#ffdd00';
-  const markFg = monochrome ? 'currentColor' : '#151515';
+  const textColor = monochrome ? 'currentColor' : onDark ? '#ffffff' : '#111110';
+  const markBg = monochrome ? 'transparent' : '#f5e15b';
+  const markFg = monochrome ? 'currentColor' : '#111110';
   const markSize = Math.round(height);
 
   return (
@@ -793,12 +793,12 @@ export function PlataxiLogo({ size = 48, className }: IconProps) {
       className={className}
       style={{ height: 'auto', aspectRatio: '1 / 1' }}
     >
-      <rect x="16" y="16" width="480" height="480" rx="128" fill="#ffdd00" />
+      <rect x="16" y="16" width="480" height="480" rx="128" fill="#f5e15b" />
       <g transform="translate(108, 176) scale(0.8)">
-        <polygon points="97,0 273,0 317,77 53,77" fill="#151515" />
-        <polygon points="0,98 62,98 95,148 28,148" fill="#151515" />
-        <polygon points="308,98 370,98 342,148 275,148" fill="#151515" />
-        <polygon points="95,148 275,148 242,198 128,198" fill="#151515" />
+        <polygon points="97,0 273,0 317,77 53,77" fill="#111110" />
+        <polygon points="0,98 62,98 95,148 28,148" fill="#111110" />
+        <polygon points="308,98 370,98 342,148 275,148" fill="#111110" />
+        <polygon points="95,148 275,148 242,198 128,198" fill="#111110" />
       </g>
     </svg>
   );
