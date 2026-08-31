@@ -137,8 +137,8 @@ export function Nav() {
       className={cn(
         'sticky top-0 z-50 backdrop-blur-lg transition-colors duration-200',
         scrolled
-          ? 'bg-secondary-surface/95 shadow-[0_1px_0_rgba(0,0,0,0.06)]'
-          : 'bg-secondary-surface shadow-none',
+          ? 'bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.06)]'
+          : 'bg-white shadow-none',
       )}
     >
       <div className="mx-auto max-w-container px-6 flex items-center justify-between h-[68px]">
@@ -208,7 +208,7 @@ export function Nav() {
           ref={mobilePanelRef}
           inert={!open || undefined}
           className={cn(
-            'absolute top-full left-0 right-0 z-50 bg-secondary-surface border-b border-border/80 shadow-2xl transition-all duration-200 ease-out',
+            'absolute top-full left-0 right-0 z-50 bg-white border-b border-border/80 shadow-2xl transition-all duration-200 ease-out',
             open
               ? 'opacity-100 translate-y-0 pointer-events-auto visible'
               : 'opacity-0 -translate-y-2 pointer-events-none invisible',

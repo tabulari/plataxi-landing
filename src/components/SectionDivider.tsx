@@ -7,6 +7,7 @@ import { useGSAP } from '@gsap/react';
 interface SectionDividerProps {
   from?: string;
   to?: string;
+  waveColor?: string;
   amplitude?: 'soft' | 'medium' | 'bold';
   flip?: boolean;
   className?: string;
@@ -33,8 +34,9 @@ const WAVES = {
 };
 
 export function SectionDivider({
-  from,
-  to = '#f7f7f5',
+  from = '#ffffff',
+  to = '#ffffff',
+  waveColor,
   amplitude = 'medium',
   flip = false,
   className = '',
@@ -45,6 +47,7 @@ export function SectionDivider({
   const { viewBox, d, dSecondary } = WAVES[amplitude];
 
   const isDarkTo = to === '#111110' || to === '#151515' || to === '#0a0a0a' || to?.includes('111110') || to?.includes('151515') || to?.includes('0a0a0a');
+  const fillColor = waveColor || to;
 
   useGSAP(() => {
     if (typeof window === 'undefined') return;
@@ -104,14 +107,14 @@ export function SectionDivider({
         <path
           ref={secondaryWaveRef}
           d={dSecondary}
-          fill={isDarkTo ? '#f5e15b' : to}
-          opacity={isDarkTo ? '0.22' : '0.35'}
+          fill={isDarkTo ? '#f6d860' : fillColor}
+          opacity={isDarkTo ? '0.22' : waveColor ? '0.6' : '0.35'}
         />
         {/* Primary Solid Surface Wave */}
         <path
           ref={primaryWaveRef}
           d={d}
-          fill={to}
+          fill={isDarkTo ? to : fillColor}
         />
       </svg>
     </div>
