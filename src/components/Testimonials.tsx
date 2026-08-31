@@ -99,7 +99,7 @@ export function Testimonials() {
             id="testimonials-heading"
             className="text-3xl sm:text-4xl lg:text-5xl font-display font-black tracking-tight text-navy leading-[1.18]"
           >
-            Lo que dicen nuestros <span className="inline-block bg-secondary-surface text-primary-dark border border-secondary-border/60 px-2.5 py-0.5 rounded-lg align-baseline shadow-2xs">conductores</span>
+            Lo que dicen nuestros <span className="inline-block bg-secondary-surface text-primary-dark border border-primary-brand px-2.5 py-0.5 rounded-lg align-baseline shadow-2xs">conductores</span>
           </h2>
         </div>
 

@@ -84,7 +84,7 @@ export function Hero() {
             className="text-4xl sm:text-5xl lg:text-[3.25rem] font-display font-black tracking-tight text-navy leading-[1.18]"
           >
             Plata pa&apos;l día a día,<br />
-            <span className="inline-block bg-secondary-surface text-primary-dark border border-secondary-border/60 px-3 py-1 rounded-xl mt-1.5 shadow-2xs">
+            <span className="inline-block bg-secondary-surface text-primary-dark border border-primary-brand px-3.5 py-1 rounded-xl mt-1.5 shadow-2xs">
               aprobada en minutos
             </span>
           </h1>
