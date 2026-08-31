@@ -73,7 +73,7 @@ export function Hero() {
         {/* ── LEFT COLUMN ── */}
         <div ref={textColRef} className="flex flex-col justify-center space-y-6 z-10 max-w-lg">
           <div data-hero-anim>
-            <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink w-fit">
+            <span className="inline-flex items-center gap-2 rounded-pill bg-secondary-surface border border-secondary-border/60 px-3.5 py-1.5 text-xs font-bold text-primary-dark w-fit shadow-2xs">
               Hecho para taxistas colombianos
             </span>
           </div>

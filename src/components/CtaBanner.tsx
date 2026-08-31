@@ -96,7 +96,7 @@ export function CtaBanner() {
           <div className="flex-1 min-w-0 relative space-y-5 text-left">
             <p
               data-cta="eyebrow"
-              className="text-xs font-semibold uppercase tracking-widest text-green"
+              className="text-xs font-bold uppercase tracking-widest text-secondary-surface"
             >
               Comienza ahora
             </p>
