@@ -20,29 +20,29 @@ export default function Home() {
         <Hero />
 
         {/* 2. Simulador de crédito (preserved intact) */}
-        <SectionDivider amplitude="soft" from="#fffee9" to="#ffffff" />
+        <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
         <SimulateSection>
           <Simulator />
         </SimulateSection>
 
         {/* 3. Beneficios — 3-up cards (inDrive-style) */}
-        <SectionDivider amplitude="soft" from="#ffffff" to="#fffee9" />
+        <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
         <Benefits />
 
         {/* 4. Requisitos — 2×2 grid */}
-        <SectionDivider amplitude="soft" from="#fffee9" to="#ffffff" />
+        <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
         <Requirements />
 
         {/* 5. Cómo funciona — numbered journey */}
-        <SectionDivider amplitude="medium" from="#ffffff" to="#fffee9" />
+        <SectionDivider amplitude="medium" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
         <HowItWorks />
 
         {/* 6. FAQ — 2-column accordion */}
-        <SectionDivider amplitude="soft" from="#fffee9" to="#ffffff" />
+        <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
         <Faq />
 
-        {/* 8. CTA final — yellow banner */}
-        <SectionDivider amplitude="bold" from="#fffee9" to="#151515" />
+        {/* 8. CTA final — transición a oscuro con borde crema */}
+        <SectionDivider amplitude="bold" from="#ffffff" to="#111110" waveColor="#fffbe0" />
         <CtaBanner />
       </main>
       <Footer />

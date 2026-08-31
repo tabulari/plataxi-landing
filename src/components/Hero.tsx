@@ -62,7 +62,7 @@ export function Hero() {
     <section
       ref={containerRef}
       aria-labelledby="hero-heading"
-      className="relative overflow-hidden bg-[#fffee9]"
+      className="relative overflow-hidden bg-white"
       style={{ minHeight: '70vh' }}
     >
       {/* Grid centrado en max-w-container estilo Credalia */}
@@ -73,7 +73,7 @@ export function Hero() {
         {/* ── LEFT COLUMN ── */}
         <div ref={textColRef} className="flex flex-col justify-center space-y-6 z-10 max-w-lg">
           <div data-hero-anim>
-            <span className="inline-flex items-center gap-2 rounded-pill bg-green px-3.5 py-1.5 text-xs font-bold text-ink w-fit">
+            <span className="inline-flex items-center gap-2 rounded-pill bg-secondary-surface border-2 border-primary-brand px-3.5 py-1.5 text-xs font-bold text-primary-dark w-fit shadow-xs">
               Hecho para taxistas colombianos
             </span>
           </div>
@@ -81,10 +81,10 @@ export function Hero() {
           <h1
             id="hero-heading"
             data-hero-anim
-            className="text-4xl sm:text-5xl lg:text-[3.25rem] font-display font-black tracking-tight text-navy leading-[1.12]"
+            className="text-4xl sm:text-5xl lg:text-[3.25rem] font-display font-black tracking-tight text-navy leading-[1.18]"
           >
             Plata pa&apos;l día a día,<br />
-            <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">
+            <span className="inline-block bg-secondary-surface text-primary-dark border-2 border-primary-brand px-3.5 py-1 rounded-xl mt-1.5 shadow-sm">
               aprobada en minutos
             </span>
           </h1>

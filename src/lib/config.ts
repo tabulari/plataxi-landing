@@ -193,9 +193,14 @@ export const config = {
 
   /** --- Brand colors (CSS hex, used for manifest/theme-color) --- */
   colors: {
-    navy: readStr(process.env.NEXT_PUBLIC_COLOR_NAVY, "#151515"),
-    orange: readStr(process.env.NEXT_PUBLIC_COLOR_ORANGE, "#ffdd00"),
-    green: readStr(process.env.NEXT_PUBLIC_COLOR_GREEN, "#ffdd00"),
+    navy: readStr(process.env.NEXT_PUBLIC_COLOR_NAVY, "#111110"),
+    orange: readStr(process.env.NEXT_PUBLIC_COLOR_ORANGE, "#f6d860"),
+    green: readStr(process.env.NEXT_PUBLIC_COLOR_GREEN, "#f6d860"),
+    primaryDark: "#111110",
+    primaryBrand: "#f6d860",
+    secondarySurface: "#fffbe0",
+    secondaryText: "#757575",
+    secondaryBorder: "#c1c1c1",
   },
 
   /** --- Disbursement time claim (e.g. "24 horas"). Empty = no claim shown (compliance-safe). --- */

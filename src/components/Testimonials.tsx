@@ -50,8 +50,8 @@ function Stars({ n }: { n: number }) {
           width="14"
           height="14"
           viewBox="0 0 24 24"
-          fill={i < n ? '#ffdd00' : 'none'}
-          stroke={i < n ? '#ffdd00' : '#d1d5db'}
+          fill={i < n ? '#f5e15b' : 'none'}
+          stroke={i < n ? '#f5e15b' : '#d1d5db'}
           strokeWidth="1.8"
         >
           <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
@@ -97,9 +97,9 @@ export function Testimonials() {
           </p>
           <h2
             id="testimonials-heading"
-            className="text-3xl sm:text-4xl lg:text-5xl font-display font-black tracking-tight text-navy leading-[1.1]"
+            className="text-3xl sm:text-4xl lg:text-5xl font-display font-black tracking-tight text-navy leading-[1.18]"
           >
-            Lo que dicen nuestros <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">conductores</span>
+            Lo que dicen nuestros <span className="inline-block bg-secondary-surface text-primary-dark border-2 border-primary-brand px-2.5 py-0.5 rounded-lg align-baseline shadow-xs">conductores</span>
           </h2>
         </div>
 

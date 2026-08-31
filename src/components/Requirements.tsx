@@ -119,9 +119,9 @@ export function Requirements() {
           <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Requisitos</p>
           <h2
             id="req-heading"
-            className="text-3xl sm:text-4xl lg:text-5xl font-display tracking-tight text-navy leading-[1.12]"
+            className="text-3xl sm:text-4xl lg:text-5xl font-display tracking-tight text-navy leading-[1.18]"
           >
-            Solo necesitas <span className="bg-green text-ink box-decoration-clone px-2 rounded-md">4 cosas</span>
+            Solo necesitas <span className="inline-block bg-secondary-surface text-primary-dark border-2 border-primary-brand px-2.5 py-0.5 rounded-lg align-baseline shadow-xs">4 cosas</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground font-normal leading-relaxed max-w-lg mx-auto">
             Sin fiador ni papeleos. Puedes pedirlo desde tu celular en 5 minutos.
@@ -151,10 +151,10 @@ export function Requirements() {
               <div
                 key={item.id}
                 data-req="card"
-                className="group flex items-center gap-4 rounded-2xl border border-neutral-100 bg-white p-4 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-green/50 hover:-translate-y-0.5 transition-all duration-200"
+                className="group flex items-center gap-4 rounded-2xl border border-secondary-border/50 bg-white p-4 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-primary-brand hover:-translate-y-0.5 transition-all duration-200"
               >
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#fff8e6] border border-[#ffdd00]/30 flex items-center justify-center flex-shrink-0 text-navy group-hover:bg-green transition-colors duration-200">
-                  <CheckIcon size={20} className="text-navy stroke-[3]" />
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-secondary-surface border-2 border-primary-brand flex items-center justify-center flex-shrink-0 text-primary-dark group-hover:bg-primary-brand transition-colors duration-200 shadow-2xs">
+                  <CheckIcon size={20} className="text-primary-dark stroke-[3]" />
                 </div>
 
                 <div className="min-w-0 flex-1">

@@ -10,7 +10,14 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // ShadCN semantic tokens → brand colors
+        // 5 Primary & Secondary Color Utility Tokens
+        "primary-dark": "var(--color-primary-dark)",
+        "primary-brand": "var(--color-primary-brand)",
+        "secondary-surface": "var(--color-secondary-surface)",
+        "secondary-text": "var(--color-secondary-text)",
+        "secondary-border": "var(--color-secondary-border)",
+
+        // ShadCN semantic tokens
         background: "var(--background)",
         foreground: "var(--foreground)",
         card: { DEFAULT: "var(--card)", foreground: "var(--card-foreground)" },
@@ -23,17 +30,66 @@ const config: Config = {
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
-        // Brand tokens — Plataxi mono-accent (names kept, values remapped to yellow + neutrals)
-        navy: { DEFAULT: "#151515", deep: "#0a0a0a", ink: "#151515" },
-        orange: { DEFAULT: "#ffdd00", ink: "#151515" },
-        green: { DEFAULT: "#ffdd00", ink: "#151515", soft: "#fffbe0", "soft-ink": "#151515", tint: "#fffee9", bright: "#ffe84d" },
-        ink: "#151515",
-        "muted-2": "#797979",
-        "bg-soft": "#f7f7f5",
-        "border-2": "#ececec",
-        error: "#c5392c",
-        "hint-ink": "#8a6d00",
-        "hint-bg": "#fffbe0",
+
+        // Semantic surface tokens
+        surface: {
+          primary: "var(--surface-primary)",
+          secondary: "var(--surface-secondary)",
+          tertiary: "var(--surface-tertiary)",
+          dark: "var(--surface-dark)",
+          "dark-card": "var(--surface-dark-card)",
+        },
+
+        // Semantic text tokens
+        text: {
+          primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
+          muted: "var(--text-muted)",
+          inverse: "var(--text-inverse)",
+        },
+
+        // Semantic brand tokens
+        brand: {
+          primary: "var(--brand-primary)",
+          accent: "var(--brand-accent)",
+          orange: "var(--brand-orange)",
+        },
+
+        // Semantic status tokens
+        status: {
+          success: {
+            DEFAULT: "var(--status-success)",
+            bg: "var(--status-success-bg)",
+            text: "var(--status-success-text)",
+          },
+          warning: {
+            DEFAULT: "var(--status-warning)",
+            bg: "var(--status-warning-bg)",
+            text: "var(--status-warning-text)",
+          },
+          error: {
+            DEFAULT: "var(--status-error)",
+            bg: "var(--status-error-bg)",
+            text: "var(--status-error-text)",
+          },
+          info: {
+            DEFAULT: "var(--status-info)",
+            bg: "var(--status-info-bg)",
+            text: "var(--status-info-text)",
+          },
+        },
+
+        // Brand tokens — Plataxi mono-accent (compatibilidad)
+        navy: { DEFAULT: "var(--navy)", deep: "var(--navy-deep)", ink: "var(--navy-ink)" },
+        orange: { DEFAULT: "var(--orange)", ink: "var(--orange-ink)" },
+        green: { DEFAULT: "var(--green)", ink: "var(--green-ink)", soft: "var(--green-soft)", "soft-ink": "var(--green-soft-ink)", tint: "var(--green-tint)", bright: "var(--green-bright)" },
+        ink: "var(--ink)",
+        "muted-2": "var(--muted-2)",
+        "bg-soft": "var(--bg-soft)",
+        "border-2": "var(--border-2)",
+        error: "var(--destructive)",
+        "hint-ink": "var(--hint-ink)",
+        "hint-bg": "var(--hint-bg)",
       },
       fontFamily: {
         sans: [

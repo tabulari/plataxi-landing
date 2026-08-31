@@ -147,10 +147,10 @@ export function AmountInput({
                   setAmount(clampRoundAmount(preset, amountMin, amountMax, amountStep), true);
                   setInputText(fmtCOP(clampRoundAmount(preset, amountMin, amountMax, amountStep)));
                 }}
-                className={`inline-flex items-center justify-center px-4 h-12 min-h-[48px] text-xs font-bold rounded-lg border transition-all tabular-nums ${
+                className={`inline-flex items-center justify-center px-4 h-12 min-h-[48px] text-xs font-bold rounded-lg transition-all tabular-nums ${
                   amount === preset
-                    ? 'bg-green-tint border-green text-green-ink shadow-2xs'
-                    : 'bg-white border-border text-navy hover:bg-bg-soft'
+                    ? 'bg-secondary-surface border-2 border-primary-brand text-primary-dark shadow-xs'
+                    : 'bg-white border border-secondary-border text-primary-dark hover:border-primary-brand hover:bg-secondary-surface/30'
                 }`}
               >
                 ${fmtCOP(preset)}
