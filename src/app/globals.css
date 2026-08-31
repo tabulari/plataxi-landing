@@ -5,48 +5,54 @@
 /* ===== design tokens (ShadCN semantic vars mapped to brand colors) ===== */
 @layer base {
   :root {
-    /* Brand palette — Plataxi mono-accent (yellow #FFDD00 + neutrals).
-       Token NAMES are kept (navy/orange/green) so ~28 downstream files keep
-       working; only VALUES changed. Yellow is a fill/highlight color — text on
-       it must be dark (#151515), never white or yellow. */
-    --navy: #151515;        /* structure / dark ink (was navy) */
-    --navy-deep: #0a0a0a;
-    --navy-ink: #151515;
-    --orange: #ffdd00;      /* folded into the single yellow accent */
-    --orange-ink: #151515;  /* readable text on light tints */
-    --green: #ffdd00;       /* PRIMARY ACCENT — yellow fill/highlight */
-    --green-bright: #ffe84d; /* lighter yellow for hover/glow */
-    --green-ink: #151515;   /* was a readable green text color → now dark */
-    --green-soft: #fffbe0;  /* pale-yellow tint surface */
-    --green-soft-ink: #151515;
-    --green-tint: #fffee9;  /* cream */
-    --ink: #151515;
-    --muted-2: #797979;     /* tertiary / labels */
-    --bg-soft: #f7f7f5;
-    --border-2: #ececec;
-    --error: #c5392c;
-    --hint-ink: #8a6d00;    /* dark gold for warning text on light tint */
-    --hint-bg: #fffbe0;
+    /* ===== Paleta Oficial de 5 Colores Plataxi ===== */
+    --color-primary-dark: #111110;       /* 1. Primario Estructural (Dark Onyx) */
+    --color-primary-brand: #f5e15b;      /* 2. Primario de Marca (Amarillo Suave) */
+    --color-secondary-surface: #fffbe0;  /* 3. Secundario Superficie (Crema Suave) */
+    --color-secondary-text: #757575;     /* 4. Secundario Texto (Gris Medio) */
+    --color-secondary-border: #c1c1c1;   /* 5. Secundario Bordes (Gris Claro) */
 
-    /* Semantic surface tokens */
+    /* ===== ShadCN Semantic Tokens ===== */
+    --background: #ffffff;
+    --foreground: var(--color-primary-dark);
+    --card: #ffffff;
+    --card-foreground: var(--color-primary-dark);
+    --popover: #ffffff;
+    --popover-foreground: var(--color-primary-dark);
+    --primary: var(--color-primary-dark);
+    --primary-foreground: #ffffff;
+    --secondary: var(--color-primary-brand);
+    --secondary-foreground: var(--color-primary-dark);
+    --muted: #f7f7f5;
+    --muted-foreground: var(--color-secondary-text);
+    --accent: var(--color-secondary-surface);
+    --accent-foreground: var(--color-primary-dark);
+    --destructive: #c5392c;
+    --destructive-foreground: #ffffff;
+    --border: var(--color-secondary-border);
+    --input: var(--color-secondary-border);
+    --ring: var(--color-primary-dark);
+    --radius: 0.75rem;
+
+    /* ===== Semantic surface tokens ===== */
     --surface-primary: #ffffff;
     --surface-secondary: #f7f7f5;
-    --surface-tertiary: #fffee9;
-    --surface-dark: #151515;
-    --surface-dark-card: #1f1f1f;
+    --surface-tertiary: var(--color-secondary-surface);
+    --surface-dark: var(--color-primary-dark);
+    --surface-dark-card: #1a1a19;
 
-    /* Semantic text tokens */
-    --text-primary: #151515;
+    /* ===== Semantic text tokens ===== */
+    --text-primary: var(--color-primary-dark);
     --text-secondary: #5a5a5a;
-    --text-muted: #797979;
+    --text-muted: var(--color-secondary-text);
     --text-inverse: #ffffff;
 
-    /* Semantic brand tokens */
-    --brand-primary: #151515;
-    --brand-accent: #ffdd00;
-    --brand-orange: #ffdd00;
+    /* ===== Semantic brand tokens ===== */
+    --brand-primary: var(--color-primary-dark);
+    --brand-accent: var(--color-primary-brand);
+    --brand-orange: var(--color-primary-brand);
 
-    /* Semantic status tokens (success stays green — functional, not brand) */
+    /* ===== Semantic status tokens ===== */
     --status-success: #1e9e55;
     --status-success-bg: #e7faf4;
     --status-success-text: #137038;
@@ -60,26 +66,24 @@
     --status-info-bg: #e0f2fe;
     --status-info-text: #075985;
 
-    /* ShadCN semantic tokens */
-    --background: #ffffff;
-    --foreground: #151515;
-    --card: #ffffff;
-    --card-foreground: #151515;
-    --popover: #ffffff;
-    --popover-foreground: #151515;
-    --primary: #151515;
-    --primary-foreground: #ffffff;
-    --secondary: #f7f7f5;
-    --secondary-foreground: #151515;
-    --muted: #f7f7f5;
-    --muted-foreground: #5a5a5a;
-    --accent: #fffbe0;
-    --accent-foreground: #151515;
-    --destructive: #d4483b;
-    --destructive-foreground: #ffffff;
-    --border: #e6e6e3;
-    --input: #e6e6e3;
-    --ring: #151515;
+    /* ===== Tokens Heredados (Compatibilidad retroactiva) ===== */
+    --navy: var(--color-primary-dark);
+    --navy-deep: #0a0a0a;
+    --navy-ink: var(--color-primary-dark);
+    --orange: var(--color-primary-brand);
+    --orange-ink: var(--color-primary-dark);
+    --green: var(--color-primary-brand);
+    --green-bright: #f8e878;
+    --green-ink: var(--color-primary-dark);
+    --green-soft: var(--color-secondary-surface);
+    --green-soft-ink: var(--color-primary-dark);
+    --green-tint: var(--color-secondary-surface);
+    --ink: var(--color-primary-dark);
+    --muted-2: var(--color-secondary-text);
+    --bg-soft: #f7f7f5;
+    --border-2: var(--color-secondary-border);
+    --hint-ink: var(--color-primary-dark);
+    --hint-bg: var(--color-secondary-surface);
     --radius: 0.75rem;
   }
 
@@ -183,11 +187,11 @@
   [data-slot='button']:focus-visible,
   [data-slot='accordion-trigger']:focus-visible,
   summary:focus-visible {
-    outline: 2px solid #151515 !important;
+    outline: 2px solid #111110 !important;
     outline-offset: 2px !important;
   }
 
-  /* Form inputs focus state: clean, vibrant brand yellow without black outer ring */
+  /* Form inputs focus state: clean, warm brand yellow without black outer ring */
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible,
@@ -195,8 +199,8 @@
   select:focus,
   textarea:focus {
     outline: none !important;
-    border-color: #ffdd00 !important;
-    box-shadow: 0 0 0 3px rgba(255, 221, 0, 0.35) !important;
+    border-color: #f5e15b !important;
+    box-shadow: 0 0 0 3px rgba(245, 225, 91, 0.35) !important;
   }
 }
 
