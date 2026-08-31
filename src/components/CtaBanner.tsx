@@ -107,7 +107,7 @@ export function CtaBanner() {
               className="text-3xl sm:text-4xl lg:text-[42px] font-display tracking-tight text-white leading-[1.18] mb-2"
             >
               Tu dinero en minutos, <br className="hidden sm:inline" />
-              <span className="inline-block bg-secondary-surface text-primary-dark px-3 py-1 rounded-xl mt-1.5 shadow-2xs">
+              <span className="inline-block bg-secondary-surface text-primary-dark border border-secondary-border/60 px-3 py-1 rounded-xl mt-1.5 shadow-2xs">
                 sin fiador ni trámites.
               </span>
             </h2>
