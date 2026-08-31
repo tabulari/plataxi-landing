@@ -121,7 +121,7 @@ export function Requirements() {
             id="req-heading"
             className="text-3xl sm:text-4xl lg:text-5xl font-display tracking-tight text-navy leading-[1.18]"
           >
-            Solo necesitas <span className="inline-block bg-secondary-surface text-primary-dark border border-primary-brand px-2.5 py-0.5 rounded-lg align-baseline shadow-2xs">4 cosas</span>
+            Solo necesitas <span className="inline-block bg-secondary-surface text-primary-dark border-2 border-primary-brand px-2.5 py-0.5 rounded-lg align-baseline shadow-xs">4 cosas</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground font-normal leading-relaxed max-w-lg mx-auto">
             Sin fiador ni papeleos. Puedes pedirlo desde tu celular en 5 minutos.

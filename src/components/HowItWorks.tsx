@@ -310,12 +310,12 @@ export function HowItWorks() {
               <div className="flex items-center justify-between w-full mb-6">
                 <span
                   data-hiw="badge"
-                  className="flex items-center justify-center w-11 h-11 rounded-2xl bg-green-tint text-green-ink border border-green/30 font-bold text-sm shrink-0 tabular-nums shadow-2xs transition-all duration-300 z-10"
+                  className="flex items-center justify-center w-11 h-11 rounded-2xl bg-secondary-surface text-primary-dark border-2 border-primary-brand font-bold text-sm shrink-0 tabular-nums shadow-xs transition-all duration-300 z-10"
                 >
                   <span className="sr-only">Paso </span>01
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-ink bg-green-soft px-3 py-1.5 rounded-full border border-green/20">
-                  <CheckCircleIcon size={14} className="text-green-ink" />
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-dark bg-secondary-surface px-3 py-1.5 rounded-full border border-primary-brand/60 shadow-2xs">
+                  <CheckCircleIcon size={14} className="text-primary-dark" />
                   Requisitos mínimos
                 </span>
               </div>
@@ -346,12 +346,12 @@ export function HowItWorks() {
               <div className="flex items-center justify-between w-full mb-6">
                 <span
                   data-hiw="badge"
-                  className="flex items-center justify-center w-11 h-11 rounded-2xl bg-green-tint text-green-ink border border-green/30 font-bold text-sm shrink-0 tabular-nums shadow-2xs transition-all duration-300 z-10"
+                  className="flex items-center justify-center w-11 h-11 rounded-2xl bg-secondary-surface text-primary-dark border-2 border-primary-brand font-bold text-sm shrink-0 tabular-nums shadow-xs transition-all duration-300 z-10"
                 >
                   <span className="sr-only">Paso </span>02
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-ink bg-green-soft px-3 py-1.5 rounded-full border border-green/20">
-                  <BoltIcon size={14} className="text-green-ink" />
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-dark bg-secondary-surface px-3 py-1.5 rounded-full border border-primary-brand/60 shadow-2xs">
+                  <BoltIcon size={14} className="text-primary-dark" />
                   Estudio digital
                 </span>
               </div>
@@ -382,12 +382,12 @@ export function HowItWorks() {
               <div className="flex items-center justify-between w-full mb-6">
                 <span
                   data-hiw="badge"
-                  className="flex items-center justify-center w-11 h-11 rounded-2xl bg-green-tint text-green-ink border border-green/30 font-bold text-sm shrink-0 tabular-nums shadow-2xs transition-all duration-300 z-10"
+                  className="flex items-center justify-center w-11 h-11 rounded-2xl bg-secondary-surface text-primary-dark border-2 border-primary-brand font-bold text-sm shrink-0 tabular-nums shadow-xs transition-all duration-300 z-10"
                 >
                   <span className="sr-only">Paso </span>03
                 </span>
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-green-ink bg-green-soft px-3 py-1.5 rounded-full border border-green/20">
-                  <SparklesIcon size={14} className="text-green-ink" />
+                <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary-dark bg-secondary-surface px-3 py-1.5 rounded-full border border-primary-brand/60 shadow-2xs">
+                  <SparklesIcon size={14} className="text-primary-dark" />
                   Desembolso directo
                 </span>
               </div>
