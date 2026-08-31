@@ -198,7 +198,7 @@ export const config = {
     green: readStr(process.env.NEXT_PUBLIC_COLOR_GREEN, "#f6d860"),
     primaryDark: "#111110",
     primaryBrand: "#f6d860",
-    secondarySurface: "#fefce8",
+    secondarySurface: "#fffbe0",
     secondaryText: "#757575",
     secondaryBorder: "#c1c1c1",
   },

@@ -20,23 +20,28 @@ export default function Home() {
         <Hero />
 
         {/* 2. Simulador de crédito (preserved intact) */}
+        <SectionDivider amplitude="soft" from="#fffbe0" to="#ffffff" />
         <SimulateSection>
           <Simulator />
         </SimulateSection>
 
         {/* 3. Beneficios — 3-up cards (inDrive-style) */}
+        <SectionDivider amplitude="soft" from="#ffffff" to="#fffbe0" />
         <Benefits />
 
         {/* 4. Requisitos — 2×2 grid */}
+        <SectionDivider amplitude="soft" from="#fffbe0" to="#ffffff" />
         <Requirements />
 
         {/* 5. Cómo funciona — numbered journey */}
+        <SectionDivider amplitude="medium" from="#ffffff" to="#fffbe0" />
         <HowItWorks />
 
         {/* 6. FAQ — 2-column accordion */}
+        <SectionDivider amplitude="soft" from="#fffbe0" to="#ffffff" />
         <Faq />
 
-        {/* 8. CTA final — transición limpia de blanco a oscuro */}
+        {/* 8. CTA final — transición a oscuro */}
         <SectionDivider amplitude="bold" from="#ffffff" to="#111110" />
         <CtaBanner />
       </main>

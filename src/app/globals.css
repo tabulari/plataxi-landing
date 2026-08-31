@@ -5,10 +5,10 @@
 /* ===== design tokens (ShadCN semantic vars mapped to brand colors) ===== */
 @layer base {
   :root {
-    /* ===== Paleta Oficial de 5 Colores Plataxi (Amarillo Mantequilla) ===== */
+    /* ===== Paleta Oficial de 5 Colores Plataxi ===== */
     --color-primary-dark: #111110;       /* 1. Primario Estructural (Dark Onyx) */
     --color-primary-brand: #f6d860;      /* 2. Primario de Marca (Amarillo Mantequilla) */
-    --color-secondary-surface: #fefce8;  /* 3. Secundario Superficie (Crema Buttermilk) */
+    --color-secondary-surface: #fffbe0;  /* 3. Secundario Superficie (Crema Suave) */
     --color-secondary-text: #757575;     /* 4. Secundario Texto (Gris Medio) */
     --color-secondary-border: #c1c1c1;   /* 5. Secundario Bordes (Gris Claro) */
 
