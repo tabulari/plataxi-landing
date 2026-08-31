@@ -41,8 +41,8 @@ export default function Home() {
         <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
         <Faq />
 
-        {/* 8. CTA final — transición a oscuro */}
-        <SectionDivider amplitude="bold" from="#ffffff" to="#111110" />
+        {/* 8. CTA final — transición a oscuro con borde crema */}
+        <SectionDivider amplitude="bold" from="#ffffff" to="#111110" waveColor="#fffbe0" />
         <CtaBanner />
       </main>
       <Footer />

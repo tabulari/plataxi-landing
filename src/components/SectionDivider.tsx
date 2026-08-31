@@ -88,7 +88,7 @@ export function SectionDivider({
   return (
     <div
       ref={containerRef}
-      className={`hidden md:block relative -mt-px -mb-px overflow-hidden pointer-events-none select-none z-10 ${className}`}
+      className={`block relative -mt-px -mb-px overflow-hidden pointer-events-none select-none z-10 ${className}`}
       aria-hidden="true"
       style={from ? { backgroundColor: from } : undefined}
     >
@@ -107,8 +107,8 @@ export function SectionDivider({
         <path
           ref={secondaryWaveRef}
           d={dSecondary}
-          fill={isDarkTo ? '#f6d860' : fillColor}
-          opacity={isDarkTo ? '0.22' : waveColor ? '0.6' : '0.35'}
+          fill={isDarkTo ? '#fffbe0' : fillColor}
+          opacity={isDarkTo ? '0.6' : waveColor ? '0.6' : '0.35'}
         />
         {/* Primary Solid Surface Wave */}
         <path
