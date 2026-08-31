@@ -106,7 +106,7 @@ export function Hero() {
             <ApplyButton
               variant="outline"
               size="lg"
-              className="w-full sm:w-auto min-h-[52px] px-7 rounded-xl font-bold border-2 border-navy text-navy hover:bg-navy hover:text-white transition-all active:scale-[0.98]"
+              className="w-full sm:w-auto min-h-[52px] px-7 rounded-xl font-bold border-2 border-primary-brand text-primary-dark hover:bg-secondary-surface bg-white shadow-xs transition-all active:scale-[0.98]"
             >
               Solicitar crédito
             </ApplyButton>

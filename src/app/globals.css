@@ -429,16 +429,16 @@ a:focus-visible {
   background: var(--bg-soft);
 }
 .chip:focus-visible {
-  outline: 2px solid #111110;
+  outline: 2px solid var(--color-primary-brand);
   outline-offset: 2px;
 }
 .chip .ck { display: none; line-height: 0; }
 .chip.active {
-  background: var(--green-soft);
-  border-color: var(--green);
-  color: #111110;
+  background: var(--color-secondary-surface);
+  border-color: var(--color-primary-brand);
+  color: var(--color-primary-dark);
   font-weight: 700;
-  box-shadow: inset 0 0 0 1.5px var(--green), 0 0 10px rgba(245,225,91,0.45);
+  box-shadow: inset 0 0 0 1.5px var(--color-primary-brand), 0 0 10px rgba(246,216,96,0.35);
 }
 .chip.active .ck { display: inline-flex; }
 

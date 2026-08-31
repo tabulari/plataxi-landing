@@ -111,12 +111,12 @@ export function Benefits() {
             <div
               key={b.id}
               data-benefit="card"
-              className="group flex flex-col gap-4 bg-white border border-border rounded-3xl p-7 hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+              className="group flex flex-col gap-4 bg-white border border-secondary-border/50 rounded-3xl p-7 hover:border-primary-brand hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
             >
               {/* Yellow mark with icon */}
               <span
                 aria-hidden="true"
-                className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-green text-2xl"
+                className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-secondary-surface border-2 border-primary-brand text-2xl shadow-xs"
               >
                 {b.icon}
               </span>
