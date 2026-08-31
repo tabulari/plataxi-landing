@@ -5,10 +5,10 @@
 /* ===== design tokens (ShadCN semantic vars mapped to brand colors) ===== */
 @layer base {
   :root {
-    /* ===== Paleta Oficial de 5 Colores Plataxi ===== */
+    /* ===== Paleta Oficial de 5 Colores Plataxi (Dorado Champagne) ===== */
     --color-primary-dark: #111110;       /* 1. Primario Estructural (Dark Onyx) */
-    --color-primary-brand: #f5e15b;      /* 2. Primario de Marca (Amarillo Suave) */
-    --color-secondary-surface: #fffbe0;  /* 3. Secundario Superficie (Crema Suave) */
+    --color-primary-brand: #e0bb6b;      /* 2. Primario de Marca (Dorado Champagne) */
+    --color-secondary-surface: #fbf8f1;  /* 3. Secundario Superficie (Lino Suave) */
     --color-secondary-text: #757575;     /* 4. Secundario Texto (Gris Medio) */
     --color-secondary-border: #c1c1c1;   /* 5. Secundario Bordes (Gris Claro) */
 
@@ -191,7 +191,7 @@
     outline-offset: 2px !important;
   }
 
-  /* Form inputs focus state: clean, warm brand yellow without black outer ring */
+  /* Form inputs focus state: elegant champagne gold without black outer ring */
   input:focus-visible,
   select:focus-visible,
   textarea:focus-visible,
@@ -199,8 +199,8 @@
   select:focus,
   textarea:focus {
     outline: none !important;
-    border-color: #f5e15b !important;
-    box-shadow: 0 0 0 3px rgba(245, 225, 91, 0.35) !important;
+    border-color: #e0bb6b !important;
+    box-shadow: 0 0 0 3px rgba(224, 187, 107, 0.35) !important;
   }
 }
 

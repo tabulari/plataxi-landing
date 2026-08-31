@@ -194,11 +194,11 @@ export const config = {
   /** --- Brand colors (CSS hex, used for manifest/theme-color) --- */
   colors: {
     navy: readStr(process.env.NEXT_PUBLIC_COLOR_NAVY, "#111110"),
-    orange: readStr(process.env.NEXT_PUBLIC_COLOR_ORANGE, "#f5e15b"),
-    green: readStr(process.env.NEXT_PUBLIC_COLOR_GREEN, "#f5e15b"),
+    orange: readStr(process.env.NEXT_PUBLIC_COLOR_ORANGE, "#e0bb6b"),
+    green: readStr(process.env.NEXT_PUBLIC_COLOR_GREEN, "#e0bb6b"),
     primaryDark: "#111110",
-    primaryBrand: "#f5e15b",
-    secondarySurface: "#fffbe0",
+    primaryBrand: "#e0bb6b",
+    secondarySurface: "#fbf8f1",
     secondaryText: "#757575",
     secondaryBorder: "#c1c1c1",
   },
