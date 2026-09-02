@@ -8,7 +8,7 @@
  *
  * Only genuinely deployment-specific values come from the environment and are
  * guarded by `assertProductionConfig()`: the Core backend endpoints and the
- * web-lead secret (`NEXT_PUBLIC_RATES_CONFIG_ENDPOINT`, `APPLICATION_ENDPOINT`,
+ * web-lead secret (`RATES_CONFIG_ENDPOINT`, `APPLICATION_ENDPOINT`,
  * `LANDING_API_KEY`). These must be set to real values before a production build.
  *
  * Components import from this module; they never hardcode a value.
@@ -16,7 +16,7 @@
 
 /** Deployment-specific env keys that MUST be real before production. */
 export const PLACEHOLDER_KEYS = [
-  "NEXT_PUBLIC_RATES_CONFIG_ENDPOINT",
+  "RATES_CONFIG_ENDPOINT",
   "APPLICATION_ENDPOINT",
   "LANDING_API_KEY",
 ] as const;
@@ -25,8 +25,7 @@ export type PlaceholderKey = (typeof PLACEHOLDER_KEYS)[number];
 
 /** Sentinel values the production guard still rejects. */
 export const PLACEHOLDERS: Record<PlaceholderKey, string> = {
-  NEXT_PUBLIC_RATES_CONFIG_ENDPOINT:
-    "http://localhost:8000/api/v1/sessions/rates-config",
+  RATES_CONFIG_ENDPOINT: "http://localhost:8000/api/v1/sessions/rates-config",
   APPLICATION_ENDPOINT: "http://localhost:8000/api/v1/intake/web-lead",
   LANDING_API_KEY: "dev-landing-api-key-change-in-production",
 };
@@ -140,10 +139,8 @@ export const config = {
   landingApiKey: read("LANDING_API_KEY", process.env.LANDING_API_KEY),
   /** Server-only: POST /api/application rate limit (req/min per IP). Synced with Core's intake.py. */
   webLeadRateLimitPerMinute: readNum(process.env.WEB_LEAD_RATE_LIMIT_PER_MIN, 5),
-  /** Public Core endpoint read once by the simulator provider, with static fallback on failure. */
-  ratesConfigEndpoint:
-    process.env.NEXT_PUBLIC_RATES_CONFIG_ENDPOINT ||
-    PLACEHOLDERS.NEXT_PUBLIC_RATES_CONFIG_ENDPOINT,
+  /** Server-only: Core endpoint fetched by the rates-config API route. */
+  ratesConfigEndpoint: read("RATES_CONFIG_ENDPOINT", process.env.RATES_CONFIG_ENDPOINT),
   /**
    * Gates the "Vigilados por Superfinanciera" / "Entidad vigilada" claims.
    * Compliance-sensitive: the seal and regulator copy render ONLY when this is
