@@ -35,8 +35,7 @@ export function Faq() {
           scrollTrigger: {
             trigger: leftCol,
             start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
@@ -55,8 +54,7 @@ export function Faq() {
           scrollTrigger: {
             trigger: items[0],
             start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );

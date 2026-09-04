@@ -1,8 +1,6 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
 import { fmtCOP, type Frequency } from '@/lib/credit';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
@@ -10,7 +8,6 @@ import { ApplyButton } from './ApplyButton';
 import { AmountInput } from './simulator/AmountInput';
 import { SimulationResults } from './simulator/SimulationResults';
 import { track } from '@/lib/analytics';
-import { cn } from '@/lib/utils';
 
 const FREQUENCIES: { value: Frequency; label: string }[] = [
   { value: 'monthly', label: 'Mensual' },
@@ -48,23 +45,6 @@ export function Simulator() {
     interacted.current = true;
     track('sim_interact', { control });
   };
-
-  useGSAP(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion || !simRef.current) return;
-    gsap.fromTo(simRef.current, {
-      y: 20,
-      scale: 0.98,
-      autoAlpha: 0,
-    }, {
-      y: 0,
-      scale: 1,
-      autoAlpha: 1,
-      duration: 0.7,
-      ease: 'back.out(1.2)',
-      scrollTrigger: { trigger: simRef.current, start: 'top 85%' },
-    });
-  }, { scope: simRef });
 
   const srText = `Cuota estimada: $${fmtCOP(sim.payment)} ${sim.unit}. Monto: $${fmtCOP(sim.amount)}, plazo: ${sim.term} meses.`;
   const [debouncedSr, setDebouncedSr] = useState(srText);
@@ -136,13 +116,15 @@ export function Simulator() {
 
       {/* Action CTA & Single Quiet Trust Line */}
       <div className="pt-2 space-y-2.5">
-        <p
-          className={cn('text-sm text-error font-medium transition-all', sim.valid ? 'h-0 overflow-hidden' : 'h-auto mb-2')}
-          role="alert"
-          aria-live="polite"
-        >
-          {sim.valid ? '' : sim.message}
-        </p>
+        {!sim.valid && sim.message && (
+          <p
+            className="text-sm text-error font-medium mb-2"
+            role="alert"
+            aria-live="polite"
+          >
+            {sim.message}
+          </p>
+        )}
         <ApplyButton origin="simulator" variant="default" size="block" disabled={!sim.valid} className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-md hover:shadow-lg transition-all text-base font-bold border-0">
           Solicitar crédito
         </ApplyButton>

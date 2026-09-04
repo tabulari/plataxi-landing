@@ -58,9 +58,18 @@ export function SectionDivider({
     const primary = primaryWaveRef.current;
     const secondary = secondaryWaveRef.current;
 
-    // Butter-smooth, calming harmonic fluid sine oscillations on desktop
+    // Butter-smooth, calming harmonic fluid sine oscillations on desktop (gated to visible viewport)
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: containerRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        toggleActions: 'play pause resume pause',
+      },
+    });
+
     if (primary) {
-      gsap.to(primary, {
+      tl.to(primary, {
         x: flip ? -20 : 20,
         scaleY: 1.05,
         duration: 5.2,
@@ -68,11 +77,11 @@ export function SectionDivider({
         yoyo: true,
         ease: 'sine.inOut',
         transformOrigin: '50% 100%',
-      });
+      }, 0);
     }
 
     if (secondary) {
-      gsap.to(secondary, {
+      tl.to(secondary, {
         x: flip ? 28 : -28,
         scaleY: 1.08,
         duration: 6.8,
@@ -81,7 +90,7 @@ export function SectionDivider({
         ease: 'sine.inOut',
         delay: 0.5,
         transformOrigin: '50% 100%',
-      });
+      }, 0);
     }
   }, { scope: containerRef });
 

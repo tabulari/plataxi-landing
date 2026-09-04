@@ -26,8 +26,7 @@ export function CtaBanner() {
       scrollTrigger: {
         trigger: panel,
         start: 'top 85%',
-        end: 'bottom 15%',
-        toggleActions: 'play reverse play reverse',
+        once: true,
       },
     });
 
@@ -93,14 +92,7 @@ export function CtaBanner() {
           <span className="cta-sheen" aria-hidden="true" />
 
           {/* Left Column: Pure, Saturated Value Anchor */}
-          <div className="flex-1 min-w-0 relative space-y-5 text-left">
-            <p
-              data-cta="eyebrow"
-              className="text-xs font-bold uppercase tracking-widest text-secondary-surface"
-            >
-              Comienza ahora
-            </p>
-
+          <div className="space-y-3 max-w-xl text-left">
             <h2
               id="cta-heading"
               data-cta="heading"

@@ -127,7 +127,7 @@ export function ApplyModal() {
         aria-modal="true"
         aria-labelledby="applyTitle"
         className={cn(
-          'relative flex w-full max-w-[860px] max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-200',
+          'relative flex w-full max-w-[860px] max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden transition-[transform,opacity] duration-200 ease-out',
           show ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
           'max-[760px]:flex-col max-[760px]:max-h-[95vh]',
         )}
@@ -139,7 +139,7 @@ export function ApplyModal() {
           type="button"
           aria-label="Cerrar"
           onClick={closeApply}
-          className="absolute top-3 right-3 z-10 flex items-center justify-center w-8 h-8 rounded-lg text-muted-2 hover:bg-bg-soft hover:text-navy transition-colors"
+          className="absolute top-2 right-2 z-10 flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl text-muted-2 hover:bg-bg-soft hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <CloseIcon size={22} />
         </button>

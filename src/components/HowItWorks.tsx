@@ -101,10 +101,13 @@ export function HowItWorks() {
       tl.to(badges[0], { scale: 1, duration: 0.15 }, 0.4);
     }
 
+    const trackWidth = () => pulseOrb?.parentElement?.offsetWidth ?? 0;
+    const trackHeight = () => mobilePulseOrb?.parentElement?.offsetHeight ?? 0;
+
     if (trackFill) tl.fromTo(trackFill, { scaleX: 0, transformOrigin: 'left center' }, { scaleX: 0.5, duration: 0.28, ease: 'none' }, 0.38);
     if (mobileTrackFill) tl.fromTo(mobileTrackFill, { scaleY: 0, transformOrigin: 'top center' }, { scaleY: 0.5, duration: 0.28, ease: 'none' }, 0.38);
-    if (pulseOrb) tl.fromTo(pulseOrb, { left: '0%', autoAlpha: 0 }, { left: '50%', autoAlpha: 1, duration: 0.28, ease: 'power1.inOut' }, 0.38);
-    if (mobilePulseOrb) tl.fromTo(mobilePulseOrb, { top: '0%', autoAlpha: 0 }, { top: '50%', autoAlpha: 1, duration: 0.28, ease: 'power1.inOut' }, 0.38);
+    if (pulseOrb) tl.fromTo(pulseOrb, { x: 0, autoAlpha: 0 }, { x: () => trackWidth() * 0.5, autoAlpha: 1, duration: 0.28, ease: 'power1.inOut' }, 0.38);
+    if (mobilePulseOrb) tl.fromTo(mobilePulseOrb, { y: 0, autoAlpha: 0 }, { y: () => trackHeight() * 0.5, autoAlpha: 1, duration: 0.28, ease: 'power1.inOut' }, 0.38);
 
     if (cards && cards[1]) {
       tl.to(
@@ -149,8 +152,8 @@ export function HowItWorks() {
 
     if (trackFill) tl.to(trackFill, { scaleX: 1, duration: 0.28, ease: 'none' }, 0.68);
     if (mobileTrackFill) tl.to(mobileTrackFill, { scaleY: 1, duration: 0.28, ease: 'none' }, 0.68);
-    if (pulseOrb) tl.to(pulseOrb, { left: '100%', duration: 0.28, ease: 'power1.inOut' }, 0.68);
-    if (mobilePulseOrb) tl.to(mobilePulseOrb, { top: '100%', duration: 0.28, ease: 'power1.inOut' }, 0.68);
+    if (pulseOrb) tl.to(pulseOrb, { x: () => trackWidth(), duration: 0.28, ease: 'power1.inOut' }, 0.68);
+    if (mobilePulseOrb) tl.to(mobilePulseOrb, { y: () => trackHeight(), duration: 0.28, ease: 'power1.inOut' }, 0.68);
 
     if (cards && cards[2]) {
       tl.to(
@@ -213,6 +216,7 @@ export function HowItWorks() {
       transformPerspective: 1200,
       duration: 0.15,
       ease: 'power1.out',
+      overwrite: 'auto',
     });
   }, []);
 
@@ -227,6 +231,7 @@ export function HowItWorks() {
       boxShadow: '0 4px 16px rgba(0, 0, 0, 0.04)',
       duration: 0.45,
       ease: 'power2.out',
+      overwrite: 'auto',
     });
   }, []);
 
@@ -274,7 +279,7 @@ export function HowItWorks() {
             />
             <div
               ref={pulseOrbRef}
-              className="absolute -top-[5.5px] w-3.5 h-3.5 -ml-[7px] rounded-full bg-green border-2 border-white shadow-[0_0_14px_#f5e15b] z-20 will-change-transform"
+              className="absolute -top-[5.5px] left-0 w-3.5 h-3.5 -ml-[7px] rounded-full bg-green border-2 border-white shadow-[0_0_14px_#f5e15b] z-20 will-change-transform"
             />
           </div>
 
@@ -289,7 +294,7 @@ export function HowItWorks() {
             />
             <div
               ref={mobilePulseOrbRef}
-              className="absolute -left-[5.5px] w-3.5 h-3.5 -mt-[7px] rounded-full bg-green border-2 border-white shadow-[0_0_14px_#f5e15b] z-20 will-change-transform"
+              className="absolute top-0 -left-[5.5px] w-3.5 h-3.5 -mt-[7px] rounded-full bg-green border-2 border-white shadow-[0_0_14px_#f5e15b] z-20 will-change-transform"
             />
           </div>
 
