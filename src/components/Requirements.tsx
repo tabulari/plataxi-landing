@@ -6,6 +6,10 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { CheckIcon } from './icons';
 
+// 16x16 low-quality preview of /mobile-boy.jpeg, generated for the blur-up placeholder.
+const MOBILE_BOY_BLUR =
+  'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAJABADASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAwIE/8QAJBAAAQMDAQkAAAAAAAAAAAAAAQIDEQAEBXESFCExMkNhcpH/xAAVAQEBAAAAAAAAAAAAAAAAAAADBP/EABkRAAIDAQAAAAAAAAAAAAAAAAASESFBYf/aAAwDAQACEQMRAD8Aiyf3ckNvpbUByTBgkQdONO9cEOhRuoUoQNpUT5+0GN7npWzIdLGgqa3Xg+Sf/9k=';
+
 interface RequirementItem {
   id: string;
   title: string;
@@ -138,6 +142,8 @@ export function Requirements() {
               sizes="(max-width: 1024px) 100vw, 420px"
               className="object-cover object-center"
               priority={false}
+              placeholder="blur"
+              blurDataURL={MOBILE_BOY_BLUR}
             />
           </div>
 

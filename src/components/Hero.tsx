@@ -17,6 +17,10 @@ const STATS: { value: string; label: string }[] = [
 // Clip-path inDrive: escalón sup-izq e inf-der estilizado y compacto (10%) para acercar la imagen al texto.
 const CLIP = 'polygon(10% 0%, 100% 0%, 100% 90%, 90% 90%, 90% 100%, 0% 100%, 0% 10%, 10% 10%)';
 
+// 16x16 low-quality preview of /taxista.jpeg, generated for the blur-up placeholder.
+const TAXISTA_BLUR =
+  'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAJABADASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAwEF/8QAIRAAAQQCAQUBAAAAAAAAAAAAAQIDBBEAEnEhMjM0QXL/xAAUAQEAAAAAAAAAAAAAAAAAAAAD/8QAGBEAAwEBAAAAAAAAAAAAAAAAAAERAjH/2gAMAwEAAhEDEQA/AFDi1W1Fmuih03sJHFYDyEanaUpSnKJLau6vtZmw/bd/Jyx/M5zgKvUvBXEqf//Z';
+
 export function Hero() {
   const containerRef = useRef<HTMLElement>(null);
   const textColRef = useRef<HTMLDivElement>(null);
@@ -147,9 +151,12 @@ export function Hero() {
               src="/taxista.jpeg"
               alt="Taxista colombiano con Plataxi - VAL 245 Valledupar"
               fill
+              sizes="(max-width: 1024px) 0px, 50vw"
               className="object-cover"
               style={{ objectPosition: '70% center' }}
               priority
+              placeholder="blur"
+              blurDataURL={TAXISTA_BLUR}
             />
           </div>
         </div>
@@ -164,9 +171,12 @@ export function Hero() {
               src="/taxista.jpeg"
               alt="Taxista colombiano con Plataxi"
               fill
+              sizes="(max-width: 1024px) 100vw, 0px"
               className="object-cover"
               style={{ objectPosition: '62% 40%' }}
               priority
+              placeholder="blur"
+              blurDataURL={TAXISTA_BLUR}
             />
           </div>
         </div>
