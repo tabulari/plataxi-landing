@@ -17,6 +17,10 @@ const config: Config = {
         "secondary-text": "var(--color-secondary-text)",
         "secondary-border": "var(--color-secondary-border)",
 
+        // Feedback colors (user states only, not brand identity)
+        "feedback-error": { DEFAULT: "var(--color-feedback-error)", bg: "var(--color-feedback-error-bg)" },
+        "feedback-success": { DEFAULT: "var(--color-feedback-success)", bg: "var(--color-feedback-success-bg)" },
+
         // ShadCN semantic tokens
         background: "var(--background)",
         foreground: "var(--foreground)",

@@ -58,8 +58,7 @@ export function Requirements() {
           scrollTrigger: {
             trigger: heading,
             start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
@@ -78,8 +77,7 @@ export function Requirements() {
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 82%',
-            end: 'bottom 18%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
@@ -98,8 +96,7 @@ export function Requirements() {
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 82%',
-            end: 'bottom 18%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
@@ -116,7 +113,6 @@ export function Requirements() {
       <div className="mx-auto max-w-container px-6">
         {/* Header Block */}
         <div data-req="heading" className="max-w-2xl mx-auto text-center mb-10 lg:mb-12 space-y-1.5">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Requisitos</p>
           <h2
             id="req-heading"
             className="text-3xl sm:text-4xl lg:text-5xl font-display tracking-tight text-navy leading-[1.18]"
@@ -133,7 +129,7 @@ export function Requirements() {
           {/* Left: Mobile boy image */}
           <div
             data-req="image"
-            className="w-full max-w-md lg:max-w-[420px] aspect-[4/3] sm:aspect-square relative rounded-3xl overflow-hidden shadow-sm border border-neutral-100 bg-neutral-100 flex-shrink-0"
+            className="w-full max-w-md lg:max-w-[420px] aspect-[4/3] sm:aspect-square relative rounded-3xl overflow-hidden shadow-sm border border-secondary-border/50 bg-secondary-surface flex-shrink-0"
           >
             <Image
               src="/mobile-boy.jpeg"

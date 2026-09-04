@@ -9,8 +9,14 @@
     --color-primary-dark: #111110;       /* 1. Primario Estructural (Dark Onyx) */
     --color-primary-brand: #f6d860;      /* 2. Primario de Marca (Amarillo Mantequilla) */
     --color-secondary-surface: #fffbe0;  /* 3. Secundario Superficie (Crema Suave) */
-    --color-secondary-text: #757575;     /* 4. Secundario Texto (Gris Medio) */
+    --color-secondary-text: #595959;     /* 4. Secundario Texto (Gris Medio) — WCAG AA 4.5:1 min on white, margin for AA sampling */
     --color-secondary-border: #c1c1c1;   /* 5. Secundario Bordes (Gris Claro) */
+
+    /* ===== Colores de Feedback (fuera de los 5 de marca; solo estados de usuario) ===== */
+    --color-feedback-error: #b91c1c;
+    --color-feedback-error-bg: #fef2f2;
+    --color-feedback-success: #166534;
+    --color-feedback-success-bg: #f0fdf4;
 
     /* ===== ShadCN Semantic Tokens ===== */
     --background: #ffffff;
@@ -27,7 +33,7 @@
     --muted-foreground: var(--color-secondary-text);
     --accent: var(--color-secondary-surface);
     --accent-foreground: var(--color-primary-dark);
-    --destructive: var(--color-primary-dark);
+    --destructive: var(--color-feedback-error);
     --destructive-foreground: #ffffff;
     --border: var(--color-secondary-border);
     --input: var(--color-secondary-border);
@@ -52,16 +58,16 @@
     --brand-accent: var(--color-primary-brand);
     --brand-orange: var(--color-primary-brand);
 
-    /* ===== Semantic status tokens (estrictamente 5 colores) ===== */
-    --status-success: var(--color-primary-brand);
-    --status-success-bg: var(--color-secondary-surface);
-    --status-success-text: var(--color-primary-dark);
+    /* ===== Semantic status tokens (5 colores de marca + feedback error/success) ===== */
+    --status-success: var(--color-feedback-success);
+    --status-success-bg: var(--color-feedback-success-bg);
+    --status-success-text: var(--color-feedback-success);
     --status-warning: var(--color-primary-brand);
     --status-warning-bg: var(--color-secondary-surface);
     --status-warning-text: var(--color-primary-dark);
-    --status-error: var(--color-primary-dark);
-    --status-error-bg: var(--color-secondary-surface);
-    --status-error-text: var(--color-primary-dark);
+    --status-error: var(--color-feedback-error);
+    --status-error-bg: var(--color-feedback-error-bg);
+    --status-error-text: var(--color-feedback-error);
     --status-info: var(--color-primary-dark);
     --status-info-bg: var(--color-secondary-surface);
     --status-info-text: var(--color-primary-dark);
@@ -460,13 +466,13 @@ a:focus-visible {
   flex-shrink: 0;
 }
 
-/* ===== payment number flash ===== */
+/* ===== payment number flash (tactile feedback) ===== */
 @keyframes flash {
-  0%   { opacity: 1; }
-  30%  { opacity: 0.4; }
-  60%  { opacity: 1; }
+  0%   { transform: scale(1); opacity: 1; }
+  35%  { transform: scale(1.025); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
 }
-.flash { animation: flash 0.28s ease-out; }
+.flash { animation: flash 0.22s cubic-bezier(0.23, 1, 0.32, 1); }
 
 /* ===== CTA banner ambient glow (static depth, no perpetual motion) ===== */
 .cta-glow {
