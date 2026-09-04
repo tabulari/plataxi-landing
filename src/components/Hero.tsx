@@ -34,8 +34,7 @@ export function Hero() {
       scrollTrigger: {
         trigger: containerRef.current,
         start: 'top 85%',
-        end: 'bottom 15%',
-        toggleActions: 'play reverse play reverse',
+        once: true,
       },
     });
 
@@ -62,13 +61,11 @@ export function Hero() {
     <section
       ref={containerRef}
       aria-labelledby="hero-heading"
-      className="relative overflow-hidden bg-white"
-      style={{ minHeight: '70vh' }}
+      className="relative overflow-hidden bg-white min-h-[70vh] flex items-center"
     >
       {/* Grid centrado en max-w-container estilo Credalia */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto max-w-container px-6 py-12 lg:py-16"
-        style={{ minHeight: 'inherit' }}
+        className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto max-w-container px-6 py-12 lg:py-16"
       >
         {/* ── LEFT COLUMN ── */}
         <div ref={textColRef} className="flex flex-col justify-center space-y-6 z-10 max-w-lg">
@@ -116,13 +113,12 @@ export function Hero() {
           <dl data-hero-anim className="flex flex-wrap gap-x-8 gap-y-4 pt-2">
             {STATS.map((s) => (
               <div key={s.label} className="flex flex-col">
-                <dt className="sr-only">{s.label}</dt>
                 <dd className="text-2xl sm:text-3xl font-display font-black text-navy leading-none">
                   {s.value}
                 </dd>
-                <span className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted-2">
+                <dt className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted-2">
                   {s.label}
-                </span>
+                </dt>
               </div>
             ))}
           </dl>
@@ -149,7 +145,7 @@ export function Hero() {
           >
             <Image
               src="/taxista.jpeg"
-              alt="Taxista colombiano con Plataxi — VAL 245 Valledupar"
+              alt="Taxista colombiano con Plataxi - VAL 245 Valledupar"
               fill
               className="object-cover"
               style={{ objectPosition: '70% center' }}

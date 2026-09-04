@@ -58,7 +58,7 @@ export function ResumeNudge() {
         <button
           type="button"
           aria-label="Descartar"
-          className="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg text-muted-2 hover:bg-bg-soft hover:text-navy transition-colors"
+          className="shrink-0 flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl text-muted-2 hover:bg-bg-soft hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           onClick={() => {
             track('apply_resume_dismiss');
             hideResumeNudge();
