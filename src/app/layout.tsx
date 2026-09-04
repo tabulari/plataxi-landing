@@ -29,14 +29,14 @@ const display = Roboto({
 const MAX_AMOUNT_DISPLAY = `$${fmtCOP(config.simulator.amountMax).replace(',00','')}`;
 const DESCRIPTION =
   `Crédito digital en Colombia hasta ${MAX_AMOUNT_DISPLAY}. Respuesta en minutos, tasa clara y sin papeles. Simula tu cuota y solicita 100% en línea.`;
-const OG_TITLE = `${config.brandName} — Crédito digital hasta ${MAX_AMOUNT_DISPLAY}`;
+const OG_TITLE = `${config.brandName} - Crédito digital hasta ${MAX_AMOUNT_DISPLAY}`;
 const BRAND_ASSET_VERSION = '3ef966e';
 
 // metadataBase makes OG/canonical URLs absolute (⚠️ NEXT_PUBLIC_SITE_URL must be
 // the real domain or WhatsApp/social previews break).
 export const metadata: Metadata = {
   metadataBase: new URL(config.siteUrl),
-  title: `${config.brandName} — Crédito digital 100% en línea`,
+  title: `${config.brandName} - Crédito digital 100% en línea`,
   description: DESCRIPTION,
   authors: [{ name: config.brandName }],
   alternates: { canonical: "/", languages: { "es-CO": "/" } },

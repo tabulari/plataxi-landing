@@ -144,7 +144,7 @@ export function Nav() {
       <div className="mx-auto max-w-container px-6 flex items-center justify-between h-[68px]">
         <a
           href="#top"
-          aria-label={`${config.brandName} — inicio`}
+          aria-label={`${config.brandName} - inicio`}
           className="flex items-center py-2 text-navy"
         >
           <PlataxiWordmark height={28} variant="dark" />
@@ -176,7 +176,7 @@ export function Nav() {
             size="sm"
             className="hidden md:inline-flex min-h-[44px] bg-green text-ink hover:bg-green-bright border-0"
           >
-            Iniciar solicitud
+            Solicitar crédito
           </ApplyButton>
           <button
             ref={toggleRef}
@@ -238,7 +238,7 @@ export function Nav() {
               );
             })}
             <ApplyButton variant="default" size="lg" className="w-full min-h-[50px] mt-3 font-bold">
-              Iniciar solicitud
+              Solicitar crédito
             </ApplyButton>
           </div>
         </div>
