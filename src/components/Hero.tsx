@@ -94,7 +94,7 @@ export function Hero() {
             Sin nómina ni codeudor. Solicita desde el celular y recibe la plata el mismo día.
           </p>
 
-          <div data-hero-anim className="flex flex-wrap items-center gap-3.5 pt-1">
+          <div data-hero-anim data-slot="hero-ctas" className="flex flex-wrap items-center gap-3.5 pt-1">
             <ScrollButton
               variant="default"
               size="lg"

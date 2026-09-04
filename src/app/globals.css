@@ -112,6 +112,11 @@
     overflow-x: clip;
   }
 
+  /* Reserve space so the fixed mobile payment bar never covers page content. */
+  body.has-payment-bar {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
+
   body::before {
     content: '';
     position: fixed;
