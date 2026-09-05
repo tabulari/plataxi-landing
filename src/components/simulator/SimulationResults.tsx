@@ -47,16 +47,8 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
             <span>${fmtCOP(sim.payment)}</span>{' '}
             <span className="text-sm sm:text-base font-semibold text-muted-2">{sim.unit}</span>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-[11px]">
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-green/20 text-navy font-semibold">
-              Administración: ${fmtCOP(sim.adminFeePerPeriod)} {sim.unit}
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-green/20 text-navy font-semibold">
-              Fianza: ${fmtCOP(sim.guaranteeFeeTotal)} total
-            </span>
-          </div>
-          <p className="text-[11px] text-muted-2 leading-relaxed pt-1">
-            Sin intereses ocultos: cuota fija con administración y fianza incluidas.{" "}
+          <p className="text-xs text-muted-foreground leading-relaxed max-w-md pt-1.5">
+            Cuota final fija con todo incluido. Cero cobros por adelantado ni sorpresas.{" "}
             <a href="#preguntas" className="font-semibold text-navy underline underline-offset-2 hover:text-green-ink">
               Ver detalle en preguntas frecuentes
             </a>
