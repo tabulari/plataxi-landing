@@ -80,7 +80,7 @@ export function Faq() {
         </div>
 
         <div className="max-w-3xl mx-auto">
-          <Accordion className="space-y-3 min-w-0">
+          <Accordion className="space-y-3 min-w-0" defaultValue={['faq-0']}>
             {FAQS.map((faq, i) => (
               <AccordionItem
                 key={i}

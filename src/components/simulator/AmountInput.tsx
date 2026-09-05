@@ -108,6 +108,7 @@ export function AmountInput({
               aria-invalid={hint ? 'true' : undefined}
               aria-describedby={hint ? 'amountHint' : undefined}
               onChange={handleInputChange}
+              onFocus={(e) => e.target.select()}
               onBlur={handleInputBlur}
               className="w-full h-12 min-h-[48px] text-2xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight"
             />

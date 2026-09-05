@@ -117,7 +117,7 @@ export function CtaBanner() {
                 target="#simula"
                 className="w-full min-h-[48px] h-12 text-xs font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center gap-1.5 border-0 rounded-xl"
               >
-                <span>Simular cuota primero</span>
+                <span>Ajustar mi cuota</span>
                 <span className="text-white/40 font-normal">↑</span>
               </ScrollButton>
             </div>
