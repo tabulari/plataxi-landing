@@ -75,7 +75,7 @@ export function Simulator() {
         markInteract={markInteract}
       />
 
-      {/* Term Slider — flexible 1-6 meses (chips for 6 discrete was 10 pills total, slider saves scan) */}
+      {/* Term Slider — 1-6 meses flexible + ticks for scan (hybrid: 6 discrete but slider saves 10 pills → 4 freq) */}
       <div>
         <div className="flex items-center justify-between mb-2.5 gap-2">
           <p className="text-sm font-bold text-navy" id="plazoLabel">
@@ -114,9 +114,19 @@ export function Simulator() {
                   className="relative w-full h-12 min-h-[48px] appearance-none bg-transparent cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2 rounded-full [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[2.5px] [&::-webkit-slider-thumb]:border-green [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-webkit-slider-thumb]:cursor-pointer motion-safe:[&::-webkit-slider-thumb]:hover:scale-110 motion-safe:[&::-webkit-slider-thumb]:active:scale-125 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-track]:h-2 [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-[2.5px] [&::-moz-range-thumb]:border-green [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-moz-range-thumb]:cursor-pointer motion-safe:[&::-moz-range-thumb]:hover:scale-110 motion-safe:[&::-moz-range-thumb]:active:scale-125 [&::-moz-range-thumb]:transition-transform"
                 />
               </div>
-              <div className="flex justify-between text-xs text-muted-2 tabular-nums px-1 -mt-1">
-                <span>{minTerm} mes</span>
-                <span>{maxTerm} meses</span>
+              <div className="flex justify-between items-center px-1 -mt-1">
+                <div className="flex gap-1.5">
+                  {termOptions.map((v) => (
+                    <span
+                      key={v}
+                      className={`w-1.5 h-1.5 rounded-full transition-colors ${v === term ? 'bg-green' : v < term ? 'bg-green/50' : 'bg-border'}`}
+                      aria-hidden="true"
+                    />
+                  ))}
+                </div>
+                <span className="text-xs text-muted-2 tabular-nums">
+                  {minTerm} mes — {maxTerm} meses
+                </span>
               </div>
             </>
           );
