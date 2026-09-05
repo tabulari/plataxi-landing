@@ -39,7 +39,7 @@ const BENEFITS: Benefit[] = [
   {
     id: 'flexible',
     Icon: CalendarIcon,
-    title: 'A tu ritmo de trabajo',
+    title: 'Pagos a tu medida',
     body: 'Eliges abono diario, semanal, quincenal o mensual según tu producido.',
   },
 ];
@@ -60,7 +60,7 @@ export function Benefits() {
           y: 0,
           autoAlpha: 1,
           duration: 0.6,
-          ease: 'power2.out',
+          ease: 'power3.out',
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 85%',
@@ -101,14 +101,14 @@ export function Benefits() {
       className="mt-16 md:mt-32"
     >
       <div className="mx-auto max-w-container px-6">
-        <div ref={headerRef} className="max-w-2xl mx-auto text-center mb-10 lg:mb-12 space-y-2">
+        <div ref={headerRef} className="max-w-3xl lg:max-w-4xl mx-auto text-center mb-10 lg:mb-12 space-y-2">
           <h2
             id="benefits-heading"
-            className="text-section font-display font-bold text-navy"
+            className="text-3xl sm:text-4xl lg:text-[42px] leading-[1.2] font-display font-bold text-navy tracking-tight"
           >
             Tu crédito,{' '}
-            <mark className="inline-block bg-primary-brand text-primary-dark px-2.5 py-0.5 rounded-lg align-baseline">
-              a tu manera
+            <mark className="inline-block bg-primary-brand text-primary-dark px-3 py-0.5 rounded-lg align-baseline">
+              a tu propio ritmo
             </mark>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
