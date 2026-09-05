@@ -15,8 +15,8 @@ export const BANKS = config.application.banks;
 
 const MSG = {
   fullName: "Ingresa tu nombre y apellido.",
-  idNumber: "Ingresa un número de cédula válido.",
-  phone: "El celular debe tener 10 dígitos.",
+  idNumber: "Ingresa un número de cédula válido (7 a 10 dígitos).",
+  phone: "Ingresa un celular colombiano válido (10 dígitos, inicia en 3).",
   email: "Ingresa un correo válido.",
   employmentType: "Selecciona tu tipo de empleo.",
   income: "Ingresa tu ingreso mensual.",
@@ -32,8 +32,14 @@ export const fieldSchemas = {
   fullName: z
     .string()
     .refine((v) => v.trim().length >= 5 && v.trim().includes(" "), MSG.fullName),
-  idNumber: z.string().refine((v) => digits(v).length >= 6, MSG.idNumber),
-  phone: z.string().refine((v) => digits(v).length === 10, MSG.phone),
+  idNumber: z.string().refine((v) => {
+    const len = digits(v).length;
+    return len >= 7 && len <= 10;
+  }, MSG.idNumber),
+  phone: z.string().refine((v) => {
+    const d = digits(v);
+    return d.length === 10 && d.startsWith("3");
+  }, MSG.phone),
   email: z.string().refine((v) => EMAIL_RE.test(v.trim()), MSG.email),
   employmentType: z
     .string()
@@ -82,7 +88,7 @@ export const applicationSchema = z.object({
       amount: z.number().positive(),
       term: z.number().int().positive(),
       monthlyRate: z.number().positive(),
-      frequency: z.enum(["monthly", "biweekly"]),
+      frequency: z.enum(["daily", "weekly", "biweekly", "monthly"]),
     })
     .passthrough(),
 });

@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/accordion';
 import { WhatsAppLink } from './WhatsAppLink';
 import { WhatsAppIcon } from './icons';
-import { SectionEyebrow } from './SectionEyebrow';
 
 export function Faq() {
   const containerRef = useRef<HTMLElement>(null);
@@ -36,8 +35,7 @@ export function Faq() {
           scrollTrigger: {
             trigger: header,
             start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
@@ -56,8 +54,7 @@ export function Faq() {
           scrollTrigger: {
             trigger: items[0],
             start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
@@ -74,9 +71,8 @@ export function Faq() {
       <div className="mx-auto max-w-container px-6">
         {/* Centred header + single stacked column, as in the reference. */}
         <div data-faq="header" className="text-center max-w-2xl mx-auto space-y-2 mb-10 lg:mb-12">
-          <SectionEyebrow>Transparencia total</SectionEyebrow>
           <h2 id="faq-heading" className="text-section font-display font-bold text-navy">
-            Claridad total sobre tu crédito
+            Todo claro sobre tu crédito
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed pt-1">
             Todo lo que necesitas saber antes de solicitar, explicado con honestidad y sin tecnicismos bancarios.
@@ -97,14 +93,9 @@ export function Faq() {
                 </AccordionTrigger>
 
                 <AccordionContent className="px-6 pb-5 pt-0 text-left">
-                  <div className="space-y-1.5 border-t border-border/40 pt-3">
-                    <p className="text-sm sm:text-base font-bold text-navy leading-snug">
-                      {faq.verdict}
-                    </p>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {faq.explanation}
-                    </p>
-                  </div>
+                  <p className="text-sm sm:text-base text-muted-foreground leading-relaxed border-t border-border/40 pt-3">
+                    {faq.answer}
+                  </p>
                 </AccordionContent>
               </AccordionItem>
             ))}
@@ -132,11 +123,10 @@ export function Faq() {
         {/* Static noscript fallback for crawlers & non-JS */}
         <noscript>
           <div className="max-w-3xl mx-auto flex flex-col gap-3 mt-8">
-            {FAQS.map(({ q, verdict, explanation }, i) => (
+            {FAQS.map(({ q, answer }, i) => (
               <details key={i} className="border border-border rounded-xl p-4">
                 <summary className="text-sm font-bold text-navy cursor-pointer">{q}</summary>
-                <p className="mt-2 text-sm font-bold text-navy">{verdict}</p>
-                <p className="mt-1 text-sm text-muted-foreground">{explanation}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{answer}</p>
               </details>
             ))}
           </div>

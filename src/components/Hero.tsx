@@ -27,27 +27,20 @@ export function Hero() {
       <div className="relative z-10 w-full mx-auto max-w-container px-6 py-12 lg:py-16">
         <HeroAnim>
           <div className="max-w-2xl space-y-5">
-            {/* Eyebrow — inDrive: 40px pill, 14-16px sentence case medium, tokenized */}
-            <div data-hero-anim>
-              <span className="inline-flex items-center h-10 px-5 rounded-pill text-sm md:text-base font-medium bg-background text-primary-dark shadow-sm">
-                Hecho para taxistas colombianos
-              </span>
-            </div>
-
             {/* Headline — inDrive: text-4xl md:text-6xl font-bold, highlight via <mark> */}
             <h1
               id="hero-heading"
               data-hero-anim
               className="text-hero font-display font-bold text-white"
             >
-              Plata pa&apos;l día a día,{' '}
+              Soluciona tu día,{' '}
               <mark className="inline-block bg-primary-brand text-primary-dark px-3 py-1 rounded-lg">
-                aprobada en minutos
+                crédito en minutos
               </mark>
             </h1>
 
             <p data-hero-anim className="text-base sm:text-lg text-white/90 leading-relaxed max-w-lg">
-              Sin nómina ni fiador. Pide desde $100.000 hasta $1.000.000 y te llega la plata directo a tu Nequi hoy mismo.
+              Sin nómina ni fiador. Pide desde $100.000 hasta $1.000.000 y te llega el dinero directo a tu Nequi hoy mismo.
             </p>
 
             {/* Single focused CTA — inDrive: 48px mobile / 64px desktop, 20-26px radius, yellow on dark */}

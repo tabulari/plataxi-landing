@@ -144,7 +144,7 @@ export function StickyPaymentBar() {
             disabled={!sim.valid}
             className="h-11"
           >
-            Solicitar crédito
+            Pedir mi crédito
           </ApplyButton>
         </div>
       </div>
