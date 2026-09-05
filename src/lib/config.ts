@@ -172,6 +172,10 @@ export const config = {
     highAmountThreshold: readNum(process.env.NEXT_PUBLIC_CREDIT_HIGH_AMOUNT_THRESHOLD, 800000),
     /** Eligibility: min term (months) for amounts above highAmountThreshold. */
     highAmountMinTerm: readNum(process.env.NEXT_PUBLIC_CREDIT_HIGH_AMOUNT_MIN_TERM, 6),
+    /** Administración: cuota fija por crédito (ej: 8.000 COP total). */
+    adminFeeTotal: readNum(process.env.NEXT_PUBLIC_CREDIT_ADMIN_FEE_TOTAL, 8000),
+    /** Fianza: garantía por crédito (ej: 12.000 COP total). */
+    guaranteeFeeTotal: readNum(process.env.NEXT_PUBLIC_CREDIT_GUARANTEE_FEE_TOTAL, 12000),
   },
 
   /** --- Application form options --- */

@@ -6,9 +6,9 @@ export interface Faq {
 
 export const FAQS: Faq[] = [
   {
-    q: '¿Qué tasa y costo total aplica a mi cuota?',
+    q: '¿Qué incluye mi cuota? ¿Hay intereses ocultos?',
     answer:
-      'Tasa fija del 2,6% mensual (TEA 36,07%). Tu cuota ya incluye los intereses según el monto y plazo que elijas, sin cobros ocultos ni sorpresas.',
+      'Sin interés oculto. Tu cuota 1 a 6 meses ya incluye solo dos rubros fijos y claros: administración ($8.000 total prorrateado por cuota) y fianza ($12.000 total). Eliges abono diario, semanal, quincenal o mensual y pagas cuota fija sin sorpresas.',
     icon: 'document',
   },
   {
@@ -32,7 +32,7 @@ export const FAQS: Faq[] = [
   {
     q: '¿Puedo pagar mi crédito antes de tiempo sin penalidades?',
     answer:
-      'Sí. Puedes hacer abonos a capital o liquidar toda la deuda cuando quieras sin ninguna penalidad, pagando únicamente los intereses del tiempo utilizado.',
+      'Sí. Puedes liquidar de 1 a 6 meses cuando quieras sin penalidad. Pagas solo las cuotas causadas hasta ese día (administración prorrateada incluida) y te liberas de las cuotas restantes.',
     icon: 'refresh',
   },
   {
