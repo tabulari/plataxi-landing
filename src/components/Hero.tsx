@@ -28,11 +28,6 @@ export function Hero() {
       <div className="relative z-10 w-full mx-auto max-w-container px-6 py-10 sm:py-12 lg:py-16">
         <HeroAnim>
           <div className="max-w-2xl space-y-5">
-            <div data-hero-anim>
-              <span className="inline-flex items-center h-10 px-5 rounded-pill text-sm md:text-base font-medium bg-background text-primary-dark shadow-sm">
-                Hecho para taxistas colombianos
-              </span>
-            </div>
             {/* Headline — white pill on yellow taxi for contrast (yellow mark on yellow taxi was 0 contrast) */}
             <h1
               id="hero-heading"
