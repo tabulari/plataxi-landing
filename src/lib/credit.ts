@@ -13,7 +13,7 @@
 
 import { config } from './config';
 
-export type Frequency = "monthly" | "biweekly";
+export type Frequency = "daily" | "weekly" | "biweekly" | "monthly";
 
 export interface Simulation {
   amount: number;
@@ -25,7 +25,7 @@ export interface Simulation {
   monthlyRate: number; // decimal, monthly
   ea: number; // decimal, effective annual (E.A.)
   nPeriods: number;
-  unit: "/mes" | "/quincena";
+  unit: "/día" | "/semana" | "/quincena" | "/mes";
   valid: boolean; // false when the amount/term combo isn't offered
   message: string; // guidance shown to the user when !valid
 }
@@ -73,11 +73,10 @@ export function calculatePayment(
   monthlyRate: number = config.credit.monthlyRate,
 ): Simulation {
   const MONTHLY_RATE = monthlyRate;
-  const isBiweekly = frequency === "biweekly";
-
-  const periodsPerMonth = isBiweekly ? 2 : 1;
+  const periodsPerMonth =
+    frequency === "daily" ? 30 : frequency === "weekly" ? 4 : frequency === "biweekly" ? 2 : 1;
   const nPeriods = termMonths * periodsPerMonth;
-  const periodRate = isBiweekly ? MONTHLY_RATE / 2 : MONTHLY_RATE;
+  const periodRate = MONTHLY_RATE / periodsPerMonth;
 
   // Standard amortized payment: P * i / (1 - (1+i)^-n)
   const factor = Math.pow(1 + periodRate, -nPeriods);
@@ -97,7 +96,8 @@ export function calculatePayment(
     monthlyRate: MONTHLY_RATE, // decimal, monthly
     ea, // decimal, annual
     nPeriods,
-    unit: isBiweekly ? "/quincena" : "/mes",
+    unit:
+      frequency === "daily" ? "/día" : frequency === "weekly" ? "/semana" : frequency === "biweekly" ? "/quincena" : "/mes",
     valid: validity.ok, // false when the combo is not offered
     message: validity.message, // guidance to show the user
   };

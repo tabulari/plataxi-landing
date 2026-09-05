@@ -36,7 +36,7 @@ export const emptyValues: Values = {
 };
 
 export const capFreq = (f: Simulation['frequency']) =>
-  f === 'biweekly' ? 'Quincenal' : 'Mensual';
+  f === 'daily' ? 'Diario' : f === 'weekly' ? 'Semanal' : f === 'biweekly' ? 'Quincenal' : 'Mensual';
 
 export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | null>) {
   const [step, setStep] = useState(1);

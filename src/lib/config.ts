@@ -148,16 +148,16 @@ export const config = {
    */
   regulatorVerified: process.env.NEXT_PUBLIC_REGULATOR_VERIFIED === "true",
 
-  /** --- Simulator / product parameters — C: disclosure, full terms [3,6,9,12,18,24], rates behind Ver detalle --- */
+  /** --- Simulator / product parameters — A (hide rates) + max 6 meses + 4 freqs Diario/Semanal/Quincenal/Mensual --- */
   simulator: {
     amountMin: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MIN, 50000),
     amountMax: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MAX, 1000000),
     amountStep: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_STEP, 10000),
     amountStepBig: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_STEP_BIG, 50000),
     defaultAmount: readNum(process.env.NEXT_PUBLIC_SIM_DEFAULT_AMOUNT, 500000),
-    defaultTerm: readNum(process.env.NEXT_PUBLIC_SIM_DEFAULT_TERM, 12),
-    /** Comma-separated term options in months — C: full [3,6,9,12,18,24] (D was [3,6]). */
-    termOptions: readNumList(process.env.NEXT_PUBLIC_SIM_TERM_OPTIONS, [3, 6, 9, 12, 18, 24]),
+    defaultTerm: readNum(process.env.NEXT_PUBLIC_SIM_DEFAULT_TERM, 6),
+    /** Comma-separated term options in months — capped at 6 (was [3,6,9,12,18,24]). */
+    termOptions: readNumList(process.env.NEXT_PUBLIC_SIM_TERM_OPTIONS, [3, 6]),
   },
 
   /** --- Credit rate (interim — will come from Plataxi dashboard API) --- */

@@ -11,8 +11,10 @@ import { track } from '@/lib/analytics';
 import { cn } from '@/lib/utils';
 
 const FREQUENCIES: { value: Frequency; label: string }[] = [
-  { value: 'monthly', label: 'Mensual' },
+  { value: 'daily', label: 'Diario' },
+  { value: 'weekly', label: 'Semanal' },
   { value: 'biweekly', label: 'Quincenal' },
+  { value: 'monthly', label: 'Mensual' },
 ];
 
 export function Simulator() {
@@ -93,13 +95,13 @@ export function Simulator() {
         />
       </div>
 
-      {/* Payment Frequency Selector */}
+      {/* Payment Frequency Selector — 4 options: Diario, Semanal, Quincenal, Mensual */}
       <div>
         <p className="text-sm font-bold text-navy mb-2.5" id="freqLabel">
           Frecuencia de pago
         </p>
         <ChipRadioGroup
-          className="flex gap-2.5 max-w-xs"
+          className="flex flex-wrap gap-2"
           ariaLabelledBy="freqLabel"
           chipClassName="chip-freq"
           hideCheck

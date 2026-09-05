@@ -88,7 +88,7 @@ export const applicationSchema = z.object({
       amount: z.number().positive(),
       term: z.number().int().positive(),
       monthlyRate: z.number().positive(),
-      frequency: z.enum(["monthly", "biweekly"]),
+      frequency: z.enum(["daily", "weekly", "biweekly", "monthly"]),
     })
     .passthrough(),
 });
