@@ -21,7 +21,6 @@ export default function Home() {
         <Hero />
 
         {/* 2. Simulador de crédito (preserved intact) */}
-        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" />
         <SimulateSection>
           <Simulator />
         </SimulateSection>

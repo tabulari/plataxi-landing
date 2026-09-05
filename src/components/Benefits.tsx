@@ -128,13 +128,15 @@ export function Benefits() {
           />
         </div>
 
-        {/* Flat 4-up cards — inDrive squircle rounded-2xl style */}
+        {/* 2 white / 2 cream for Bento diversity (was 4 cream on white) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 stack:grid-cols-4 gap-5 lg:gap-6">
-          {BENEFITS.map((b) => (
+          {BENEFITS.map((b, i) => (
             <div
               key={b.id}
               data-benefit="card"
-              className="flex flex-col gap-4 bg-surface-card rounded-2xl p-6 sm:p-7 shadow-2xs hover:shadow-xs transition-shadow duration-200"
+              className={`flex flex-col gap-4 rounded-2xl p-6 sm:p-7 shadow-2xs hover:shadow-xs transition-shadow duration-200 ${
+                i % 2 === 0 ? 'bg-white border border-border/40' : 'bg-surface-card'
+              }`}
             >
               <div className="w-12 h-12 rounded-xl bg-primary-brand/20 text-primary-dark flex items-center justify-center shrink-0">
                 <b.Icon size={24} className="text-primary-dark stroke-[2.2]" aria-hidden="true" />
