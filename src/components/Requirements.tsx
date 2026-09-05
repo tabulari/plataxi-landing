@@ -130,7 +130,7 @@ export function Requirements() {
             className="w-full max-w-md lg:max-w-[420px] aspect-[4/3] sm:aspect-square relative rounded-3xl overflow-hidden shadow-sm border border-neutral-100 bg-neutral-100 flex-shrink-0"
           >
             <Image
-              src="/mobile-boy.jpeg"
+              src="/mobile-boy.webp"
               alt="Conductor solicitando su crédito desde el celular"
               fill
               sizes="(max-width: 1024px) 100vw, 420px"

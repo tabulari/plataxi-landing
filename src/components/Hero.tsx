@@ -9,7 +9,7 @@ export function Hero() {
       className="relative w-full h-[580px] sm:h-[650px] lg:h-[720px] overflow-hidden flex items-center bg-primary-dark"
     >
       <Image
-        src="/taxista.jpeg"
+        src="/taxista.webp"
         alt="Taxista colombiano con Plataxi"
         fill
         priority

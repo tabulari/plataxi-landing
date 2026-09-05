@@ -17,11 +17,11 @@ export function Hero10() {
       <picture>
         <source
           media="(min-width: 768px)"
-          srcSet="/taxista.jpeg 640w, /taxista.jpeg 1080w, /taxista.jpeg 1920w"
+          srcSet="/taxista.webp 640w, /taxista.webp 1080w, /taxista.webp 1920w"
           sizes="100vw"
         />
         <Image
-          src="/taxista.jpeg"
+          src="/taxista.webp"
           alt="Taxista colombiano con Plataxi"
           fill
           priority

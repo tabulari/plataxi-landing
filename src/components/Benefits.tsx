@@ -121,7 +121,7 @@ export function Benefits() {
             it is below the fold and must not compete with the hero for LCP. */}
         <div className="relative w-full aspect-[3/2] sm:aspect-[2/1] rounded-lg overflow-hidden mb-8 lg:mb-10">
           <Image
-            src="/hero-conductor.jpeg"
+            src="/hero-conductor.webp"
             alt="Conductor de taxi colombiano consultando su celular junto a su vehículo"
             fill
             sizes="(min-width: 1120px) 1072px, 100vw"
