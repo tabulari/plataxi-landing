@@ -9,7 +9,6 @@ import { CloseIcon, HamburgerIcon, PlataxiWordmark } from './icons';
 
 const LINKS = [
   { href: '#simula', label: 'Simular cuota' },
-  { href: '#requisitos-band', label: 'Requisitos' },
   { href: '#como-funciona', label: 'Cómo funciona' },
   { href: '#preguntas', label: 'Preguntas' },
 ];

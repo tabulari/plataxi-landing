@@ -3,7 +3,7 @@ import { Hero } from "@/components/Hero";
 import { SimulateSection } from "@/components/SimulateSection";
 import { Simulator } from "@/components/Simulator";
 import { Benefits } from "@/components/Benefits";
-import { Requirements } from "@/components/Requirements";
+
 import { HowItWorks } from "@/components/HowItWorks";
 import { Testimonials } from "@/components/Testimonials";
 import { Faq } from "@/components/Faq";
@@ -28,8 +28,8 @@ export default function Home() {
         {/* 2.5 Beneficios — 4 tarjetas planas estilo inDrive con imagen panorámica */}
         <Benefits />
 
-        {/* 3. Requisitos — imagen + lista vertical */}
-        <Requirements />
+
+
 
         {/* 4. Cómo funciona — 3 pasos */}
         <HowItWorks />

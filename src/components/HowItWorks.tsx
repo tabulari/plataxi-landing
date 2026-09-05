@@ -17,7 +17,7 @@ const STEPS: Step[] = [
     n: '01',
     Icon: CheckCircleIcon,
     title: 'Pide desde tu celular en 3 minutos',
-    body: 'Ingresa tus datos y cédula en el formulario seguro. Todo 100% digital y sin filas.',
+    body: 'Solo necesitas ser mayor de 18 años, tu cédula y tu extracto reciente de Nequi o cuenta. 100% digital y sin filas.',
   },
   {
     n: '02',
