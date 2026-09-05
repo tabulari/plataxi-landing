@@ -16,12 +16,11 @@ export function SimulateAnim({ children }: { children: React.ReactNode }) {
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top 85%',
-          end: 'bottom 15%',
-          toggleActions: 'play reverse play reverse',
+          once: true,
         },
       });
-      if (header) tl.fromTo(header, { y: 24, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, ease: 'power3.out' }, 0);
-      if (card) tl.fromTo(card, { y: 32, scale: 0.98, autoAlpha: 0 }, { y: 0, scale: 1, autoAlpha: 1, duration: 0.65, ease: 'power3.out' }, 0.15);
+      if (header) tl.fromTo(header, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.35, ease: 'power2.out' }, 0);
+      if (card) tl.fromTo(card, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.35, ease: 'power2.out' }, 0.08);
       return () => tl.kill();
     });
     return () => mm.revert();

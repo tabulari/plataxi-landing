@@ -55,17 +55,16 @@ export function Benefits() {
     if (headerRef.current) {
       gsap.fromTo(
         headerRef.current,
-        { y: 24, autoAlpha: 0 },
+        { y: 14, autoAlpha: 0 },
         {
           y: 0,
           autoAlpha: 1,
-          duration: 0.6,
-          ease: 'power3.out',
+          duration: 0.35,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
@@ -75,18 +74,17 @@ export function Benefits() {
     if (cards?.length) {
       gsap.fromTo(
         cards,
-        { y: 28, autoAlpha: 0 },
+        { y: 14, autoAlpha: 0 },
         {
           y: 0,
           autoAlpha: 1,
-          stagger: 0.08,
-          duration: 0.5,
-          ease: 'power3.out',
+          stagger: 0.05,
+          duration: 0.35,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: cards[0],
             start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
