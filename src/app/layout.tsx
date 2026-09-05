@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Roboto } from "next/font/google";
+import { Archivo, Inter } from "next/font/google";
 import Script from "next/script";
 import { config } from "@/lib/config";
 import { fmtCOP } from "@/lib/credit";
@@ -10,18 +10,20 @@ import { RevealController } from "@/components/RevealController";
 import { GsapProvider } from "@/components/GsapProvider";
 import "./globals.css";
 
-// Roboto is the Plataxi typeface. Both CSS vars map to Roboto so existing
-// `font-sans` / `font-display` usages keep working (display = heavy weights).
-const jakarta = Roboto({
+// Inter carries body copy; Archivo is the display face (the closest freely
+// licensed stand-in for inDrive's PP Agrandir — wide grotesque, tight tracking).
+// The CSS var names are legacy and kept so `font-sans` / `font-display` usages
+// across the app keep working unchanged.
+const jakarta = Inter({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "900"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-jakarta",
   display: "swap",
 });
 
-const display = Roboto({
+const display = Archivo({
   subsets: ["latin"],
-  weight: ["700", "900"],
+  weight: ["600", "700", "800"],
   variable: "--font-display",
   display: "swap",
 });
