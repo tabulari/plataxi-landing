@@ -15,8 +15,8 @@ export function HeroAnim({ children }: { children: React.ReactNode }) {
         if (!items?.length) return;
         const tween = gsap.fromTo(
           items,
-          { y: 24, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.09, ease: 'power3.out', delay: 0.1 },
+          { y: 12, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.06, ease: 'power2.out' },
         );
         return () => tween.kill();
       });

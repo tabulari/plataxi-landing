@@ -42,16 +42,15 @@ export function HowItWorks() {
       const header = containerRef.current?.querySelectorAll<HTMLElement>('[data-hiw="header"] > *');
       const cards = containerRef.current?.querySelectorAll<HTMLElement>('[data-hiw="step"]');
       const tl = gsap.timeline({
-        defaults: { ease: 'power3.out' },
+        defaults: { ease: 'power2.out' },
         scrollTrigger: {
           trigger: containerRef.current,
           start: 'top 85%',
-          end: 'bottom 15%',
-          toggleActions: 'play reverse play reverse',
+          once: true,
         },
       });
-      if (header?.length) tl.fromTo(header, { y: 20, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, stagger: 0.08 }, 0);
-      if (cards?.length) tl.fromTo(cards, { y: 32, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.1 }, 0.15);
+      if (header?.length) tl.fromTo(header, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.35, stagger: 0.05 }, 0);
+      if (cards?.length) tl.fromTo(cards, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.35, stagger: 0.06 }, 0.08);
       return () => tl.kill();
     });
     return () => mm.revert();

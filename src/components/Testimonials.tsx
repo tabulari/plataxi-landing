@@ -48,14 +48,14 @@ export function Testimonials() {
         if (!cards?.length) return;
         const tween = gsap.fromTo(
           cards,
-          { y: 24, autoAlpha: 0 },
+          { y: 14, autoAlpha: 0 },
           {
             y: 0,
             autoAlpha: 1,
-            stagger: 0.1,
-            duration: 0.5,
+            stagger: 0.06,
+            duration: 0.35,
             ease: 'power2.out',
-            scrollTrigger: { trigger: containerRef.current, start: 'top 80%' },
+            scrollTrigger: { trigger: containerRef.current, start: 'top 85%', once: true },
           },
         );
         return () => tween.kill();

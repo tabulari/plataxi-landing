@@ -20,34 +20,33 @@ export function CtaBanner() {
     const actionBlock = panel.querySelector('[data-cta="action-block"]');
 
     const tl = gsap.timeline({
-      defaults: { ease: 'power3.out' },
+      defaults: { ease: 'power2.out' },
       scrollTrigger: {
         trigger: panel,
         start: 'top 85%',
-        end: 'bottom 15%',
-        toggleActions: 'play reverse play reverse',
+        once: true,
       },
     });
 
-    // 1. Panel entrance
+    // 1. Panel entrance — subtle lift, no scale distortion
     tl.fromTo(
       panel,
-      { y: 32, scale: 0.97, autoAlpha: 0 },
-      { y: 0, scale: 1, autoAlpha: 1, duration: 0.7 },
+      { y: 16, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, duration: 0.4 },
       0,
     );
 
     // 2. Heading & Subhead
-    if (heading) tl.fromTo(heading, { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5 }, 0.2);
-    if (subhead) tl.fromTo(subhead, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4 }, 0.35);
+    if (heading) tl.fromTo(heading, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.35 }, 0.1);
+    if (subhead) tl.fromTo(subhead, { y: 10, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.35 }, 0.18);
 
-    // 3. Action Block
+    // 3. Action Block — clean, firm entrance without toy bounce
     if (actionBlock) {
       tl.fromTo(
         actionBlock,
-        { y: 18, scale: 0.95, autoAlpha: 0 },
-        { y: 0, scale: 1, autoAlpha: 1, duration: 0.5, ease: 'back.out(1.4)' },
-        0.55,
+        { y: 12, autoAlpha: 0 },
+        { y: 0, autoAlpha: 1, duration: 0.35 },
+        0.25,
       );
     }
   }, { scope: containerRef });

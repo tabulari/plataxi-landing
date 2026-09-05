@@ -44,17 +44,16 @@ export function Requirements() {
     if (heading) {
       gsap.fromTo(
         heading,
-        { y: 24, autoAlpha: 0 },
+        { y: 14, autoAlpha: 0 },
         {
           y: 0,
           autoAlpha: 1,
-          duration: 0.6,
+          duration: 0.35,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: heading,
             start: 'top 85%',
-            end: 'bottom 15%',
-            toggleActions: 'play reverse play reverse',
+            once: true,
           },
         },
       );
@@ -63,18 +62,16 @@ export function Requirements() {
     if (image) {
       gsap.fromTo(
         image,
-        { x: -24, autoAlpha: 0, scale: 0.96 },
+        { y: 14, autoAlpha: 0 },
         {
-          x: 0,
+          y: 0,
           autoAlpha: 1,
-          scale: 1,
-          duration: 0.6,
+          duration: 0.35,
           ease: 'power2.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 82%',
-            end: 'bottom 18%',
-            toggleActions: 'play reverse play reverse',
+            start: 'top 85%',
+            once: true,
           },
         },
       );
@@ -83,18 +80,17 @@ export function Requirements() {
     if (cards && cards.length) {
       gsap.fromTo(
         cards,
-        { x: 24, autoAlpha: 0 },
+        { y: 14, autoAlpha: 0 },
         {
-          x: 0,
+          y: 0,
           autoAlpha: 1,
-          stagger: 0.08,
-          duration: 0.5,
-          ease: 'power3.out',
+          stagger: 0.05,
+          duration: 0.35,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: containerRef.current,
-            start: 'top 82%',
-            end: 'bottom 18%',
-            toggleActions: 'play reverse play reverse',
+            start: 'top 85%',
+            once: true,
           },
         },
       );
