@@ -56,7 +56,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
             </span>
           </div>
           <p className="text-[11px] text-muted-2 leading-relaxed pt-1">
-            Sin interés oculto — cuota fija incluye administración y fianza.{" "}
+            Sin intereses ocultos: cuota fija con administración y fianza incluidas.{" "}
             <a href="#preguntas" className="font-semibold text-navy underline underline-offset-2 hover:text-green-ink">
               Ver detalle en preguntas frecuentes
             </a>

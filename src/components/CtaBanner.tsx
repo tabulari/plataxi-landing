@@ -92,7 +92,7 @@ export function CtaBanner() {
               data-cta="subhead"
               className="text-white/80 text-sm sm:text-base leading-relaxed max-w-lg pt-1"
             >
-              Pide desde tu celular con tu cédula y te llega la plata directo a tu Nequi o cuenta hoy mismo.
+              Pide desde tu celular con tu cédula y te llega el dinero directo a tu Nequi o cuenta hoy mismo.
             </p>
           </div>
 
