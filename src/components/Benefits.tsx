@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import Image from 'next/image';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
-import { SectionEyebrow } from './SectionEyebrow';
 import { LightningIcon, ShieldCheckIcon, CalendarIcon, CreditCardIcon } from './icons';
 import { config } from '@/lib/config';
 import { fmtCOP } from '@/lib/credit';
@@ -23,25 +22,25 @@ const BENEFITS: Benefit[] = [
     id: 'amount',
     Icon: CreditCardIcon,
     title: `Hasta ${MAX_AMOUNT}`,
-    body: 'Tu cupo crece con tu historial. Empieza hoy y accede a montos mayores.',
+    body: 'Pide desde $100.000 y aumenta tu cupo a medida que ruedas con nosotros.',
   },
   {
-    id: 'express',
+    id: 'digital',
     Icon: LightningIcon,
-    title: 'Crédito exprés',
-    body: 'Respuesta en minutos. Sin esperas ni filas. Aprobamos más rápido que el banco.',
+    title: '100% digital',
+    body: 'Solicitas desde tu celular en 3 minutos. Sin filas, papeleos ni ir a oficinas.',
   },
   {
     id: 'no-fees',
     Icon: ShieldCheckIcon,
     title: 'Cero cobros previos',
-    body: 'No te pedimos plata por adelantado ni seguros sorpresa. Todo es claro y transparente.',
+    body: 'No pagas pólizas, seguros ocultos ni adelantos. Cero trampas.',
   },
   {
     id: 'flexible',
     Icon: CalendarIcon,
-    title: 'Pagos flexibles',
-    body: 'Escoge pagar mensual o quincenal según tu flujo. Tú decides el plazo.',
+    title: 'A tu ritmo de trabajo',
+    body: 'Eliges abono diario, semanal, quincenal o mensual según tu producido.',
   },
 ];
 
@@ -61,7 +60,7 @@ export function Benefits() {
           y: 0,
           autoAlpha: 1,
           duration: 0.6,
-          ease: 'power3.out',
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 85%',
@@ -76,13 +75,12 @@ export function Benefits() {
     if (cards?.length) {
       gsap.fromTo(
         cards,
-        { y: 36, scale: 0.96, autoAlpha: 0 },
+        { y: 28, autoAlpha: 0 },
         {
           y: 0,
-          scale: 1,
           autoAlpha: 1,
-          stagger: 0.12,
-          duration: 0.65,
+          stagger: 0.08,
+          duration: 0.5,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: cards[0],
@@ -103,23 +101,23 @@ export function Benefits() {
       className="mt-16 md:mt-32"
     >
       <div className="mx-auto max-w-container px-6">
-        <div ref={headerRef} className="max-w-xl mx-auto text-center mb-12 space-y-2">
-          <SectionEyebrow>Beneficios</SectionEyebrow>
+        <div ref={headerRef} className="max-w-2xl mx-auto text-center mb-10 lg:mb-12 space-y-2">
           <h2
             id="benefits-heading"
             className="text-section font-display font-bold text-navy"
           >
-            Tu crédito, a tu manera
+            Tu crédito,{' '}
+            <mark className="inline-block bg-primary-brand text-primary-dark px-2.5 py-0.5 rounded-lg align-baseline">
+              a tu manera
+            </mark>
           </h2>
-          <p className="text-base text-muted-foreground leading-relaxed max-w-sm mx-auto">
-            Diseñado para conductores y trabajadores independientes.
+          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
+            Para el producido del turno, el mantenimiento del taxi o cualquier imprevisto del día.
           </p>
         </div>
 
-        {/* Section image above the cards, as in the reference. Source is 2:1;
-            a taller ratio on small screens keeps the subject readable. Lazy —
-            it is below the fold and must not compete with the hero for LCP. */}
-        <div className="relative w-full aspect-[3/2] sm:aspect-[2/1] rounded-lg overflow-hidden mb-8 lg:mb-10">
+        {/* Section panoramic image preserved — inDrive 2:1 aspect ratio with rounded-3xl */}
+        <div className="relative w-full aspect-[3/2] sm:aspect-[2/1] rounded-3xl overflow-hidden mb-8 lg:mb-10 shadow-xs border border-border/40">
           <Image
             src="/hero-conductor.webp"
             alt="Conductor de taxi colombiano consultando su celular junto a su vehículo"
@@ -130,18 +128,20 @@ export function Benefits() {
           />
         </div>
 
-        {/* Flat cream 4-up cards on the white canvas — no border, no shadow. */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 stack:grid-cols-4 gap-6">
+        {/* Flat 4-up cards — inDrive squircle rounded-2xl style */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 stack:grid-cols-4 gap-5 lg:gap-6">
           {BENEFITS.map((b) => (
             <div
               key={b.id}
               data-benefit="card"
-              className="flex flex-col gap-4 bg-surface-card rounded-lg p-8"
+              className="flex flex-col gap-4 bg-surface-card rounded-2xl p-6 sm:p-7 shadow-2xs hover:shadow-xs transition-shadow duration-200"
             >
-              <b.Icon size={32} className="text-primary-dark shrink-0" aria-hidden="true" />
+              <div className="w-12 h-12 rounded-xl bg-primary-brand/20 text-primary-dark flex items-center justify-center shrink-0">
+                <b.Icon size={24} className="text-primary-dark stroke-[2.2]" aria-hidden="true" />
+              </div>
 
-              <div className="space-y-1.5">
-                <h3 className="text-lg font-bold text-navy">{b.title}</h3>
+              <div className="space-y-1.5 text-left">
+                <h3 className="text-lg sm:text-xl font-bold text-navy tracking-tight">{b.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{b.body}</p>
               </div>
             </div>

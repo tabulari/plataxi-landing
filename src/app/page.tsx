@@ -2,6 +2,7 @@ import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { SimulateSection } from "@/components/SimulateSection";
 import { Simulator } from "@/components/Simulator";
+import { Benefits } from "@/components/Benefits";
 import { Requirements } from "@/components/Requirements";
 import { HowItWorks } from "@/components/HowItWorks";
 import { Testimonials } from "@/components/Testimonials";
@@ -24,6 +25,10 @@ export default function Home() {
         <SimulateSection>
           <Simulator />
         </SimulateSection>
+
+        {/* 2.5 Beneficios — 4 tarjetas planas estilo inDrive con imagen panorámica */}
+        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
+        <Benefits />
 
         {/* 3. Requisitos — imagen + lista vertical */}
         <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
