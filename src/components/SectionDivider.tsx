@@ -46,6 +46,7 @@ export function SectionDivider({
   const containerRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const primaryPathRef = useRef<SVGPathElement>(null);
+  const secondaryPathRef = useRef<SVGPathElement>(null);
   const glowEdgeRef = useRef<SVGPathElement>(null);
   const gradientRef = useRef<SVGLinearGradientElement>(null);
 
@@ -68,13 +69,36 @@ export function SectionDivider({
     let lastY = window.scrollY;
     let lastTime = performance.now();
     let inView = false;
+    let resetTimer: ReturnType<typeof setTimeout> | null = null;
+
+    // High-performance quickTo setters for 120 FPS continuous tracking without GC pressure
+    const quickPrimaryScaleY = primaryPathRef.current
+      ? gsap.quickTo(primaryPathRef.current, 'scaleY', { duration: 0.22, ease: 'power2.out' })
+      : null;
+    const quickPrimaryY = primaryPathRef.current
+      ? gsap.quickTo(primaryPathRef.current, 'y', { duration: 0.22, ease: 'power2.out' })
+      : null;
+
+    const quickSecondaryScaleY = secondaryPathRef.current
+      ? gsap.quickTo(secondaryPathRef.current, 'scaleY', { duration: 0.32, ease: 'power2.out' })
+      : null;
+    const quickSecondaryY = secondaryPathRef.current
+      ? gsap.quickTo(secondaryPathRef.current, 'y', { duration: 0.32, ease: 'power2.out' })
+      : null;
+
+    const quickGlowScaleY = glowEdgeRef.current
+      ? gsap.quickTo(glowEdgeRef.current, 'scaleY', { duration: 0.22, ease: 'power2.out' })
+      : null;
+    const quickGlowY = glowEdgeRef.current
+      ? gsap.quickTo(glowEdgeRef.current, 'y', { duration: 0.22, ease: 'power2.out' })
+      : null;
 
     // IntersectionObserver guarantees we only compute physics when the divider is in viewport
     const observer = new IntersectionObserver(
       ([entry]) => {
         inView = entry.isIntersecting;
       },
-      { threshold: 0, rootMargin: '100px 0px 100px 0px' }
+      { threshold: 0, rootMargin: '120px 0px 120px 0px' }
     );
     observer.observe(containerRef.current);
 
@@ -86,7 +110,7 @@ export function SectionDivider({
       }
 
       const now = performance.now();
-      const dt = Math.max(8, now - lastTime);
+      const dt = Math.max(10, now - lastTime);
       const dy = window.scrollY - lastY;
       lastY = window.scrollY;
       lastTime = now;
@@ -96,68 +120,64 @@ export function SectionDivider({
       const clampedVelocity = Math.max(-1.8, Math.min(1.8, velocity));
 
       // Viscoelastic deformation factors
-      const targetScaleY = 1 + clampedVelocity * 0.28;
-      const targetTranslateY = clampedVelocity * 6;
-      const gradientShift = clampedVelocity * 15;
+      const targetScaleY = 1 + clampedVelocity * 0.25;
+      const targetTranslateY = clampedVelocity * 5;
+      const secondaryScaleY = 1 + clampedVelocity * 0.18;
+      const secondaryTranslateY = clampedVelocity * 3.5;
 
-      // 1. Kinetic deformation of the primary horizon
-      if (primaryPathRef.current) {
-        gsap.to(primaryPathRef.current, {
-          scaleY: targetScaleY,
-          y: targetTranslateY,
-          duration: 0.12,
-          ease: 'power1.out',
-          overwrite: 'auto',
-          onComplete: () => {
-            // Spring return to perfect equilibrium with subtle damping bounce
-            gsap.to(primaryPathRef.current, {
-              scaleY: 1,
-              y: 0,
-              duration: 0.75,
-              ease: 'elastic.out(1.15, 0.42)',
-              overwrite: 'auto',
-            });
-          },
-        });
+      // Real-time kinematic tracking (smooth, zero-allocation)
+      if (quickPrimaryScaleY && quickPrimaryY) {
+        quickPrimaryScaleY(targetScaleY);
+        quickPrimaryY(targetTranslateY);
+      }
+      if (quickSecondaryScaleY && quickSecondaryY) {
+        quickSecondaryScaleY(secondaryScaleY);
+        quickSecondaryY(secondaryTranslateY);
+      }
+      if (quickGlowScaleY && quickGlowY) {
+        quickGlowScaleY(targetScaleY);
+        quickGlowY(targetTranslateY);
       }
 
-      // 2. Coordinated deformation of the luminous lens highlight
-      if (glowEdgeRef.current) {
-        gsap.to(glowEdgeRef.current, {
-          scaleY: targetScaleY,
-          y: targetTranslateY,
-          duration: 0.12,
-          ease: 'power1.out',
-          overwrite: 'auto',
-          onComplete: () => {
-            gsap.to(glowEdgeRef.current, {
-              scaleY: 1,
-              y: 0,
-              duration: 0.75,
-              ease: 'elastic.out(1.15, 0.42)',
-              overwrite: 'auto',
-            });
-          },
-        });
-      }
-
-      // 3. Dynamic glint shift along the crest
+      // Dynamic glint shift along the crest
       if (gradientRef.current) {
-        gsap.to(gradientRef.current, {
-          attr: { x1: `${20 - gradientShift}%`, x2: `${80 - gradientShift}%` },
-          duration: 0.25,
-          ease: 'power2.out',
-          overwrite: 'auto',
-          onComplete: () => {
-            gsap.to(gradientRef.current, {
-              attr: { x1: '20%', x2: '80%' },
-              duration: 0.8,
-              ease: 'power3.out',
-              overwrite: 'auto',
-            });
-          },
-        });
+        const shift = clampedVelocity * 12;
+        gradientRef.current.setAttribute('x1', `${20 - shift}%`);
+        gradientRef.current.setAttribute('x2', `${80 - shift}%`);
       }
+
+      // Clear any pending spring return while active scrolling is happening
+      if (resetTimer) clearTimeout(resetTimer);
+
+      // Spring return to perfect equilibrium with Emil's signature damped bounce
+      resetTimer = setTimeout(() => {
+        const elementsToSpring = [primaryPathRef.current, glowEdgeRef.current].filter(Boolean);
+        if (elementsToSpring.length) {
+          gsap.to(elementsToSpring, {
+            scaleY: 1,
+            y: 0,
+            duration: 0.85,
+            ease: 'elastic.out(1.15, 0.42)',
+            overwrite: 'auto',
+          });
+        }
+        if (secondaryPathRef.current) {
+          gsap.to(secondaryPathRef.current, {
+            scaleY: 1,
+            y: 0,
+            duration: 0.95,
+            ease: 'elastic.out(1.1, 0.45)',
+            overwrite: 'auto',
+          });
+        }
+        if (gradientRef.current) {
+          gsap.to(gradientRef.current, {
+            attr: { x1: '20%', x2: '80%' },
+            duration: 0.7,
+            ease: 'power3.out',
+          });
+        }
+      }, 90);
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -165,6 +185,7 @@ export function SectionDivider({
     return () => {
       window.removeEventListener('scroll', onScroll);
       observer.disconnect();
+      if (resetTimer) clearTimeout(resetTimer);
     };
   }, { scope: containerRef });
 
@@ -180,7 +201,7 @@ export function SectionDivider({
         viewBox={viewBox}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full block transform-gpu will-change-transform"
+        className="w-full h-12 sm:h-16 lg:h-20 block transform-gpu will-change-transform"
         preserveAspectRatio="none"
         style={{
           marginBottom: '-2px',
@@ -205,11 +226,13 @@ export function SectionDivider({
           </linearGradient>
         </defs>
 
-        {/* Secondary Harmonic Stratum */}
+        {/* Secondary Harmonic Stratum — Deforms concurrently with subtle fluid lag */}
         <path
+          ref={secondaryPathRef}
           d={dSecondary}
           fill={isDarkTo ? CREAM_TOKEN : fillColor}
           opacity={isDarkTo ? '0.55' : waveColor ? '0.55' : '0.35'}
+          style={{ transformOrigin: '50% 100%' }}
         />
 
         {/* Primary Viscoelastic Horizon Surface */}

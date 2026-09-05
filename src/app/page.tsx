@@ -26,27 +26,22 @@ export default function Home() {
         </SimulateSection>
 
         {/* 2.5 Beneficios — 4 tarjetas planas estilo inDrive con imagen panorámica */}
-        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
         <Benefits />
 
         {/* 3. Requisitos — imagen + lista vertical */}
-        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
         <Requirements />
 
-        {/* 5. Cómo funciona — 3 pasos */}
-        <SectionDivider amplitude="medium" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" />
+        {/* 4. Cómo funciona — 3 pasos */}
         <HowItWorks />
 
-        {/* 6. Testimonios — quotes de conductores reales */}
-        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
+        {/* 5. Testimonios — quotes de conductores reales */}
         <Testimonials />
 
-        {/* 7. FAQ — stack centrado */}
-        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
+        {/* 6. FAQ — stack centrado */}
         <Faq />
 
-        {/* 8. CTA final — transición a oscuro con borde crema */}
-        <SectionDivider amplitude="bold" from="var(--background)" to="var(--color-primary-dark)" waveColor="var(--color-secondary-surface)" />
+        {/* 7. CTA final — transición viscoelastic horizon a oscuro con halo luminoso */}
+        <SectionDivider amplitude="bold" from="var(--background)" to="var(--color-primary-dark)" />
         <CtaBanner />
       </main>
       <Footer />
