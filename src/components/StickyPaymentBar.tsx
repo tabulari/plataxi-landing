@@ -15,7 +15,7 @@ export function StickyPaymentBar() {
   useEffect(() => {
     const heroCtas = document.querySelector('[data-slot="hero-ctas"]');
     const simCard = document.getElementById('simulator');
-    const footer = document.querySelector('[data-slot="footer"]');
+    const bottomExit = document.getElementById('cta') || document.querySelector('[data-slot="footer"]');
 
     const supportsIO = typeof IntersectionObserver !== 'undefined';
 
@@ -36,11 +36,11 @@ export function StickyPaymentBar() {
             ? simRect.top < window.innerHeight * 0.75 &&
               simRect.bottom > 0
             : false;
-          const footerRect = footer?.getBoundingClientRect();
-          const atFooter = footerRect
-            ? footerRect.top < window.innerHeight
+          const exitRect = bottomExit?.getBoundingClientRect();
+          const atExit = exitRect
+            ? exitRect.top < window.innerHeight
             : false;
-          setShow(pastHero && !simVisible && !atFooter);
+          setShow(pastHero && !simVisible && !atExit);
           ticking = false;
         });
       };
@@ -51,9 +51,9 @@ export function StickyPaymentBar() {
 
     let pastHero = false;
     let simVisible = false;
-    let atFooter = false;
+    let atExit = false;
     const update = () =>
-      setShow(pastHero && !simVisible && !atFooter);
+      setShow(pastHero && !simVisible && !atExit);
 
     const observers: IntersectionObserver[] = [];
     if (heroCtas) {
@@ -79,15 +79,15 @@ export function StickyPaymentBar() {
       o.observe(simCard);
       observers.push(o);
     }
-    if (footer) {
+    if (bottomExit) {
       const o = new IntersectionObserver(
         ([en]) => {
-          atFooter = en.isIntersecting;
+          atExit = en.isIntersecting;
           update();
         },
         { threshold: 0 },
       );
-      o.observe(footer);
+      o.observe(bottomExit);
       observers.push(o);
     }
     return () => observers.forEach((o) => o.disconnect());

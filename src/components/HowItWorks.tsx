@@ -4,7 +4,6 @@ import { useRef } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { CheckCircleIcon, SparklesIcon, BoltIcon } from './icons';
-import { ApplyButton } from './ApplyButton';
 
 interface Step {
   n: string;
@@ -97,12 +96,6 @@ export function HowItWorks() {
             </li>
           ))}
         </ol>
-
-        <div className="mt-10 lg:mt-12 text-center">
-          <ApplyButton origin="hiw" size="lg" className="min-h-[48px] px-8">
-            Pedir mi crédito
-          </ApplyButton>
-        </div>
       </div>
     </section>
   );

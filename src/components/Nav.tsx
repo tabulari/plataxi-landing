@@ -218,7 +218,7 @@ export function Nav() {
             size="sm"
             className="hidden md:inline-flex min-h-[44px] bg-green text-ink hover:bg-green-bright border-0"
           >
-            Pedir mi crédito
+            Iniciar solicitud
           </ApplyButton>
           <button
             ref={toggleRef}
@@ -291,7 +291,7 @@ export function Nav() {
                 );
               })}
               <ApplyButton variant="default" size="lg" className="w-full min-h-[50px] mt-3 font-bold">
-                Pedir mi crédito
+                Iniciar solicitud
               </ApplyButton>
             </div>
           </div>
