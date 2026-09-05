@@ -1,185 +1,68 @@
-'use client';
-
-import { useRef } from 'react';
 import Image from 'next/image';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
 import { ScrollButton } from './ScrollButton';
-import { ApplyButton } from './ApplyButton';
-import { ShieldCheckIcon, LockIcon } from './icons';
-
-const STATS: { value: string; label: string }[] = [
-  { value: '$1.000.000', label: 'Cupo máximo' },
-  { value: 'Minutos', label: 'Respuesta' },
-  { value: '100%', label: 'En línea' },
-];
-
-// Clip-path inDrive: escalón sup-izq e inf-der estilizado y compacto (10%) para acercar la imagen al texto.
-const CLIP = 'polygon(10% 0%, 100% 0%, 100% 90%, 90% 90%, 90% 100%, 0% 100%, 0% 10%, 10% 10%)';
-
-// 16x16 low-quality preview of /taxista.jpeg, generated for the blur-up placeholder.
-const TAXISTA_BLUR =
-  'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAJABADASIAAhEBAxEB/8QAFgABAQEAAAAAAAAAAAAAAAAAAwEF/8QAIRAAAQQCAQUBAAAAAAAAAAAAAQIDBBEAEnEhMjM0QXL/xAAUAQEAAAAAAAAAAAAAAAAAAAAD/8QAGBEAAwEBAAAAAAAAAAAAAAAAAAERAjH/2gAMAwEAAhEDEQA/AFDi1W1Fmuih03sJHFYDyEanaUpSnKJLau6vtZmw/bd/Jyx/M5zgKvUvBXEqf//Z';
+import { HeroAnim } from './HeroAnim';
 
 export function Hero() {
-  const containerRef = useRef<HTMLElement>(null);
-  const textColRef = useRef<HTMLDivElement>(null);
-  const imageColRef = useRef<HTMLDivElement>(null);
-
-  useGSAP(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
-
-    const textItems = textColRef.current?.querySelectorAll('[data-hero-anim]');
-    const imageContainer = imageColRef.current;
-
-    const tl = gsap.timeline({
-      defaults: { ease: 'power3.out' },
-      scrollTrigger: {
-        trigger: containerRef.current,
-        start: 'top 85%',
-        once: true,
-      },
-    });
-
-    if (textItems && textItems.length > 0) {
-      tl.fromTo(
-        textItems,
-        { y: 28, autoAlpha: 0 },
-        { y: 0, autoAlpha: 1, duration: 0.7, stagger: 0.09 },
-        0.1,
-      );
-    }
-
-    if (imageContainer) {
-      tl.fromTo(
-        imageContainer,
-        { x: 35, scale: 0.96, autoAlpha: 0 },
-        { x: 0, scale: 1, autoAlpha: 1, duration: 0.85, ease: 'power3.out' },
-        0.2,
-      );
-    }
-  }, { scope: containerRef });
-
   return (
     <section
-      ref={containerRef}
       aria-labelledby="hero-heading"
-      className="relative overflow-hidden bg-white min-h-[70vh] flex items-center"
+      className="relative w-full h-[580px] sm:h-[650px] lg:h-[720px] overflow-hidden flex items-center bg-primary-dark"
     >
-      {/* Grid centrado en max-w-container estilo Credalia */}
+      <Image
+        src="/taxista.jpeg"
+        alt="Taxista colombiano con Plataxi"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
+        style={{ objectPosition: '75% center' }}
+      />
+
+      {/* Scrim: indrive parity 40-45% avg — reveals driver/plate while keeping white AA (6.5:1 on 45%). Darker 60/80 hid warmth & plate. */}
       <div
-        className="w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center mx-auto max-w-container px-6 py-12 lg:py-16"
-      >
-        {/* ── LEFT COLUMN ── */}
-        <div ref={textColRef} className="flex flex-col justify-center space-y-6 z-10 max-w-lg">
-          <div data-hero-anim>
-            <span className="inline-flex items-center gap-2 rounded-pill bg-secondary-surface border-2 border-primary-brand px-3.5 py-1.5 text-xs font-bold text-primary-dark w-fit shadow-xs">
-              Hecho para taxistas colombianos
-            </span>
-          </div>
+        aria-hidden="true"
+        className="absolute inset-0 bg-black/60 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/80 lg:via-black/60 lg:to-black/30"
+      />
 
-          <h1
-            id="hero-heading"
-            data-hero-anim
-            className="text-4xl sm:text-5xl lg:text-[3.25rem] font-display font-black tracking-tight text-navy leading-[1.18]"
-          >
-            Plata pa&apos;l día a día,<br />
-            <span className="inline-block bg-secondary-surface text-primary-dark border-2 border-primary-brand px-3.5 py-1 rounded-xl mt-1.5 shadow-sm">
-              aprobada en minutos
-            </span>
-          </h1>
+      <div className="relative z-10 w-full mx-auto max-w-container px-6 py-12 lg:py-16">
+        <HeroAnim>
+          <div className="max-w-2xl space-y-5">
+            {/* Eyebrow — inDrive: 40px pill, 14-16px sentence case medium, tokenized */}
+            <div data-hero-anim>
+              <span className="inline-flex items-center h-10 px-5 rounded-pill text-sm md:text-base font-medium bg-background text-primary-dark shadow-sm">
+                Hecho para taxistas colombianos
+              </span>
+            </div>
 
-          <p data-hero-anim className="text-base sm:text-lg text-muted-foreground leading-relaxed font-normal">
-            Sin nómina ni codeudor. Solicita desde el celular y recibe la plata el mismo día.
-          </p>
-
-          <div data-hero-anim data-slot="hero-ctas" className="flex flex-wrap items-center gap-3.5 pt-1">
-            <ScrollButton
-              variant="default"
-              size="lg"
-              target="#simula"
-              className="w-full sm:w-auto min-h-[52px] px-8 rounded-xl font-bold bg-green text-ink hover:bg-green-bright shadow-md hover:shadow-lg transition-all active:scale-[0.98]"
+            {/* Headline — inDrive: text-4xl md:text-6xl font-bold, highlight via <mark> */}
+            <h1
+              id="hero-heading"
+              data-hero-anim
+              className="text-hero font-display font-bold text-white"
             >
-              Simular mi crédito
-            </ScrollButton>
+              Plata pa&apos;l día a día,{' '}
+              <mark className="inline-block bg-primary-brand text-primary-dark px-3 py-1 rounded-lg">
+                aprobada en minutos
+              </mark>
+            </h1>
 
-            <ApplyButton
-              variant="outline"
-              size="lg"
-              className="w-full sm:w-auto min-h-[52px] px-7 rounded-xl font-bold border-2 border-navy text-navy hover:bg-navy hover:text-white transition-all active:scale-[0.98]"
-            >
-              Solicitar crédito
-            </ApplyButton>
+            <p data-hero-anim className="text-base sm:text-lg text-white/90 leading-relaxed max-w-lg">
+              Sin nómina ni fiador. Pide desde $100.000 hasta $1.000.000 y te llega la plata directo a tu Nequi hoy mismo.
+            </p>
+
+            {/* Single focused CTA — inDrive: 48px mobile / 64px desktop, 20-26px radius, yellow on dark */}
+            <div data-hero-anim className="pt-1">
+              <ScrollButton
+                variant="default"
+                size="lg"
+                target="#simula"
+                className="w-full sm:w-auto min-h-[48px] lg:min-h-[56px] px-8 rounded-lg font-bold bg-primary-brand text-primary-dark hover:bg-primary-brand/90 transition-all active:scale-[0.98] shadow-md hover:shadow-lg"
+              >
+                Simular mi cuota
+              </ScrollButton>
+            </div>
           </div>
-
-          {/* Stats row */}
-          <dl data-hero-anim className="flex flex-wrap gap-x-8 gap-y-4 pt-2">
-            {STATS.map((s) => (
-              <div key={s.label} className="flex flex-col">
-                <dd className="text-2xl sm:text-3xl font-display font-black text-navy leading-none">
-                  {s.value}
-                </dd>
-                <dt className="mt-1 text-xs font-semibold uppercase tracking-wide text-muted-2">
-                  {s.label}
-                </dt>
-              </div>
-            ))}
-          </dl>
-
-          {/* Trust badges */}
-          <div data-hero-anim className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold text-muted-2">
-            <span className="inline-flex items-center gap-1.5">
-              <ShieldCheckIcon size={16} className="text-ink shrink-0" />
-              Estudio 100% digital y gratuito
-            </span>
-            <span className="hidden sm:inline text-border" aria-hidden="true">·</span>
-            <span className="inline-flex items-center gap-1.5">
-              <LockIcon size={16} className="text-ink shrink-0" />
-              Datos cifrados y protegidos
-            </span>
-          </div>
-        </div>
-
-        {/* ── RIGHT COLUMN: imagen centrada e integrada ── */}
-        <div ref={imageColRef} className="relative hidden lg:block h-[460px] xl:h-[500px] w-full">
-          <div
-            className="absolute inset-0 shadow-2xl rounded-3xl overflow-hidden"
-            style={{ clipPath: CLIP }}
-          >
-            <Image
-              src="/taxista.jpeg"
-              alt="Taxista colombiano con Plataxi - VAL 245 Valledupar"
-              fill
-              sizes="(max-width: 1024px) 0px, 50vw"
-              className="object-cover"
-              style={{ objectPosition: '70% center' }}
-              priority
-              placeholder="blur"
-              blurDataURL={TAXISTA_BLUR}
-            />
-          </div>
-        </div>
-
-        {/* ── MOBILE: imagen debajo del texto ── */}
-        <div className="relative lg:hidden h-[280px] sm:h-[360px] overflow-hidden mt-2">
-          <div
-            className="absolute inset-0"
-            style={{ clipPath: 'polygon(0% 0%, 88% 0%, 88% 12%, 100% 12%, 100% 100%, 0% 100%)' }}
-          >
-            <Image
-              src="/taxista.jpeg"
-              alt="Taxista colombiano con Plataxi"
-              fill
-              sizes="(max-width: 1024px) 100vw, 0px"
-              className="object-cover"
-              style={{ objectPosition: '62% 40%' }}
-              priority
-              placeholder="blur"
-              blurDataURL={TAXISTA_BLUR}
-            />
-          </div>
-        </div>
+        </HeroAnim>
       </div>
     </section>
   );

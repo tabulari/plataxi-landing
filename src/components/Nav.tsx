@@ -1,13 +1,14 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import * as FocusScope from '@radix-ui/react-focus-scope';
 import { ApplyButton } from './ApplyButton';
 import { cn } from '@/lib/utils';
 import { config } from '@/lib/config';
 import { CloseIcon, HamburgerIcon, PlataxiWordmark } from './icons';
 
 const LINKS = [
-  { href: '#simula', label: 'Simula tu crédito' },
+  { href: '#simula', label: 'Simular cuota' },
   { href: '#requisitos-band', label: 'Requisitos' },
   { href: '#como-funciona', label: 'Cómo funciona' },
   { href: '#preguntas', label: 'Preguntas' },
@@ -45,36 +46,21 @@ export function Nav() {
     return () => document.removeEventListener('keydown', onKey);
   }, [open, close]);
 
+
+
   useEffect(() => {
     if (!open) return;
-    const panel = mobilePanelRef.current;
-    if (!panel) return;
-
-    const focusable = panel.querySelectorAll<HTMLElement>(
-      'a[href], button, [tabindex]:not([tabindex="-1"])',
-    );
-    if (focusable.length === 0) return;
-
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-
-    const onTab = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        if (document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
+    const prevOverflow = document.body.style.overflow;
+    const prevPaddingRight = document.body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    document.body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      document.body.style.paddingRight = prevPaddingRight;
     };
-
-    panel.addEventListener('keydown', onTab);
-    return () => panel.removeEventListener('keydown', onTab);
   }, [open]);
 
   useEffect(() => {
@@ -87,47 +73,68 @@ export function Nav() {
   }, []);
 
   useEffect(() => {
-    const hero = document.querySelector('section[aria-labelledby="hero-heading"]');
-    if (!hero) return;
+    const setup = (heroEl: HTMLElement) => {
+      const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
+        Boolean,
+      ) as HTMLElement[];
 
-    const sections = SECTION_IDS.map((id) => document.getElementById(id)).filter(
-      Boolean,
-    ) as HTMLElement[];
+      let heroVisible = true;
 
-    let heroVisible = true;
+      const heroIO = new IntersectionObserver(
+        ([en]) => {
+          heroVisible = en.isIntersecting;
+          setScrolled(!heroVisible);
+        },
+        // -68px = bar height, so the swap fires as the hero edge slides under it
+        { threshold: 0, rootMargin: '-68px 0px 0px 0px' },
+      );
+      heroIO.observe(heroEl);
 
-    const heroIO = new IntersectionObserver(
-      ([en]) => {
-        heroVisible = en.isIntersecting;
-        setScrolled(!heroVisible);
-      },
-      { threshold: 0 },
-    );
-    heroIO.observe(hero);
-
-    const sectionIO = new IntersectionObserver(
-      (entries) => {
-        for (const en of entries) {
-          if (en.isIntersecting) {
-            setActiveId(en.target.id);
-            return;
+      const sectionIO = new IntersectionObserver(
+        (entries) => {
+          for (const en of entries) {
+            if (en.isIntersecting) {
+              setActiveId(en.target.id);
+              return;
+            }
           }
+          const visible = sections.find(
+            (s) => {
+              const r = s.getBoundingClientRect();
+              return r.top < window.innerHeight * 0.5 && r.bottom > 0;
+            },
+          );
+          setActiveId(visible?.id ?? '');
+        },
+        { rootMargin: '-68px 0px -50% 0px', threshold: 0 },
+      );
+      sections.forEach((s) => sectionIO.observe(s));
+
+      return () => {
+        heroIO.disconnect();
+        sectionIO.disconnect();
+      };
+    };
+
+    let cleanup: (() => void) | undefined;
+    const hero = document.querySelector('section[aria-labelledby="hero-heading"]') as HTMLElement | null;
+    if (hero) {
+      cleanup = setup(hero);
+    } else {
+      // Hero is client-rendered; observe DOM until it appears (RSC/CSR race).
+      const mo = new MutationObserver(() => {
+        const found = document.querySelector('section[aria-labelledby="hero-heading"]') as HTMLElement | null;
+        if (found) {
+          mo.disconnect();
+          cleanup = setup(found);
         }
-        const visible = sections.find(
-          (s) => {
-            const r = s.getBoundingClientRect();
-            return r.top < window.innerHeight * 0.5 && r.bottom > 0;
-          },
-        );
-        setActiveId(visible?.id ?? '');
-      },
-      { rootMargin: '-68px 0px -50% 0px', threshold: 0 },
-    );
-    sections.forEach((s) => sectionIO.observe(s));
+      });
+      mo.observe(document.body, { childList: true, subtree: true });
+      cleanup = () => mo.disconnect();
+    }
 
     return () => {
-      heroIO.disconnect();
-      sectionIO.disconnect();
+      cleanup?.();
     };
   }, []);
 
@@ -135,22 +142,53 @@ export function Nav() {
     <header
       id="top"
       className={cn(
-        'sticky top-0 z-50 backdrop-blur-lg transition-colors duration-200',
+        // `fixed`, not `sticky`: the full-bleed hero runs underneath the bar.
+        'fixed top-0 left-0 right-0 z-50 transition-colors duration-300',
         scrolled
-          ? 'bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.06)]'
-          : 'bg-white shadow-none',
+          // NOTE: not `bg-background/95` — Tailwind cannot inject an alpha into
+          // var(--background) (the token holds a hex, not channels), so that
+          // utility emits an invalid colour and renders fully transparent.
+          // Solid bg-background + border replaces the ineffective backdrop-blur + shadow on opaque surface.
+          ? 'bg-background border-b border-border/60 shadow-none'
+          : 'bg-transparent border-b border-transparent shadow-none',
       )}
     >
-      <div className="mx-auto max-w-container px-6 flex items-center justify-between h-[68px]">
+      {/* Legibility scrim for the transparent state. The hero's scrim runs
+          left-to-right, so it is at its thinnest under the right-hand nav
+          links — measured 3.08:1 there without this. Fades out downward so the
+          bar still reads as transparent rather than as a plate. */}
+      {!scrolled && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 h-[120px] bg-gradient-to-b from-black/65 via-black/40 to-transparent pointer-events-none"
+        />
+      )}
+
+      <div className="relative z-10 mx-auto max-w-container px-6 flex items-center justify-between h-[68px]">
         <a
           href="#top"
-          aria-label={`${config.brandName} - inicio`}
-          className="flex items-center py-2 text-navy"
+          aria-label={`${config.brandName} — inicio`}
+          className="grid items-center py-2 [&>*]:col-start-1 [&>*]:row-start-1"
         >
-          <PlataxiWordmark height={28} variant="dark" />
+          {/* Both variants are stacked in one grid cell and cross-faded, so the
+              lockup always contrasts with whatever is behind the bar: white on
+              the hero photo, dark on the page below. The anchor carries the
+              accessible name, so both marks are hidden from assistive tech. */}
+          <span
+            aria-hidden="true"
+            className={cn('transition-opacity duration-300', scrolled ? 'opacity-0' : 'opacity-100')}
+          >
+            <PlataxiWordmark height={28} variant="white" />
+          </span>
+          <span
+            aria-hidden="true"
+            className={cn('transition-opacity duration-300', scrolled ? 'opacity-100' : 'opacity-0')}
+          >
+            <PlataxiWordmark height={28} variant="dark" />
+          </span>
         </a>
 
-        <nav aria-label="Navegación principal" className="hidden md:flex items-center gap-6">
+        <nav aria-label="Navegación principal" className="hidden md:flex items-center gap-6 lg:gap-8">
           {LINKS.map((l) => {
             const isActive = activeId === l.href.slice(1);
             return (
@@ -158,10 +196,14 @@ export function Nav() {
                 key={l.href}
                 href={l.href}
                 className={cn(
-                  "text-sm font-semibold transition-colors py-3.5 relative after:content-[''] after:absolute after:bottom-px after:left-0 after:h-0.5 after:bg-green after:transition-[width] after:duration-200",
-                  isActive
-                    ? 'text-navy after:w-full'
-                    : 'text-muted-2 hover:text-navy after:w-0 hover:after:w-full',
+                  "min-h-[44px] inline-flex items-center text-sm font-semibold transition-colors py-3.5 relative after:content-[''] after:absolute after:bottom-px after:left-0 after:h-0.5 after:bg-green after:transition-[width] after:duration-200 hover:scale-[1.01] active:scale-[0.98]",
+                  scrolled
+                    ? isActive
+                      ? 'text-navy after:w-full'
+                      : 'text-muted-2 hover:text-navy after:w-0 hover:after:w-full'
+                    : isActive
+                      ? 'text-white after:w-full'
+                      : 'text-white hover:text-white after:w-0 hover:after:w-full',
                 )}
               >
                 {l.label}
@@ -176,7 +218,7 @@ export function Nav() {
             size="sm"
             className="hidden md:inline-flex min-h-[44px] bg-green text-ink hover:bg-green-bright border-0"
           >
-            Solicitar crédito
+            Iniciar solicitud
           </ApplyButton>
           <button
             ref={toggleRef}
@@ -185,63 +227,75 @@ export function Nav() {
             aria-expanded={open}
             aria-controls="navMobile"
             onClick={() => setOpen((o) => !o)}
-            className="md:hidden flex items-center justify-center w-11 h-11 rounded-lg text-navy hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            className={cn(
+              'md:hidden flex items-center justify-center w-11 h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-transform hover:scale-[1.01] active:scale-[0.98]',
+              scrolled ? 'text-navy hover:bg-muted' : 'text-white hover:bg-white/10',
+            )}
           >
             {open ? <CloseIcon size={26} /> : <HamburgerIcon size={26} />}
           </button>
         </div>
       </div>
 
-      <nav aria-label="Navegación principal" className="md:hidden">
-        {/* Backdrop Scrim */}
+      <nav aria-label="Menú móvil" className="md:hidden">
+        {/* Backdrop Scrim — button for native kbd, solid bg (no blur) for GPU */}
         {open && (
-          <div
-            className="fixed inset-0 top-[68px] bg-black/25 backdrop-blur-[2px] z-40 md:hidden animate-fade-in"
+          <button
+            type="button"
+            aria-label="Cerrar menú"
             onClick={close}
-            aria-hidden="true"
+            className="fixed inset-0 top-[68px] bg-black/30 z-40 md:hidden animate-fade-in"
           />
         )}
 
-        {/* Floating Overlay Menu Panel */}
-        <div
-          id="navMobile"
-          ref={mobilePanelRef}
-          inert={!open || undefined}
-          className={cn(
-            'absolute top-full left-0 right-0 z-50 bg-white border-b border-border/80 shadow-2xl transition-all duration-200 ease-out',
-            open
-              ? 'opacity-100 translate-y-0 pointer-events-auto visible'
-              : 'opacity-0 -translate-y-2 pointer-events-none invisible',
-          )}
-          onClick={(e) => {
-            if ((e.target as HTMLElement).closest('a, button'))
-              close();
+        {/* Floating Overlay Menu Panel — Radix FocusScope handles loop + SR announcement (inert keeps background hidden) */}
+        <FocusScope.Root
+          trapped={open}
+          loop
+          onMountAutoFocus={(e) => {
+            e.preventDefault();
+            firstLinkRef.current?.focus();
           }}
         >
-          <div className="px-6 py-5 flex flex-col gap-1.5 border-t border-border/40">
-            {LINKS.map((l, i) => {
-              const isActive = activeId === l.href.slice(1);
-              return (
-                <a
-                  key={l.href}
-                  href={l.href}
-                  ref={i === 0 ? firstLinkRef : undefined}
-                  className={cn(
-                    'text-base font-semibold py-3 px-3 rounded-xl transition-colors',
-                    isActive
-                      ? 'text-navy bg-green/25 font-bold'
-                      : 'text-muted-2 hover:text-navy hover:bg-black/5',
-                  )}
-                >
-                  {l.label}
-                </a>
-              );
-            })}
-            <ApplyButton variant="default" size="lg" className="w-full min-h-[50px] mt-3 font-bold">
-              Solicitar crédito
-            </ApplyButton>
+          <div
+            id="navMobile"
+            ref={mobilePanelRef}
+            inert={!open || undefined}
+            className={cn(
+              'absolute top-full left-0 right-0 z-50 bg-white border-b border-border/80 shadow-lg transition-all duration-200 ease-out',
+              open
+                ? 'opacity-100 translate-y-0 pointer-events-auto visible'
+                : 'opacity-0 -translate-y-2 pointer-events-none invisible',
+            )}
+            onClick={(e) => {
+              if ((e.target as HTMLElement).closest('a, button')) close();
+            }}
+          >
+            <div className="px-6 py-5 flex flex-col gap-1.5 border-t border-border/40">
+              {LINKS.map((l, i) => {
+                const isActive = activeId === l.href.slice(1);
+                return (
+                  <a
+                    key={l.href}
+                    href={l.href}
+                    ref={i === 0 ? firstLinkRef : undefined}
+                    className={cn(
+                      'min-h-[44px] flex items-center text-base font-semibold py-3 px-3 rounded-xl transition-colors',
+                      isActive
+                        ? 'text-navy bg-green/25 font-bold'
+                        : 'text-muted-2 hover:text-navy hover:bg-black/5',
+                    )}
+                  >
+                    {l.label}
+                  </a>
+                );
+              })}
+              <ApplyButton variant="default" size="lg" className="w-full min-h-[50px] mt-3 font-bold">
+                Iniciar solicitud
+              </ApplyButton>
+            </div>
           </div>
-        </div>
+        </FocusScope.Root>
       </nav>
     </header>
   );

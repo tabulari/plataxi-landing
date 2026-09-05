@@ -340,7 +340,7 @@ export function PhoneChat() {
                   <div className="wa-card-row"><strong>Plazo:</strong> {phoneSim.term} meses</div>
                   <div className="wa-card-row"><strong>Cuota:</strong> {fmtCOP(phoneSim.payment)} / mes</div>
                   <div className="wa-card-row text-[10px] text-[#667781] pt-0.5 border-t border-[#f0f2f5] mt-1">
-                    Tasa: 2,6% m.v. (36,07% E.A.)
+                    Tasa fija según tu perfil • Detalles en preguntas frecuentes
                   </div>
                   <div className="wa-meta">
                     <span className="tabular-nums">{msgTimes.t1}</span>

@@ -38,6 +38,7 @@ const config: Config = {
         // Semantic surface tokens
         surface: {
           primary: "var(--surface-primary)",
+          card: "var(--surface-card)",
           secondary: "var(--surface-secondary)",
           tertiary: "var(--surface-tertiary)",
           dark: "var(--surface-dark)",
@@ -98,29 +99,43 @@ const config: Config = {
       fontFamily: {
         sans: [
           "var(--font-jakarta)",
-          "Roboto",
           "Inter",
           "system-ui",
           "sans-serif",
         ],
         display: [
           "var(--font-display)",
-          "Roboto",
+          "Archivo",
           "system-ui",
           "sans-serif",
         ],
       },
+      // inDrive normalizes every card, panel and button on 16px. xl/2xl/3xl are
+      // aliased so existing rounded-2xl / rounded-3xl usages flatten without
+      // touching each component.
       borderRadius: {
         sm: "8px",
         md: "12px",
         lg: "16px",
-        xl: "22px",
+        xl: "16px",
+        "2xl": "16px",
+        "3xl": "16px",
         pill: "999px",
       },
+      // Display scale, measured off indrive.com/es-co/money at 390px and 1440px:
+      // the h1 and the section h2 are the SAME size at every breakpoint —
+      // 36px/43px on mobile, 64px/77px on desktop, both 1.2 line-height and
+      // -0.02em tracking. inDrive gets hero dominance from the full-bleed photo,
+      // not from type size, so `hero` and `section` are deliberately identical.
+      // The two names are kept so components stay semantically readable.
+      fontSize: {
+        hero: ["clamp(2.25rem, 6.5vw, 4rem)", { lineHeight: "1.2", letterSpacing: "-0.02em" }],
+        section: ["clamp(2.25rem, 6.5vw, 4rem)", { lineHeight: "1.2", letterSpacing: "-0.02em" }],
+      },
       boxShadow: {
-        sm: "0 1px 2px rgba(16,32,64,.05), 0 1px 3px rgba(16,32,64,.06)",
-        md: "0 6px 24px rgba(13,42,94,.07), 0 2px 6px rgba(13,42,94,.05)",
-        lg: "0 24px 60px rgba(13,42,94,.14), 0 8px 24px rgba(13,42,94,.08)",
+        sm: "0 1px 2px rgba(17,17,16,.05), 0 1px 3px rgba(17,17,16,.06)",
+        md: "0 6px 24px rgba(17,17,16,.07), 0 2px 6px rgba(17,17,16,.05)",
+        lg: "0 24px 60px rgba(17,17,16,.14), 0 8px 24px rgba(17,17,16,.08)",
       },
       maxWidth: {
         container: "1120px",

@@ -8,6 +8,7 @@ import { ApplyButton } from './ApplyButton';
 import { AmountInput } from './simulator/AmountInput';
 import { SimulationResults } from './simulator/SimulationResults';
 import { track } from '@/lib/analytics';
+import { cn } from '@/lib/utils';
 
 const FREQUENCIES: { value: Frequency; label: string }[] = [
   { value: 'monthly', label: 'Mensual' },
@@ -59,7 +60,7 @@ export function Simulator() {
       id="simulator"
       aria-label="Simulador de crédito"
       onSubmit={(e) => e.preventDefault()}
-      className="bg-card border border-green/20 border-t-[3px] border-t-green/40 rounded-2xl p-5 sm:p-8 shadow-[0_0_0_1px_rgba(30,158,85,0.08),0_12px_32px_rgba(13,42,94,0.07)] space-y-6"
+      className="bg-card border border-green/20 border-t-[3px] border-t-green/40 rounded-2xl p-5 sm:p-8 shadow-[0_0_0_1px_rgba(30,158,85,0.08),0_12px_32px_rgba(17,17,16,0.07)] space-y-6"
     >
       {/* Amount Input with Stepper & Slider */}
       <AmountInput
@@ -85,7 +86,7 @@ export function Simulator() {
         <ChipRadioGroup
           className="flex flex-wrap gap-2"
           ariaLabelledBy="plazoLabel"
-          checkBefore
+          hideCheck
           options={terms}
           value={term}
           onChange={(v) => { markInteract('term'); setTerm(v); }}
@@ -101,6 +102,7 @@ export function Simulator() {
           className="flex gap-2.5 max-w-xs"
           ariaLabelledBy="freqLabel"
           chipClassName="chip-freq"
+          hideCheck
           options={FREQUENCIES}
           value={frequency}
           onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
@@ -116,21 +118,17 @@ export function Simulator() {
 
       {/* Action CTA & Single Quiet Trust Line */}
       <div className="pt-2 space-y-2.5">
-        {!sim.valid && sim.message && (
-          <p
-            className="text-sm text-error font-medium mb-2"
-            role="alert"
-            aria-live="polite"
-          >
-            {sim.message}
-          </p>
-        )}
-        <ApplyButton origin="simulator" variant="default" size="block" disabled={!sim.valid} className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-md hover:shadow-lg transition-all text-base font-bold border-0">
-          Solicitar crédito
-        </ApplyButton>
-        <p className="text-xs text-center text-muted-2">
-          🔒 Sin fiador · Estudio 100% digital y gratuito · Desembolso directo a tu cuenta
+        <p
+          className={cn('text-sm text-error font-medium transition-all', sim.valid ? 'h-0 overflow-hidden' : 'h-auto mb-2')}
+          role={sim.valid ? undefined : 'alert'}
+          aria-live="polite"
+          aria-hidden={sim.valid ? true : undefined}
+        >
+          {sim.valid ? '' : sim.message}
         </p>
+        <ApplyButton origin="simulator" variant="default" size="block" disabled={!sim.valid} className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-md hover:shadow-lg transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0">
+          Pedir este crédito
+        </ApplyButton>
       </div>
     </form>
   );

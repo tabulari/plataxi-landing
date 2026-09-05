@@ -48,3 +48,6 @@ lighthouserc.json
 # ai tool generated
 .agents/
 .kiro/
+
+# Local Claude Code dev-server config (port choice is per-machine)
+.claude/launch.json

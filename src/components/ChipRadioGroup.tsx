@@ -29,6 +29,7 @@ export function ChipRadioGroup<T extends string | number>({
   className,
   chipClassName,
   checkBefore = false,
+  hideCheck = false,
 }: {
   options: Option<T>[];
   value: T;
@@ -37,6 +38,7 @@ export function ChipRadioGroup<T extends string | number>({
   className: string;
   chipClassName?: string;
   checkBefore?: boolean;
+  hideCheck?: boolean;
 }) {
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndex = options.findIndex((o) => o.value === value);
@@ -84,9 +86,9 @@ export function ChipRadioGroup<T extends string | number>({
             className={`chip${active ? " active" : ""}${chipClassName ? ` ${chipClassName}` : ""}`}
             onClick={() => onChange(o.value)}
           >
-            {checkBefore && <Check />}
+            {!hideCheck && checkBefore && <Check />}
             {o.label}
-            {!checkBefore && (
+            {!hideCheck && !checkBefore && (
               <>
                 {" "}
                 <Check />

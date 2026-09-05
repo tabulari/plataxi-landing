@@ -148,7 +148,7 @@ export const config = {
    */
   regulatorVerified: process.env.NEXT_PUBLIC_REGULATOR_VERIFIED === "true",
 
-  /** --- Simulator / product parameters --- */
+  /** --- Simulator / product parameters — C: disclosure, full terms [3,6,9,12,18,24], rates behind Ver detalle --- */
   simulator: {
     amountMin: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MIN, 50000),
     amountMax: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MAX, 1000000),
@@ -156,7 +156,7 @@ export const config = {
     amountStepBig: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_STEP_BIG, 50000),
     defaultAmount: readNum(process.env.NEXT_PUBLIC_SIM_DEFAULT_AMOUNT, 500000),
     defaultTerm: readNum(process.env.NEXT_PUBLIC_SIM_DEFAULT_TERM, 12),
-    /** Comma-separated term options in months. */
+    /** Comma-separated term options in months — C: full [3,6,9,12,18,24] (D was [3,6]). */
     termOptions: readNumList(process.env.NEXT_PUBLIC_SIM_TERM_OPTIONS, [3, 6, 9, 12, 18, 24]),
   },
 

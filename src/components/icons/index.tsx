@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils';
+import { BRAND } from '@/lib/brand-colors';
 
 interface IconProps {
   size?: number;
@@ -311,7 +312,7 @@ export function MinusIcon({ size = 18, className }: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.5"
+      strokeWidth="2"
       strokeLinecap="round"
       className={className}
     >
@@ -329,7 +330,7 @@ export function PlusIcon({ size = 18, className }: IconProps) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="2.5"
+      strokeWidth="2"
       strokeLinecap="round"
       className={className}
     >
@@ -659,9 +660,9 @@ export function BoltIcon({ size = 16, className }: IconProps) {
 
 /**
  * Plataxi horizontal lockup — inline SVG, fondo transparente.
- * variant='dark'  → #151515 sobre fondo claro (Nav, Hero)
- * variant='white' → #FFFFFF sobre fondo oscuro (Footer)
- * variant='color' → #FFDD00 isotipo + #151515 tipografía
+ * variant='dark'  → tinta oscura de paleta sobre fondo claro (Nav, Hero)
+ * variant='white' → blanco puro sobre fondo oscuro (Footer)
+ * variant='color' → amarillo de marca + tipografía oscura
  */
 export function PlataxiWordmark({
   variant = 'dark',
@@ -672,9 +673,10 @@ export function PlataxiWordmark({
   height?: number;
   className?: string;
 }) {
-  const isotypeColor = variant === 'white' ? '#ffffff' : variant === 'color' ? '#f5e15b' : '#111110';
-  const textColor = variant === 'white' ? '#ffffff' : '#111110';
-  const vw = 1050;
+  const isotypeColor = variant === 'white' ? '#ffffff' : variant === 'color' ? BRAND.yellow : BRAND.dark;
+  const textColor = variant === 'white' ? '#ffffff' : BRAND.dark;
+  // Lockup box measured off the source art: isotype 0..370, wordmark from 423.
+  const vw = 1242;
   const vh = 200;
   const w = Math.round((height / vh) * vw);
 
@@ -689,31 +691,93 @@ export function PlataxiWordmark({
       role="img"
       className={className}
     >
-      {/* Símbolo Isotipo Plataxi: taxi facetado oficial */}
+      {/* Isotipo Plataxi: taxi facetado oficial */}
       <polygon points="97,0 273,0 317,77 53,77" fill={isotypeColor} />
       <polygon points="0,98 62,98 95,148 28,148" fill={isotypeColor} />
       <polygon points="308,98 370,98 342,148 275,148" fill={isotypeColor} />
       <polygon points="95,148 275,148 242,198 128,198" fill={isotypeColor} />
-      {/* Wordmark PLATAXI */}
-      <text
-        x="420"
-        y="148"
-        fontFamily="var(--font-jakarta), 'Montserrat', 'Roboto', 'Arial Black', sans-serif"
-        fontWeight="900"
-        fontSize="150"
-        letterSpacing="4"
-        fill={textColor}
-      >
-        PLATAXI
-      </text>
+      {/* Wordmark: contornos, no texto vivo. Antes era un <text> con
+          font-family var(--font-jakarta), asi que se re-componia con la
+          tipografia del body — se veia en Inter y la I final quedaba cortada
+          fuera del viewBox. Los contornos no dependen de ninguna fuente. */}
+      <g transform="translate(423,10) scale(0.333333) translate(0.000000,399.000000) scale(0.100000,-0.100000)" fill={textColor}>
+        <path d="M775 3970 l-740 -5 0 -1965 0 -1965 454 -3 c257 -1 459 2 464 7 5 5
+        8 244 7 550 -1 433 2 542 12 546 7 3 263 6 568 9 641 4 713 10 935 77 437 132
+        792 435 923 789 266 724 4 1456 -633 1765 -275 134 -501 182 -900 191 -115 2
+        -241 5 -280 7 -38 1 -403 0 -810 -3z m1259 -779 c340 -91 516 -305 516 -626 0
+        -331 -219 -592 -544 -647 -83 -14 -992 -21 -1017 -7 -18 9 -19 32 -19 654 l0
+        645 293 3 c472 6 688 0 771 -22z"/>
+        <path d="M16603 3973 c-71 -4 -81 -14 -122 -113 -13 -30 -36 -82 -51 -115 -76
+        -164 -140 -307 -140 -310 0 -3 -20 -48 -45 -101 -25 -52 -45 -97 -45 -99 0 -4
+        -46 -105 -111 -243 -21 -46 -39 -85 -39 -88 0 -2 -12 -28 -26 -57 -14 -28 -43
+        -95 -66 -147 -39 -92 -50 -117 -137 -303 -23 -49 -41 -90 -41 -92 0 -3 -16
+        -39 -36 -82 -20 -42 -74 -163 -119 -267 -229 -529 -230 -529 -322 -726 -25
+        -52 -67 -144 -93 -205 -53 -122 -95 -214 -146 -323 -19 -40 -34 -75 -34 -77 0
+        -3 -20 -48 -45 -101 -25 -52 -45 -97 -45 -99 0 -3 -26 -60 -58 -127 -81 -170
+        -106 -233 -99 -252 6 -15 52 -16 474 -14 l468 3 27 55 c15 30 55 123 88 205
+        34 83 67 164 74 180 8 17 35 82 61 145 26 63 53 127 61 142 8 14 14 33 14 41
+        0 8 9 26 21 41 l20 26 919 0 919 0 20 -26 c12 -15 21 -32 21 -38 0 -6 20 -59
+        45 -119 53 -126 126 -303 165 -402 71 -179 94 -231 109 -242 27 -23 1903 -18
+        1923 5 14 14 153 222 241 357 14 22 98 146 186 275 88 129 230 340 316 468
+        155 230 182 260 199 215 6 -16 306 -466 365 -548 34 -47 270 -380 291 -411 64
+        -93 164 -232 213 -297 l58 -77 527 2 527 3 -2 22 c-2 12 -22 49 -45 82 -148
+        206 -246 341 -338 466 -120 163 -169 232 -330 467 -319 464 -468 667 -638 873
+        -50 61 -92 118 -92 128 0 15 144 213 295 406 63 80 134 176 250 337 66 91 201
+        276 300 409 99 134 238 326 310 427 71 100 149 207 173 236 24 30 41 60 38 68
+        -7 18 -994 21 -1026 4 -11 -6 -50 -56 -88 -113 -188 -280 -518 -757 -652 -941
+        -102 -139 -130 -171 -150 -171 -23 0 -91 93 -280 385 -65 100 -292 434 -353
+        520 -34 47 -91 128 -128 180 -37 52 -79 107 -93 123 l-25 27 -513 -2 c-481 -3
+        -513 -4 -516 -21 -3 -17 57 -111 292 -452 112 -163 174 -250 426 -595 63 -87
+        171 -236 240 -331 69 -95 178 -244 243 -331 74 -100 117 -167 117 -182 0 -27
+        -59 -114 -381 -558 -227 -314 -316 -439 -417 -587 -58 -86 -124 -182 -147
+        -213 -22 -31 -56 -80 -75 -108 -19 -28 -66 -96 -105 -150 -38 -54 -94 -133
+        -123 -174 -81 -116 -77 -119 -220 199 -22 50 -79 175 -126 278 -47 103 -86
+        190 -86 192 0 3 -15 37 -34 77 -31 68 -131 285 -161 353 -45 101 -68 153 -91
+        208 -14 34 -41 94 -59 132 -18 39 -58 131 -90 205 -32 74 -72 167 -90 205 -18
+        39 -52 115 -75 170 -54 127 -90 204 -206 442 -52 106 -94 195 -94 197 0 3 -15
+        38 -34 78 -18 40 -50 108 -69 150 -20 42 -48 105 -63 140 -25 59 -88 199 -156
+        348 -38 81 -66 143 -111 243 -20 42 -42 79 -49 81 -17 6 -805 13 -885 9z m476
+        -1061 c29 -70 56 -134 61 -143 6 -12 101 -234 159 -374 11 -25 64 -156 101
+        -250 26 -65 97 -236 184 -447 41 -98 42 -104 20 -112 -9 -3 -284 -6 -611 -6
+        l-596 0 6 33 c3 18 18 62 35 97 16 36 53 121 81 190 29 69 56 134 61 145 4 11
+        19 47 31 80 13 33 27 64 31 70 4 5 8 15 8 22 0 7 13 41 29 75 16 35 56 131 91
+        213 34 83 89 215 122 295 33 80 67 163 76 185 36 91 45 85 111 -73z"/>
+        <path d="M4143 3958 c-8 -15 -11 -3905 -2 -3919 3 -5 602 -8 1475 -7 l1469 3
+        3 369 c2 264 -1 373 -9 382 -10 12 -174 14 -989 14 -538 0 -985 3 -994 6 -15
+        6 -16 153 -16 1573 0 1205 -3 1570 -12 1579 -18 18 -914 17 -925 0z"/>
+        <path d="M8943 3951 c-10 -11 -36 -62 -57 -113 -40 -93 -119 -270 -193 -428
+        -22 -47 -54 -114 -71 -150 -16 -36 -58 -123 -91 -193 -34 -71 -100 -219 -147
+        -330 -48 -111 -101 -233 -119 -272 -44 -94 -86 -186 -125 -270 -17 -38 -40
+        -88 -51 -111 -10 -22 -19 -43 -19 -47 0 -3 -15 -39 -34 -79 -62 -133 -133
+        -291 -204 -458 -39 -91 -94 -214 -122 -275 -106 -226 -185 -401 -235 -520 -21
+        -49 -42 -94 -46 -100 -4 -5 -26 -55 -49 -110 -39 -92 -69 -157 -170 -370 -20
+        -44 -36 -83 -33 -87 2 -5 215 -8 472 -8 531 0 481 -9 521 90 12 30 32 78 45
+        105 12 28 39 91 60 140 121 293 155 376 175 425 12 30 27 61 32 68 15 18 1861
+        18 1876 0 5 -7 19 -35 30 -63 11 -27 55 -133 97 -235 42 -102 90 -219 107
+        -260 17 -41 34 -84 39 -95 4 -11 20 -49 35 -85 14 -36 31 -71 36 -77 21 -25
+        998 -18 998 7 0 11 -34 90 -75 176 -41 86 -75 158 -75 160 0 3 -44 96 -99 207
+        -140 286 -291 604 -291 612 0 3 -20 48 -45 101 -25 52 -45 97 -45 99 0 3 -17
+        42 -39 87 -21 46 -58 128 -81 183 -42 99 -111 252 -176 393 -19 40 -34 75 -34
+        77 0 3 -14 35 -31 72 -17 38 -42 91 -54 118 -13 28 -39 85 -59 128 -20 42 -36
+        80 -36 82 0 3 -40 89 -90 190 -49 101 -90 187 -90 190 0 5 -54 122 -120 260
+        -21 44 -56 121 -78 170 -71 160 -128 288 -176 390 -26 55 -57 120 -68 145 -41
+        87 7 80 -514 80 -445 0 -464 -1 -481 -19z m541 -1023 c27 -68 84 -208 128
+        -313 44 -104 94 -224 110 -265 17 -41 34 -84 39 -95 61 -145 89 -215 89 -220
+        0 -3 9 -24 19 -48 11 -23 43 -98 71 -167 29 -69 59 -141 67 -161 33 -80 81
+        -74 -588 -77 -470 -2 -599 1 -607 10 -7 9 2 41 30 108 22 52 54 129 70 170 17
+        41 36 89 43 105 8 17 89 208 180 425 92 217 173 409 180 425 44 101 75 179 75
+        189 0 15 20 36 35 36 5 0 32 -55 59 -122z"/>
+        <path d="M11523 3958 c-12 -16 -26 -707 -14 -726 6 -10 122 -13 552 -13 299 0
+        576 -3 614 -7 l70 -7 5 -1585 5 -1585 459 -3 c287 -1 463 1 469 7 7 7 11 586
+        12 1581 2 1181 6 1575 14 1583 14 14 -35 13 679 15 l582 2 -2 373 -3 372
+        -1716 3 c-1366 2 -1719 -1 -1726 -10z"/>
+        <path d="M23603 3958 c-9 -15 -5 -3815 4 -3866 11 -63 4 -62 489 -60 l439 3 0
+        1965 0 1965 -462 3 c-363 2 -463 -1 -470 -10z"/>
+      </g>
     </svg>
   );
 }
 
-/**
- * Plataxi wordmark — TEMPORARY text-based placeholder lockup (a yellow rounded
- * mark + "Plataxi"). Kept for ModalSidebar usage.
- */
 export function BrandLogo({
   height = 32,
   className,
@@ -729,7 +793,7 @@ export function BrandLogo({
 }) {
   const onDark = variant === 'footer';
   const textColor = monochrome ? 'currentColor' : onDark ? '#ffffff' : '#111110';
-  const markBg = monochrome ? 'transparent' : '#f5e15b';
+  const markBg = monochrome ? 'transparent' : BRAND.yellow;
   const markFg = monochrome ? 'currentColor' : '#111110';
   const markSize = Math.round(height);
 
@@ -782,23 +846,35 @@ export function BrandLogo({
   );
 }
 
-/** Plataxi official brand mark — yellow rounded square with faceted taxi isotype. */
+/**
+ * Plataxi brand mark — yellow squircle badge with the faceted taxi isotype.
+ *
+ * The badge is a superellipse (|x/a|^5 + |y/b|^5 = 1), not a rect with a corner
+ * radius: a rounded rect changes curvature abruptly where the arc meets the
+ * straight edge, while a superellipse is continuous, which is what reads as an
+ * app icon. Geometry is kept byte-identical to public/plataxi-icon.svg so the
+ * inline component and the standalone asset cannot drift.
+ *
+ * The isotype polygons are unchanged from the original mark — only scaled and
+ * centred at 70% of badge width (the mark is 1.85:1, so it needs more width
+ * than a tall glyph to carry the same optical weight).
+ */
 export function PlataxiLogo({ size = 48, className }: IconProps) {
   return (
     <svg
       aria-hidden="true"
       width={size}
       height={size}
-      viewBox="0 0 512 512"
+      viewBox="0 0 40 40"
       className={className}
       style={{ height: 'auto', aspectRatio: '1 / 1' }}
     >
-      <rect x="16" y="16" width="480" height="480" rx="128" fill="#f5e15b" />
-      <g transform="translate(108, 176) scale(0.8)">
-        <polygon points="97,0 273,0 317,77 53,77" fill="#111110" />
-        <polygon points="0,98 62,98 95,148 28,148" fill="#111110" />
-        <polygon points="308,98 370,98 342,148 275,148" fill="#111110" />
-        <polygon points="95,148 275,148 242,198 128,198" fill="#111110" />
+      <path fill={BRAND.yellow} d="M40.000 20.000C40.000 22.952 39.977 26.916 39.931 28.857C39.885 30.799 39.817 30.854 39.725 31.647C39.632 32.441 39.517 33.035 39.377 33.620C39.236 34.205 39.073 34.694 38.882 35.157C38.691 35.620 38.476 36.023 38.231 36.399C37.986 36.774 37.716 37.106 37.411 37.411C37.106 37.716 36.774 37.986 36.399 38.231C36.023 38.476 35.620 38.691 35.157 38.882C34.694 39.073 34.205 39.236 33.620 39.377C33.035 39.517 32.441 39.632 31.647 39.725C30.854 39.817 30.799 39.885 28.857 39.931C26.916 39.977 22.952 40.000 20.000 40.000C17.048 40.000 13.084 39.977 11.143 39.931C9.201 39.885 9.146 39.817 8.353 39.725C7.559 39.632 6.965 39.517 6.380 39.377C5.795 39.236 5.306 39.073 4.843 38.882C4.380 38.691 3.977 38.476 3.601 38.231C3.226 37.986 2.894 37.716 2.589 37.411C2.284 37.106 2.014 36.774 1.769 36.399C1.524 36.023 1.309 35.620 1.118 35.157C0.927 34.694 0.764 34.205 0.623 33.620C0.483 33.035 0.368 32.441 0.275 31.647C0.183 30.854 0.115 30.799 0.069 28.857C0.023 26.916 0.000 22.952 0.000 20.000C0.000 17.048 0.023 13.084 0.069 11.143C0.115 9.201 0.183 9.146 0.275 8.353C0.368 7.559 0.483 6.965 0.623 6.380C0.764 5.795 0.927 5.306 1.118 4.843C1.309 4.380 1.524 3.977 1.769 3.601C2.014 3.226 2.284 2.894 2.589 2.589C2.894 2.284 3.226 2.014 3.601 1.769C3.977 1.524 4.380 1.309 4.843 1.118C5.306 0.927 5.795 0.764 6.380 0.623C6.965 0.483 7.559 0.368 8.353 0.275C9.146 0.183 9.201 0.115 11.143 0.069C13.084 0.023 17.048 0.000 20.000 0.000C22.952 0.000 26.916 0.023 28.857 0.069C30.799 0.115 30.854 0.183 31.647 0.275C32.441 0.368 33.035 0.483 33.620 0.623C34.205 0.764 34.694 0.927 35.157 1.118C35.620 1.309 36.023 1.524 36.399 1.769C36.774 2.014 37.106 2.284 37.411 2.589C37.716 2.894 37.986 3.226 38.231 3.601C38.476 3.977 38.691 4.380 38.882 4.843C39.073 5.306 39.236 5.795 39.377 6.380C39.517 6.965 39.632 7.559 39.725 8.353C39.817 9.146 39.885 9.201 39.931 11.143C39.977 13.084 40.000 17.048 40.000 20.000Z" />
+      <g fill={BRAND.dark}>
+        <polygon points="13.341,12.432 26.659,12.432 29.989,18.259 10.011,18.259" />
+        <polygon points="6.000,19.849 10.692,19.849 13.189,23.632 8.119,23.632" />
+        <polygon points="29.308,19.849 34.000,19.849 31.881,23.632 26.811,23.632" />
+        <polygon points="13.189,23.632 26.811,23.632 24.314,27.416 15.686,27.416" />
       </g>
     </svg>
   );
