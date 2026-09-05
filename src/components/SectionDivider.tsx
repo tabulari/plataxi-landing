@@ -34,8 +34,8 @@ const WAVES = {
 };
 
 export function SectionDivider({
-  from = '#ffffff',
-  to = '#ffffff',
+  from = 'var(--background)',
+  to = 'var(--background)',
   waveColor,
   amplitude = 'medium',
   flip = false,
@@ -46,43 +46,60 @@ export function SectionDivider({
   const secondaryWaveRef = useRef<SVGPathElement>(null);
   const { viewBox, d, dSecondary } = WAVES[amplitude];
 
-  const isDarkTo = to === '#111110' || to === '#151515' || to === '#0a0a0a' || to?.includes('111110') || to?.includes('151515') || to?.includes('0a0a0a');
+  const DARK_TOKEN = 'var(--color-primary-dark)';
+  const CREAM_TOKEN = 'var(--color-secondary-surface)';
+  const isDarkTo = to === DARK_TOKEN;
   const fillColor = waveColor || to;
 
   useGSAP(() => {
-    if (typeof window === 'undefined') return;
-    const isDesktop = window.matchMedia('(min-width: 768px)').matches;
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!isDesktop || reduceMotion || !containerRef.current) return;
+    if (typeof window === 'undefined' || !containerRef.current) return;
 
-    const primary = primaryWaveRef.current;
-    const secondary = secondaryWaveRef.current;
+    const mm = gsap.matchMedia();
 
-    // Butter-smooth, calming harmonic fluid sine oscillations on desktop
-    if (primary) {
-      gsap.to(primary, {
-        x: flip ? -20 : 20,
-        scaleY: 1.05,
-        duration: 5.2,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        transformOrigin: '50% 100%',
+    mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      const primary = primaryWaveRef.current;
+      const secondary = secondaryWaveRef.current;
+      if (!primary && !secondary) return;
+
+      // Butter-smooth, calming harmonic fluid sine oscillations — paused when offscreen via ScrollTrigger toggleActions
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          toggleActions: 'play pause resume pause',
+        },
       });
-    }
 
-    if (secondary) {
-      gsap.to(secondary, {
-        x: flip ? 28 : -28,
-        scaleY: 1.08,
-        duration: 6.8,
-        repeat: -1,
-        yoyo: true,
-        ease: 'sine.inOut',
-        delay: 0.5,
-        transformOrigin: '50% 100%',
-      });
-    }
+      if (primary) {
+        tl.to(primary, {
+          x: flip ? -20 : 20,
+          scaleY: 1.05,
+          duration: 5.2,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          transformOrigin: '50% 100%',
+        }, 0);
+      }
+
+      if (secondary) {
+        tl.to(secondary, {
+          x: flip ? 28 : -28,
+          scaleY: 1.08,
+          duration: 6.8,
+          repeat: -1,
+          yoyo: true,
+          ease: 'sine.inOut',
+          delay: 0.5,
+          transformOrigin: '50% 100%',
+        }, 0);
+      }
+
+      return () => tl.kill();
+    });
+
+    return () => mm.revert();
   }, { scope: containerRef });
 
   return (
@@ -107,14 +124,14 @@ export function SectionDivider({
         <path
           ref={secondaryWaveRef}
           d={dSecondary}
-          fill={isDarkTo ? '#fffbe0' : fillColor}
+          fill={isDarkTo ? CREAM_TOKEN : fillColor}
           opacity={isDarkTo ? '0.6' : waveColor ? '0.6' : '0.35'}
         />
         {/* Primary Solid Surface Wave */}
         <path
           ref={primaryWaveRef}
           d={d}
-          fill={isDarkTo ? to : fillColor}
+          fill={isDarkTo ? DARK_TOKEN : fillColor}
         />
       </svg>
     </div>

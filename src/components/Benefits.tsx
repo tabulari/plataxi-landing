@@ -1,32 +1,45 @@
 'use client';
 
 import { useRef } from 'react';
+import Image from 'next/image';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { SectionEyebrow } from './SectionEyebrow';
+import { LightningIcon, ShieldCheckIcon, CalendarIcon, CreditCardIcon } from './icons';
+import { config } from '@/lib/config';
+import { fmtCOP } from '@/lib/credit';
 
 interface Benefit {
   id: string;
-  icon: string;          // emoji / unicode char as accent
+  Icon: React.ComponentType<{ size?: number; className?: string }>;
   title: string;
   body: string;
 }
 
+const MAX_AMOUNT = `$${fmtCOP(config.simulator.amountMax).replace(',00', '')}`;
+
 const BENEFITS: Benefit[] = [
   {
+    id: 'amount',
+    Icon: CreditCardIcon,
+    title: `Hasta ${MAX_AMOUNT}`,
+    body: 'Tu cupo crece con tu historial. Empieza hoy y accede a montos mayores.',
+  },
+  {
     id: 'express',
-    icon: '⚡',
+    Icon: LightningIcon,
     title: 'Crédito exprés',
     body: 'Respuesta en minutos. Sin esperas ni filas. Aprobamos más rápido que el banco.',
   },
   {
-    id: 'no-cosigner',
-    icon: '🤝',
-    title: 'Sin codeudor',
-    body: 'Solo necesitas tu cédula y un soporte de ingresos. Nada más, nada menos.',
+    id: 'no-fees',
+    Icon: ShieldCheckIcon,
+    title: 'Cero cobros previos',
+    body: 'No te pedimos plata por adelantado ni seguros sorpresa. Todo es claro y transparente.',
   },
   {
     id: 'flexible',
-    icon: '📅',
+    Icon: CalendarIcon,
     title: 'Pagos flexibles',
     body: 'Escoge pagar mensual o quincenal según tu flujo. Tú decides el plazo.',
   },
@@ -87,16 +100,14 @@ export function Benefits() {
       ref={containerRef}
       id="beneficios"
       aria-labelledby="benefits-heading"
-      className="py-16 sm:py-20 lg:py-24 bg-white"
+      className="mt-16 md:mt-32"
     >
       <div className="mx-auto max-w-container px-6">
         <div ref={headerRef} className="max-w-xl mx-auto text-center mb-12 space-y-2">
-          <p className="text-xs font-bold uppercase tracking-widest text-muted-2">
-            Beneficios
-          </p>
+          <SectionEyebrow>Beneficios</SectionEyebrow>
           <h2
             id="benefits-heading"
-            className="text-3xl sm:text-4xl lg:text-5xl font-display font-black tracking-tight text-navy leading-[1.1]"
+            className="text-section font-display font-bold text-navy"
           >
             Tu crédito, a tu manera
           </h2>
@@ -105,21 +116,29 @@ export function Benefits() {
           </p>
         </div>
 
-        {/* inDrive-style 3-up cards: white card, yellow accent mark + icon */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        {/* Section image above the cards, as in the reference. Source is 2:1;
+            a taller ratio on small screens keeps the subject readable. Lazy —
+            it is below the fold and must not compete with the hero for LCP. */}
+        <div className="relative w-full aspect-[3/2] sm:aspect-[2/1] rounded-lg overflow-hidden mb-8 lg:mb-10">
+          <Image
+            src="/hero-conductor.jpeg"
+            alt="Conductor de taxi colombiano consultando su celular junto a su vehículo"
+            fill
+            sizes="(min-width: 1120px) 1072px, 100vw"
+            className="object-cover"
+            priority={false}
+          />
+        </div>
+
+        {/* Flat cream 4-up cards on the white canvas — no border, no shadow. */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 stack:grid-cols-4 gap-6">
           {BENEFITS.map((b) => (
             <div
               key={b.id}
               data-benefit="card"
-              className="group flex flex-col gap-4 bg-white border border-secondary-border/50 rounded-3xl p-7 hover:border-primary-brand hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
+              className="flex flex-col gap-4 bg-surface-card rounded-lg p-8"
             >
-              {/* Yellow mark with icon */}
-              <span
-                aria-hidden="true"
-                className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-secondary-surface border-2 border-primary-brand text-2xl shadow-xs"
-              >
-                {b.icon}
-              </span>
+              <b.Icon size={32} className="text-primary-dark shrink-0" aria-hidden="true" />
 
               <div className="space-y-1.5">
                 <h3 className="text-lg font-bold text-navy">{b.title}</h3>

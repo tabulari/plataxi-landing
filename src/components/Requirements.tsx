@@ -5,33 +5,29 @@ import Image from 'next/image';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { CheckIcon } from './icons';
+import { SectionEyebrow } from './SectionEyebrow';
 
 interface RequirementItem {
   id: string;
-  title: string;
-  detail: string;
+  text: string;
 }
 
 const REQUIREMENTS_DATA: RequirementItem[] = [
   {
     id: 'age',
-    title: 'Tener más de 18 años',
-    detail: 'Vivir en Colombia.',
+    text: 'Mayor de 18 años y vivir en Colombia',
   },
   {
     id: 'id',
-    title: 'Cédula de ciudadanía',
-    detail: 'Física o digital, que esté vigente.',
+    text: 'Cédula de ciudadanía vigente',
   },
   {
     id: 'bank',
-    title: 'Tu cuenta o Nequi',
-    detail: 'A tu nombre, para enviarte el dinero.',
+    text: 'Cuenta bancaria o Nequi a tu nombre',
   },
   {
     id: 'income',
-    title: 'Soporte de ingresos',
-    detail: 'Un extracto o colilla reciente.',
+    text: 'Extracto bancario o de Nequi reciente',
   },
 ];
 
@@ -111,20 +107,20 @@ export function Requirements() {
       ref={containerRef}
       id="requisitos-band"
       aria-labelledby="req-heading"
-      className="py-14 sm:py-16 lg:py-20 bg-white relative overflow-hidden"
+      className="mt-16 md:mt-32 relative overflow-hidden"
     >
       <div className="mx-auto max-w-container px-6">
         {/* Header Block */}
         <div data-req="heading" className="max-w-2xl mx-auto text-center mb-10 lg:mb-12 space-y-1.5">
-          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-1">Requisitos</p>
+          <SectionEyebrow>Requisitos</SectionEyebrow>
           <h2
             id="req-heading"
-            className="text-3xl sm:text-4xl lg:text-5xl font-display tracking-tight text-navy leading-[1.18]"
+            className="text-section font-display font-bold text-navy"
           >
-            Solo necesitas <span className="inline-block bg-secondary-surface text-primary-dark border-2 border-primary-brand px-2.5 py-0.5 rounded-lg align-baseline shadow-xs">4 cosas</span>
+            Solo necesitas <span className="inline-block bg-primary-brand text-primary-dark px-2.5 py-0.5 rounded-lg align-baseline">4 cosas</span>
           </h2>
           <p className="text-base sm:text-lg text-muted-foreground font-normal leading-relaxed max-w-lg mx-auto">
-            Sin fiador ni papeleos. Puedes pedirlo desde tu celular en 5 minutos.
+            Sin fiador ni papeleo. 100% digital.
           </p>
         </div>
 
@@ -137,7 +133,7 @@ export function Requirements() {
           >
             <Image
               src="/mobile-boy.jpeg"
-              alt="Persona solicitando su crédito desde el celular"
+              alt="Conductor solicitando su crédito desde el celular"
               fill
               sizes="(max-width: 1024px) 100vw, 420px"
               className="object-cover object-center"
@@ -146,25 +142,20 @@ export function Requirements() {
           </div>
 
           {/* Right: Vertical List of Requirements */}
-          <div className="flex flex-col gap-3.5 sm:gap-4 w-full max-w-md lg:max-w-lg">
+          <div className="flex flex-col gap-3 sm:gap-3.5 w-full max-w-md lg:max-w-lg">
             {REQUIREMENTS_DATA.map((item) => (
               <div
                 key={item.id}
                 data-req="card"
-                className="group flex items-center gap-4 rounded-2xl border border-secondary-border/50 bg-white p-4 sm:p-5 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-md hover:border-primary-brand hover:-translate-y-0.5 transition-all duration-200"
+                className="flex items-center gap-4 rounded-xl bg-surface-card px-5 py-4 sm:px-6 sm:py-4.5"
               >
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-secondary-surface border-2 border-primary-brand flex items-center justify-center flex-shrink-0 text-primary-dark group-hover:bg-primary-brand transition-colors duration-200 shadow-2xs">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-primary-brand flex items-center justify-center flex-shrink-0 text-primary-dark shadow-xs">
                   <CheckIcon size={20} className="text-primary-dark stroke-[3]" />
                 </div>
 
-                <div className="min-w-0 flex-1">
-                  <h3 className="text-base sm:text-lg font-bold text-navy leading-snug">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed mt-0.5">
-                    {item.detail}
-                  </p>
-                </div>
+                <p className="text-base sm:text-lg font-bold text-navy leading-snug min-w-0 flex-1">
+                  {item.text}
+                </p>
               </div>
             ))}
           </div>

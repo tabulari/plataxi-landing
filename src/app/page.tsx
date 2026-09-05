@@ -2,9 +2,9 @@ import { Nav } from "@/components/Nav";
 import { Hero } from "@/components/Hero";
 import { SimulateSection } from "@/components/SimulateSection";
 import { Simulator } from "@/components/Simulator";
-import { Benefits } from "@/components/Benefits";
 import { Requirements } from "@/components/Requirements";
 import { HowItWorks } from "@/components/HowItWorks";
+import { Testimonials } from "@/components/Testimonials";
 import { Faq } from "@/components/Faq";
 import { CtaBanner } from "@/components/CtaBanner";
 import { Footer } from "@/components/Footer";
@@ -16,33 +16,33 @@ export default function Home() {
     <>
       <Nav />
       <main>
-        {/* 1. Hero — split layout, yellow accents, stats */}
+        {/* 1. Hero — full-bleed, foto + titular + un solo CTA */}
         <Hero />
 
         {/* 2. Simulador de crédito (preserved intact) */}
-        <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
+        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" />
         <SimulateSection>
           <Simulator />
         </SimulateSection>
 
-        {/* 3. Beneficios — 3-up cards (inDrive-style) */}
-        <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
-        <Benefits />
-
-        {/* 4. Requisitos — 2×2 grid */}
-        <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
+        {/* 3. Requisitos — imagen + lista vertical */}
+        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
         <Requirements />
 
-        {/* 5. Cómo funciona — numbered journey */}
-        <SectionDivider amplitude="medium" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
+        {/* 5. Cómo funciona — 3 pasos */}
+        <SectionDivider amplitude="medium" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" />
         <HowItWorks />
 
-        {/* 6. FAQ — 2-column accordion */}
-        <SectionDivider amplitude="soft" from="#ffffff" to="#ffffff" waveColor="#fffbe0" />
+        {/* 6. Testimonios — quotes de conductores reales */}
+        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
+        <Testimonials />
+
+        {/* 7. FAQ — stack centrado */}
+        <SectionDivider amplitude="soft" from="var(--background)" to="var(--background)" waveColor="var(--color-secondary-surface)" flip />
         <Faq />
 
         {/* 8. CTA final — transición a oscuro con borde crema */}
-        <SectionDivider amplitude="bold" from="#ffffff" to="#111110" waveColor="#fffbe0" />
+        <SectionDivider amplitude="bold" from="var(--background)" to="var(--color-primary-dark)" waveColor="var(--color-secondary-surface)" />
         <CtaBanner />
       </main>
       <Footer />

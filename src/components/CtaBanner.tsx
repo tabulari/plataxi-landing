@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ApplyButton } from './ApplyButton';
 import { ScrollButton } from './ScrollButton';
+import { SectionEyebrow } from './SectionEyebrow';
 
 export function CtaBanner() {
   const containerRef = useRef<HTMLElement>(null);
@@ -19,7 +20,6 @@ export function CtaBanner() {
     const heading = panel.querySelector('[data-cta="heading"]');
     const subhead = panel.querySelector('[data-cta="subhead"]');
     const actionBlock = panel.querySelector('[data-cta="action-block"]');
-    const sheen = panel.querySelector('.cta-sheen');
 
     const tl = gsap.timeline({
       defaults: { ease: 'power3.out' },
@@ -53,12 +53,6 @@ export function CtaBanner() {
         0.55,
       );
     }
-
-    // 4. One-shot Sheen Sweep
-    if (sheen) {
-      gsap.set(sheen, { xPercent: -270 });
-      tl.to(sheen, { xPercent: 270, duration: 0.9, ease: 'power2.inOut' }, 0.75);
-    }
   }, { scope: containerRef });
 
   return (
@@ -78,37 +72,26 @@ export function CtaBanner() {
         }}
       />
 
-      {/* Ambient Green Light Bloom */}
-      <div
-        className="absolute left-1/3 top-10 -translate-x-1/2 w-80 h-80 cta-glow cta-glow--green pointer-events-none"
-        aria-hidden="true"
-      />
-
       <div className="mx-auto max-w-container px-6 relative pb-6 lg:pb-10">
         <div
           ref={panelRef}
           data-cta="panel"
           className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-10 sm:p-12 lg:p-16 backdrop-blur-xl shadow-2xl overflow-hidden"
         >
-          <span className="cta-sheen" aria-hidden="true" />
-
           {/* Left Column: Pure, Saturated Value Anchor */}
           <div className="flex-1 min-w-0 relative space-y-5 text-left">
-            <p
-              data-cta="eyebrow"
-              className="text-xs font-bold uppercase tracking-widest text-secondary-surface"
-            >
+            <SectionEyebrow variant="dark" data-cta="eyebrow">
               Comienza ahora
-            </p>
+            </SectionEyebrow>
 
             <h2
               id="cta-heading"
               data-cta="heading"
               className="text-3xl sm:text-4xl lg:text-[42px] font-display tracking-tight text-white leading-[1.18] mb-2"
             >
-              Tu dinero en minutos, <br className="hidden sm:inline" />
-              <span className="inline-block bg-secondary-surface text-primary-dark border-2 border-primary-brand px-3.5 py-1 rounded-xl mt-1.5 shadow-sm">
-                sin fiador ni trámites.
+              Plata lista para rodar, <br className="hidden sm:inline" />
+              <span className="inline-block bg-primary-brand text-primary-dark px-3.5 py-1 rounded-xl mt-1.5">
+                sin filas ni enredos.
               </span>
             </h2>
 
@@ -116,7 +99,7 @@ export function CtaBanner() {
               data-cta="subhead"
               className="text-white/80 text-sm sm:text-base leading-relaxed max-w-lg pt-1"
             >
-              Solicita 100% en línea con tu cédula y recibe el desembolso directo en tu cuenta o billetera digital hoy mismo.
+              Pide desde tu celular con tu cédula y te llega la plata directo a tu Nequi o cuenta hoy mismo.
             </p>
           </div>
 
@@ -131,7 +114,7 @@ export function CtaBanner() {
               size="lg"
               className="w-full min-h-[54px] h-14 bg-green text-ink font-bold shadow-[0_12px_28px_-6px_rgba(255,221,0,0.35),0_8px_10px_-6px_rgba(0,0,0,0.4)] hover:bg-green-bright hover:scale-[1.01] active:scale-[0.98] transition-all text-base rounded-2xl border-0 flex items-center justify-center gap-2"
             >
-              <span>Solicitar crédito</span>
+              <span>Pedir mi crédito</span>
             </ApplyButton>
 
             {/* Secondary: Minimalist Floating Trigger */}
