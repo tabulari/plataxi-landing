@@ -2,17 +2,18 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { BRAND } from '@/lib/brand-colors';
 
 export type LogoVariant = 'dark' | 'white' | 'color' | 'yellow' | 'yellow-white';
 export type LogoLayout = 'horizontal' | 'with-tagline' | 'isotype-only' | 'vertical';
 
 export interface PlataxiLogoProps {
   /** Visual color style:
-   * - 'dark': #151515 dark ink (for white or light backgrounds)
-   * - 'white': #FFFFFF pure white (for dark/footer backgrounds)
-   * - 'color': Yellow #FFDD00 symbol + dark text
-   * - 'yellow': Pure #FFDD00 for symbol and text
-   * - 'yellow-white': Yellow #FFDD00 symbol + white text
+   * - 'dark': palette dark ink (for white or light backgrounds)
+   * - 'white': pure white (for dark/footer backgrounds)
+   * - 'color': brand yellow symbol + dark text
+   * - 'yellow': brand yellow for symbol and text
+   * - 'yellow-white': brand yellow symbol + white text
    */
   variant?: LogoVariant;
   /** Layout arrangement */
@@ -60,15 +61,15 @@ export function PlataxiLogo({
     textColor = '#ffffff';
     taglineColor = '#ffffff';
   } else if (variant === 'color') {
-    isotypeColor = '#f5e15b';
+    isotypeColor = BRAND.yellow;
     textColor = '#111110';
     taglineColor = '#111110';
   } else if (variant === 'yellow') {
-    isotypeColor = '#f5e15b';
-    textColor = '#f5e15b';
-    taglineColor = '#f5e15b';
+    isotypeColor = BRAND.yellow;
+    textColor = BRAND.yellow;
+    taglineColor = BRAND.yellow;
   } else if (variant === 'yellow-white') {
-    isotypeColor = '#f5e15b';
+    isotypeColor = BRAND.yellow;
     textColor = '#ffffff';
     taglineColor = '#ffffff';
   }
