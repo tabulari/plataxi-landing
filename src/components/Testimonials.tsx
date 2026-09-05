@@ -32,8 +32,8 @@ const TESTIMONIALS: Testimonial[] = [
     id: 't3',
     initials: 'JP',
     name: 'Jhon P.',
-    job: 'Mensajero en moto, Cali',
-    quote: 'Sin fiador, sin ir al banco. Solo con mi cédula y el extracto de Nequi.',
+    job: 'Taxista, Cali',
+    quote: 'Sin fiador ni ir al banco. Pedí entre carreras y el dinero me llegó a Nequi.',
   },
 ];
 
@@ -79,7 +79,7 @@ export function Testimonials() {
             id="testimonials-heading"
             className="text-section font-display font-bold text-navy"
           >
-            Lo que dicen nuestros conductores
+            Conductores que ya ruedan con Plataxi
           </h2>
         </div>
 

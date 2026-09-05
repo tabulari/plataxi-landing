@@ -5,7 +5,6 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { CheckCircleIcon, SparklesIcon, BoltIcon } from './icons';
 import { ApplyButton } from './ApplyButton';
-import { SectionEyebrow } from './SectionEyebrow';
 
 interface Step {
   n: string;
@@ -25,12 +24,12 @@ const STEPS: Step[] = [
     n: '02',
     Icon: BoltIcon,
     title: 'Conoce tu cuota fija',
-    body: 'Sin letra chica ni sorpresas: ves el valor exacto que pagarás cada quincena o mes.',
+    body: 'Sin letra chica ni sorpresas: ves el valor exacto que pagarás en la fecha y plazo que elijas.',
   },
   {
     n: '03',
     Icon: SparklesIcon,
-    title: 'Recibe tu plata hoy',
+    title: 'Recibe tu dinero hoy',
     body: 'Aceptas en línea y te transferimos directo a Nequi, DaviPlata o tu cuenta bancaria.',
   },
 ];
@@ -68,9 +67,8 @@ export function HowItWorks() {
     >
       <div className="mx-auto max-w-container px-6">
         <div data-hiw="header" className="mb-10 lg:mb-12 text-center max-w-2xl mx-auto space-y-2">
-          <SectionEyebrow>Cómo funciona</SectionEyebrow>
           <h2 id="hiw-heading" className="text-section font-display font-bold text-navy">
-            Tu crédito en 3 simples pasos
+            Tu crédito en 3 pasos
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground font-normal leading-relaxed">
             Un proceso transparente, 100% en línea y sin intermediarios.

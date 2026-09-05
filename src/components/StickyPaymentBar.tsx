@@ -104,9 +104,9 @@ export function StickyPaymentBar() {
       role="region"
       aria-label="Resumen de simulación"
       className={cn(
-        'md:hidden fixed inset-x-0 bottom-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-md border-t border-border shadow-[0_-4px_16px_rgba(13,42,94,0.08)]',
-        'px-4 pt-4 pb-[calc(16px+env(safe-area-inset-bottom))] transition-transform duration-300 ease-out motion-reduce:transition-none',
-        show ? 'translate-y-0' : 'translate-y-[130%]',
+        'fixed inset-x-0 bottom-0 z-50 flex items-center justify-center bg-white/95 backdrop-blur-md border-t border-border shadow-[0_-4px_16px_rgba(13,42,94,0.08)]',
+        'px-4 pt-4 pb-[calc(16px+env(safe-area-inset-bottom))]',
+        show ? 'show' : 'translate-y-[130%]',
       )}
       inert={!show || undefined}
     >
@@ -144,7 +144,7 @@ export function StickyPaymentBar() {
             disabled={!sim.valid}
             className="h-11"
           >
-            Solicitar crédito
+            Pedir mi crédito
           </ApplyButton>
         </div>
       </div>

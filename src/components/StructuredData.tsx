@@ -35,10 +35,10 @@ export function StructuredData() {
   const faqPage = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: FAQS.map(({ q, verdict, explanation }) => ({
+    mainEntity: FAQS.map(({ q, answer }) => ({
       "@type": "Question",
       name: q,
-      acceptedAnswer: { "@type": "Answer", text: `${verdict} ${explanation}` },
+      acceptedAnswer: { "@type": "Answer", text: answer },
     })),
   };
 

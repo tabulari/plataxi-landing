@@ -26,6 +26,8 @@ export interface Simulation {
   ea: number; // decimal, effective annual (E.A.)
   nPeriods: number;
   unit: "/día" | "/semana" | "/quincena" | "/mes";
+  adminFeePerPeriod: number; // COP por cuota (administración)
+  guaranteeFeeTotal: number; // COP total fianza
   valid: boolean; // false when the amount/term combo isn't offered
   message: string; // guidance shown to the user when !valid
 }
@@ -85,6 +87,9 @@ export function calculatePayment(
   const totalCost = payment * nPeriods; // derived from the ROUNDED payment (display parity)
   const ea = Math.pow(1 + MONTHLY_RATE, 12) - 1; // annual equivalent
   const validity = validateApplication(amount, termMonths, frequency);
+  const adminFeeTotal = config.credit.adminFeeTotal;
+  const guaranteeFeeTotal = config.credit.guaranteeFeeTotal;
+  const adminFeePerPeriod = Math.round(adminFeeTotal / nPeriods);
 
   return {
     amount,
@@ -98,6 +103,8 @@ export function calculatePayment(
     nPeriods,
     unit:
       frequency === "daily" ? "/día" : frequency === "weekly" ? "/semana" : frequency === "biweekly" ? "/quincena" : "/mes",
+    adminFeePerPeriod,
+    guaranteeFeeTotal,
     valid: validity.ok, // false when the combo is not offered
     message: validity.message, // guidance to show the user
   };

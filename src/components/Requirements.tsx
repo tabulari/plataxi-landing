@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { CheckIcon } from './icons';
-import { SectionEyebrow } from './SectionEyebrow';
 
 interface RequirementItem {
   id: string;
@@ -112,7 +111,6 @@ export function Requirements() {
       <div className="mx-auto max-w-container px-6">
         {/* Header Block */}
         <div data-req="heading" className="max-w-2xl mx-auto text-center mb-10 lg:mb-12 space-y-1.5">
-          <SectionEyebrow>Requisitos</SectionEyebrow>
           <h2
             id="req-heading"
             className="text-section font-display font-bold text-navy"

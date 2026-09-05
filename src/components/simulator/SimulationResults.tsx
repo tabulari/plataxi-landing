@@ -11,6 +11,8 @@ interface SimData {
   ea: number;
   totalCost: number;
   unit: string;
+  adminFeePerPeriod: number;
+  guaranteeFeeTotal: number;
 }
 
 export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency }) {
@@ -34,7 +36,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
 
   return (
     <div className="mt-6 pt-6 border-t border-border/80 space-y-3">
-      {/* High-Clarity Result Box — A: Full hide (only TU CUOTA) — for validation, no Total/Interés/Tasa/TEA */}
+      {/* Result Box — corto plazo 1-6 meses, abono diario/semanal/quincenal/mensual, cuota de administración + fianza (no interés) */}
       <div className="rounded-xl bg-gradient-to-br from-green-tint/70 to-secondary-surface/40 border border-green/30 p-4 sm:p-6 shadow-2xs">
         <div className="flex flex-col items-center text-center gap-1">
           <span className="text-xs font-bold uppercase tracking-wider text-green-ink block">Tu cuota estimada</span>
@@ -45,12 +47,20 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
             <span>${fmtCOP(sim.payment)}</span>{' '}
             <span className="text-sm sm:text-base font-semibold text-muted-2">{sim.unit}</span>
           </div>
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-[11px]">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-green/20 text-navy font-semibold">
+              Administración: ${fmtCOP(sim.adminFeePerPeriod)} {sim.unit}
+            </span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white border border-green/20 text-navy font-semibold">
+              Fianza: ${fmtCOP(sim.guaranteeFeeTotal)} total
+            </span>
+          </div>
           <p className="text-[11px] text-muted-2 leading-relaxed pt-1">
-            Valor estimado con plazo y monto seleccionados.{" "}
+            Sin interés oculto — cuota fija incluye administración y fianza.{" "}
             <a href="#preguntas" className="font-semibold text-navy underline underline-offset-2 hover:text-green-ink">
-              Ver tasa y costo total en preguntas frecuentes
+              Ver detalle en preguntas frecuentes
             </a>
-            . Detalles y condiciones se confirman al validar tu perfil.
+            .
           </p>
         </div>
       </div>

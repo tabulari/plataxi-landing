@@ -5,7 +5,6 @@ import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ApplyButton } from './ApplyButton';
 import { ScrollButton } from './ScrollButton';
-import { SectionEyebrow } from './SectionEyebrow';
 
 export function CtaBanner() {
   const containerRef = useRef<HTMLElement>(null);
@@ -16,7 +15,6 @@ export function CtaBanner() {
     if (reduceMotion || !panelRef.current) return;
 
     const panel = panelRef.current;
-    const eyebrow = panel.querySelector('[data-cta="eyebrow"]');
     const heading = panel.querySelector('[data-cta="heading"]');
     const subhead = panel.querySelector('[data-cta="subhead"]');
     const actionBlock = panel.querySelector('[data-cta="action-block"]');
@@ -39,10 +37,9 @@ export function CtaBanner() {
       0,
     );
 
-    // 2. Eyebrow, Heading & Subhead
-    if (eyebrow) tl.fromTo(eyebrow, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4 }, 0.2);
-    if (heading) tl.fromTo(heading, { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5 }, 0.3);
-    if (subhead) tl.fromTo(subhead, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4 }, 0.45);
+    // 2. Heading & Subhead
+    if (heading) tl.fromTo(heading, { y: 16, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5 }, 0.2);
+    if (subhead) tl.fromTo(subhead, { y: 12, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.4 }, 0.35);
 
     // 3. Action Block
     if (actionBlock) {
@@ -80,10 +77,6 @@ export function CtaBanner() {
         >
           {/* Left Column: Pure, Saturated Value Anchor */}
           <div className="flex-1 min-w-0 relative space-y-5 text-left">
-            <SectionEyebrow variant="dark" data-cta="eyebrow">
-              Comienza ahora
-            </SectionEyebrow>
-
             <h2
               id="cta-heading"
               data-cta="heading"

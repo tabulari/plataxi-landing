@@ -1,5 +1,4 @@
 import { WhatsAppLink } from './WhatsAppLink';
-import { SectionEyebrow } from './SectionEyebrow';
 import { SimulateAnim } from './SimulateAnim';
 
 export function SimulateSection({ children }: { children: React.ReactNode }) {
@@ -7,7 +6,6 @@ export function SimulateSection({ children }: { children: React.ReactNode }) {
     <SimulateAnim>
       <div className="mx-auto max-w-container px-6">
         <div data-sim="header" className="mb-8 lg:mb-10 text-center space-y-2">
-          <SectionEyebrow>Calcula tu cuota</SectionEyebrow>
           <h2 id="simula-heading" className="text-[clamp(2.25rem,6.5vw,4rem)] font-display font-bold text-navy leading-[1.2] tracking-[-0.02em]">
             Calcula cuánto pagas y a qué plazo
           </h2>

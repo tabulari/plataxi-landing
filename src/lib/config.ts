@@ -148,16 +148,16 @@ export const config = {
    */
   regulatorVerified: process.env.NEXT_PUBLIC_REGULATOR_VERIFIED === "true",
 
-  /** --- Simulator / product parameters — A (hide rates) + max 6 meses + 4 freqs Diario/Semanal/Quincenal/Mensual --- */
+  /** --- Simulator / product parameters — A (hide rates) + max 6 meses (varios plazos 1-6) + 4 freqs Diario/Semanal/Quincenal/Mensual --- */
   simulator: {
     amountMin: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MIN, 50000),
     amountMax: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MAX, 1000000),
     amountStep: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_STEP, 10000),
     amountStepBig: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_STEP_BIG, 50000),
     defaultAmount: readNum(process.env.NEXT_PUBLIC_SIM_DEFAULT_AMOUNT, 500000),
-    defaultTerm: readNum(process.env.NEXT_PUBLIC_SIM_DEFAULT_TERM, 6),
-    /** Comma-separated term options in months — capped at 6 (was [3,6,9,12,18,24]). */
-    termOptions: readNumList(process.env.NEXT_PUBLIC_SIM_TERM_OPTIONS, [3, 6]),
+    defaultTerm: readNum(process.env.NEXT_PUBLIC_SIM_DEFAULT_TERM, 3),
+    /** Comma-separated term options in months — varios plazos previos hasta 6: [1,2,3,4,5,6] (was [3,6,9,12,18,24]). */
+    termOptions: readNumList(process.env.NEXT_PUBLIC_SIM_TERM_OPTIONS, [1, 2, 3, 4, 5, 6]),
   },
 
   /** --- Credit rate (interim — will come from Plataxi dashboard API) --- */
@@ -172,6 +172,10 @@ export const config = {
     highAmountThreshold: readNum(process.env.NEXT_PUBLIC_CREDIT_HIGH_AMOUNT_THRESHOLD, 800000),
     /** Eligibility: min term (months) for amounts above highAmountThreshold. */
     highAmountMinTerm: readNum(process.env.NEXT_PUBLIC_CREDIT_HIGH_AMOUNT_MIN_TERM, 6),
+    /** Administración: cuota fija por crédito (ej: 8.000 COP total). */
+    adminFeeTotal: readNum(process.env.NEXT_PUBLIC_CREDIT_ADMIN_FEE_TOTAL, 8000),
+    /** Fianza: garantía por crédito (ej: 12.000 COP total). */
+    guaranteeFeeTotal: readNum(process.env.NEXT_PUBLIC_CREDIT_GUARANTEE_FEE_TOTAL, 12000),
   },
 
   /** --- Application form options --- */
