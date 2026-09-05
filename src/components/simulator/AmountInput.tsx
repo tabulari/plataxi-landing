@@ -85,7 +85,7 @@ export function AmountInput({
           </label>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 bg-white rounded-xl p-2 border-2 border-border focus-within:border-green transition-colors shadow-2xs">
+        <div className="flex items-center gap-2 sm:gap-3 bg-white rounded-[12px] p-2 border-2 border-border focus-within:border-green transition-colors">
           <button
             type="button"
             aria-label="Disminuir monto"
@@ -106,7 +106,7 @@ export function AmountInput({
               value={inputText}
               aria-label="Monto solicitado"
               aria-invalid={hint ? 'true' : undefined}
-              aria-describedby="amountHint"
+              aria-describedby={hint ? 'amountHint' : undefined}
               onChange={handleInputChange}
               onBlur={handleInputBlur}
               className="w-full h-12 min-h-[48px] text-2xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight"
@@ -125,55 +125,39 @@ export function AmountInput({
           </button>
         </div>
 
-        {hint && (
-          <p className="text-xs font-medium text-orange-ink mt-1.5 pl-1" id="amountHint" role="status" aria-live="polite">
-            {hint}
-          </p>
-        )}
+        <p
+          id="amountHint"
+          role="status"
+          aria-live="polite"
+          className={`text-xs font-medium text-orange-ink mt-1.5 pl-1 ${hint ? 'block' : 'sr-only'}`}
+          aria-hidden={!hint || undefined}
+        >
+          {hint || ' '}
+        </p>
       </div>
 
-      {/* Preset Quick Chips (Zero Fake "Popular" Tags) & Range Slider */}
+      {/* Range Slider — presets removed per humanizer audit; slider + −/+ now handle mobile. Track reliably at 8px after 166 fix. */}
       <div className="space-y-2.5">
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <span className="text-xs font-semibold text-muted-2">Montos frecuentes:</span>
-          <div className="flex items-center gap-2">
-            {[300000, 500000, 1000000].map((preset) => (
-              <button
-                key={preset}
-                type="button"
-                onClick={() => {
-                  markInteract('preset');
-                  setHint('');
-                  setAmount(clampRoundAmount(preset, amountMin, amountMax, amountStep), true);
-                  setInputText(fmtCOP(clampRoundAmount(preset, amountMin, amountMax, amountStep)));
-                }}
-                className={`inline-flex items-center justify-center px-4 h-12 min-h-[48px] text-xs font-bold rounded-lg transition-all tabular-nums ${
-                  amount === preset
-                    ? 'bg-secondary-surface border-2 border-primary-brand text-primary-dark shadow-xs'
-                    : 'bg-white border border-secondary-border text-primary-dark hover:border-primary-brand hover:bg-secondary-surface/30'
-                }`}
-              >
-                ${fmtCOP(preset)}
-              </button>
-            ))}
+        <div className="relative w-full h-12 flex items-center">
+          {/* Track — 8px pill, overflow-hidden so fill caps are always rounded */}
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-border rounded-full overflow-hidden pointer-events-none" aria-hidden="true">
+            <div className="h-full bg-green rounded-full transition-[width] duration-150 ease-out" style={{ width: `${pct}%` }} />
           </div>
+          <input
+            type="range"
+            min={amountMin}
+            max={amountMax}
+            step={amountStep}
+            value={amount}
+            aria-label="Selector de monto"
+            aria-valuemin={amountMin}
+            aria-valuemax={amountMax}
+            aria-valuenow={amount}
+            aria-valuetext={`$${fmtCOP(amount)} COP`}
+            onChange={handleSliderChange}
+            className="relative w-full h-12 min-h-[48px] appearance-none bg-transparent cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2 rounded-full [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[2.5px] [&::-webkit-slider-thumb]:border-green [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-webkit-slider-thumb]:cursor-pointer motion-safe:[&::-webkit-slider-thumb]:hover:scale-110 motion-safe:[&::-webkit-slider-thumb]:active:scale-125 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-track]:h-2 [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-[2.5px] [&::-moz-range-thumb]:border-green [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-moz-range-thumb]:cursor-pointer motion-safe:[&::-moz-range-thumb]:hover:scale-110 motion-safe:[&::-moz-range-thumb]:active:scale-125 [&::-moz-range-thumb]:transition-transform"
+          />
         </div>
-
-        <input
-          type="range"
-          min={amountMin}
-          max={amountMax}
-          step={amountStep}
-          value={amount}
-          aria-label="Selector de monto"
-          aria-valuemin={amountMin}
-          aria-valuemax={amountMax}
-          aria-valuenow={amount}
-          aria-valuetext={`$${fmtCOP(amount)} COP`}
-          onChange={handleSliderChange}
-          className="w-full h-12 min-h-[48px] py-[19px] box-border bg-clip-content rounded-full appearance-none cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-green [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[2.5px] [&::-webkit-slider-thumb]:border-green [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-125 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-[2.5px] [&::-moz-range-thumb]:border-green [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:hover:scale-110 [&::-moz-range-thumb]:active:scale-125 [&::-moz-range-thumb]:transition-transform"
-          style={{ backgroundImage: `linear-gradient(to right, var(--green) 0% ${pct}%, var(--border) ${pct}% 100%)` }}
-        />
         <div className="flex justify-between text-xs text-muted-2 tabular-nums px-1">
           <span>${fmtCOP(amountMin)}</span>
           <span>${fmtCOP(amountMax)}</span>

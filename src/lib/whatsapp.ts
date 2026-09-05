@@ -8,7 +8,7 @@ import { fmtCOP, type Simulation } from "./credit";
  * (`whatsapp_click`) is wired at the call sites in Slice 5.
  */
 
-export type WaContext = "hero" | "footer" | "contact" | "pqrs" | "faq";
+export type WaContext = "hero" | "simula" | "footer" | "contact" | "pqrs" | "faq";
 
 export function buildWhatsAppMessage(
   ctx: WaContext,

@@ -7,6 +7,13 @@ export interface Faq {
 
 export const FAQS: Faq[] = [
   {
+    q: '¿Qué tasa y costo total aplica a mi cuota?',
+    verdict: 'Tasa fija 2,6% m.v. (TEA 36,07% E.A.). Total con intereses e interés estimado se calculan según el monto y plazo que elijas.',
+    explanation:
+      'Tu cuota ya incluye la tasa fija mensual. Al validar tu perfil confirmamos el total con intereses y el interés estimado para tu plazo exacto. Todo queda claro antes de pedir el crédito.',
+    icon: 'document',
+  },
+  {
     q: '¿Simular o solicitar me baja puntos o afecta en Datacrédito?',
     verdict: 'No, simular no afecta tu historial ni baja tu puntaje en centrales de riesgo.',
     explanation:
@@ -15,16 +22,16 @@ export const FAQS: Faq[] = [
   },
   {
     q: '¿Cuánto demora en llegar el dinero a mi cuenta o Nequi?',
-    verdict: 'La evaluación toma minutos y el desembolso es inmediato una vez aceptada la oferta.',
+    verdict: 'La evaluación toma minutos y la plata te llega de una vez tras aceptar la oferta.',
     explanation:
-      'Transferimos los fondos directamente a tu cuenta bancaria, Nequi o DaviPlata tan pronto apruebes las condiciones.',
+      'Transferimos los fondos directamente a tu Nequi, DaviPlata o cuenta bancaria tan pronto confirmes las condiciones.',
     icon: 'bolt',
   },
   {
-    q: '¿Qué requisitos necesito para solicitar? ¿Piden fiador?',
-    verdict: 'Solo necesitas tu cédula de ciudadanía vigente y soporte de ingresos. Cero fiadores.',
+    q: '¿Tengo que pagar algo antes de recibir el dinero?',
+    verdict: 'No. Cero cobros por adelantado, cero pólizas y cero cobros ocultos.',
     explanation:
-      'Todo el proceso es 100% digital desde tu celular, sin papeleos físicos, sin filas y sin trámites notariales.',
+      'Nunca te pediremos plata antes de prestarte. El estudio es 100% gratuito y solo comienzas a pagar tus cuotas después de tener el dinero en tu cuenta.',
     icon: 'document',
   },
   {
