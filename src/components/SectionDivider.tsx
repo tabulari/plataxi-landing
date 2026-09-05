@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useId, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 
@@ -13,23 +13,25 @@ interface SectionDividerProps {
   className?: string;
 }
 
-// Oversized paths starting at -200 and extending to 1640 with deep bottom anchor (V140)
-// Guarantees zero side gaps and zero sub-pixel seam glitches across all screen sizes and zoom levels.
-const WAVES = {
+// Catenary aerodynamic horizon curves with deep bottom anchors to prevent sub-pixel seams
+const HORIZONS = {
   soft: {
-    viewBox: '0 0 1440 40',
-    d: 'M-200 120V24C160 14 460 14 720 24C980 34 1280 34 1640 24V120H-200Z',
-    dSecondary: 'M-200 120V28C220 18 520 20 840 28C1100 34 1360 30 1640 26V120H-200Z',
+    viewBox: '0 0 1440 50',
+    d: 'M -100 0 C 360 30, 1080 30, 1540 0 V 100 H -100 Z',
+    dSecondary: 'M -100 0 C 360 20, 1080 20, 1540 0 V 100 H -100 Z',
+    dStroke: 'M -100 0 C 360 30, 1080 30, 1540 0',
   },
   medium: {
-    viewBox: '0 0 1440 60',
-    d: 'M-200 140V30C160 8 460 8 720 30C980 52 1280 52 1640 30V140H-200Z',
-    dSecondary: 'M-200 140V38C220 16 520 12 840 36C1100 50 1360 44 1640 34V140H-200Z',
+    viewBox: '0 0 1440 70',
+    d: 'M -100 0 C 360 48, 1080 48, 1540 0 V 120 H -100 Z',
+    dSecondary: 'M -100 0 C 360 32, 1080 32, 1540 0 V 120 H -100 Z',
+    dStroke: 'M -100 0 C 360 48, 1080 48, 1540 0',
   },
   bold: {
-    viewBox: '0 0 1440 80',
-    d: 'M-200 160V42C160 18 460 18 720 40C980 62 1280 62 1640 38V160H-200Z',
-    dSecondary: 'M-200 160V50C220 28 520 26 840 48C1100 66 1360 62 1640 44V160H-200Z',
+    viewBox: '0 0 1440 90',
+    d: 'M -100 0 C 360 68, 1080 68, 1540 0 V 140 H -100 Z',
+    dSecondary: 'M -100 0 C 360 48, 1080 48, 1540 0 V 140 H -100 Z',
+    dStroke: 'M -100 0 C 360 68, 1080 68, 1540 0',
   },
 };
 
@@ -42,9 +44,15 @@ export function SectionDivider({
   className = '',
 }: SectionDividerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const primaryWaveRef = useRef<SVGPathElement>(null);
-  const secondaryWaveRef = useRef<SVGPathElement>(null);
-  const { viewBox, d, dSecondary } = WAVES[amplitude];
+  const svgRef = useRef<SVGSVGElement>(null);
+  const primaryPathRef = useRef<SVGPathElement>(null);
+  const glowEdgeRef = useRef<SVGPathElement>(null);
+  const gradientRef = useRef<SVGLinearGradientElement>(null);
+
+  const reactId = useId();
+  const gradId = `viscoelastic-glow-${reactId.replace(/[^a-zA-Z0-9_-]/g, '')}`;
+
+  const { viewBox, d, dSecondary, dStroke } = HORIZONS[amplitude];
 
   const DARK_TOKEN = 'var(--color-primary-dark)';
   const CREAM_TOKEN = 'var(--color-secondary-surface)';
@@ -54,52 +62,110 @@ export function SectionDivider({
   useGSAP(() => {
     if (typeof window === 'undefined' || !containerRef.current) return;
 
-    const mm = gsap.matchMedia();
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
 
-    mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
-      const primary = primaryWaveRef.current;
-      const secondary = secondaryWaveRef.current;
-      if (!primary && !secondary) return;
+    let lastY = window.scrollY;
+    let lastTime = performance.now();
+    let inView = false;
 
-      // Butter-smooth, calming harmonic fluid sine oscillations — paused when offscreen via ScrollTrigger toggleActions
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: 'top bottom',
-          end: 'bottom top',
-          toggleActions: 'play pause resume pause',
-        },
-      });
+    // IntersectionObserver guarantees we only compute physics when the divider is in viewport
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+      },
+      { threshold: 0, rootMargin: '100px 0px 100px 0px' }
+    );
+    observer.observe(containerRef.current);
 
-      if (primary) {
-        tl.to(primary, {
-          x: flip ? -20 : 20,
-          scaleY: 1.05,
-          duration: 5.2,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-          transformOrigin: '50% 100%',
-        }, 0);
+    const onScroll = () => {
+      if (!inView) {
+        lastY = window.scrollY;
+        lastTime = performance.now();
+        return;
       }
 
-      if (secondary) {
-        tl.to(secondary, {
-          x: flip ? 28 : -28,
-          scaleY: 1.08,
-          duration: 6.8,
-          repeat: -1,
-          yoyo: true,
-          ease: 'sine.inOut',
-          delay: 0.5,
-          transformOrigin: '50% 100%',
-        }, 0);
+      const now = performance.now();
+      const dt = Math.max(8, now - lastTime);
+      const dy = window.scrollY - lastY;
+      lastY = window.scrollY;
+      lastTime = now;
+
+      // Normalised velocity: positive = scrolling down, negative = scrolling up
+      const velocity = dy / dt;
+      const clampedVelocity = Math.max(-1.8, Math.min(1.8, velocity));
+
+      // Viscoelastic deformation factors
+      const targetScaleY = 1 + clampedVelocity * 0.28;
+      const targetTranslateY = clampedVelocity * 6;
+      const gradientShift = clampedVelocity * 15;
+
+      // 1. Kinetic deformation of the primary horizon
+      if (primaryPathRef.current) {
+        gsap.to(primaryPathRef.current, {
+          scaleY: targetScaleY,
+          y: targetTranslateY,
+          duration: 0.12,
+          ease: 'power1.out',
+          overwrite: 'auto',
+          onComplete: () => {
+            // Spring return to perfect equilibrium with subtle damping bounce
+            gsap.to(primaryPathRef.current, {
+              scaleY: 1,
+              y: 0,
+              duration: 0.75,
+              ease: 'elastic.out(1.15, 0.42)',
+              overwrite: 'auto',
+            });
+          },
+        });
       }
 
-      return () => tl.kill();
-    });
+      // 2. Coordinated deformation of the luminous lens highlight
+      if (glowEdgeRef.current) {
+        gsap.to(glowEdgeRef.current, {
+          scaleY: targetScaleY,
+          y: targetTranslateY,
+          duration: 0.12,
+          ease: 'power1.out',
+          overwrite: 'auto',
+          onComplete: () => {
+            gsap.to(glowEdgeRef.current, {
+              scaleY: 1,
+              y: 0,
+              duration: 0.75,
+              ease: 'elastic.out(1.15, 0.42)',
+              overwrite: 'auto',
+            });
+          },
+        });
+      }
 
-    return () => mm.revert();
+      // 3. Dynamic glint shift along the crest
+      if (gradientRef.current) {
+        gsap.to(gradientRef.current, {
+          attr: { x1: `${20 - gradientShift}%`, x2: `${80 - gradientShift}%` },
+          duration: 0.25,
+          ease: 'power2.out',
+          overwrite: 'auto',
+          onComplete: () => {
+            gsap.to(gradientRef.current, {
+              attr: { x1: '20%', x2: '80%' },
+              duration: 0.8,
+              ease: 'power3.out',
+              overwrite: 'auto',
+            });
+          },
+        });
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      observer.disconnect();
+    };
   }, { scope: containerRef });
 
   return (
@@ -110,6 +176,7 @@ export function SectionDivider({
       style={from ? { backgroundColor: from } : undefined}
     >
       <svg
+        ref={svgRef}
         viewBox={viewBox}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -120,18 +187,47 @@ export function SectionDivider({
           ...(flip ? { transform: 'scaleX(-1)' } : {}),
         }}
       >
-        {/* Harmonic Translucent Undertone Wave */}
+        <defs>
+          {/* Luminous micro-lens edge gradient */}
+          <linearGradient
+            ref={gradientRef}
+            id={gradId}
+            x1="20%"
+            y1="0%"
+            x2="80%"
+            y2="0%"
+          >
+            <stop offset="0%" stopColor="var(--color-primary-brand)" stopOpacity="0" />
+            <stop offset="35%" stopColor="var(--color-primary-brand)" stopOpacity="0.45" />
+            <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.95" />
+            <stop offset="65%" stopColor="var(--color-primary-brand)" stopOpacity="0.45" />
+            <stop offset="100%" stopColor="var(--color-primary-brand)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
+        {/* Secondary Harmonic Stratum */}
         <path
-          ref={secondaryWaveRef}
           d={dSecondary}
           fill={isDarkTo ? CREAM_TOKEN : fillColor}
-          opacity={isDarkTo ? '0.6' : waveColor ? '0.6' : '0.35'}
+          opacity={isDarkTo ? '0.55' : waveColor ? '0.55' : '0.35'}
         />
-        {/* Primary Solid Surface Wave */}
+
+        {/* Primary Viscoelastic Horizon Surface */}
         <path
-          ref={primaryWaveRef}
+          ref={primaryPathRef}
           d={d}
           fill={isDarkTo ? DARK_TOKEN : fillColor}
+          style={{ transformOrigin: '50% 100%' }}
+        />
+
+        {/* Luminous Precision Rim */}
+        <path
+          ref={glowEdgeRef}
+          d={dStroke}
+          stroke={`url(#${gradId})`}
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          style={{ transformOrigin: '50% 100%' }}
         />
       </svg>
     </div>
