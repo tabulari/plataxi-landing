@@ -27,6 +27,8 @@ test("landing page has no axe violations", async ({ page }) => {
 
 test("apply modal (open) has no axe violations", async ({ page }) => {
   await page.goto("/");
+  await page.locator("#simula").scrollIntoViewIfNeeded();
+  await page.waitForTimeout(600);
   await page
     .getByRole("button", { name: /iniciar solicitud|pedir mi crédito/i })
     .first()

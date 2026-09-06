@@ -3,7 +3,6 @@ import { Hero } from "@/components/Hero";
 import { SimulateSection } from "@/components/SimulateSection";
 import { Simulator } from "@/components/Simulator";
 import { Benefits } from "@/components/Benefits";
-import { HowItWorks } from "@/components/HowItWorks";
 import { Faq } from "@/components/Faq";
 import { CtaBanner } from "@/components/CtaBanner";
 import { Footer } from "@/components/Footer";
