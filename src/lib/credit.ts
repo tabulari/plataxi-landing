@@ -113,14 +113,14 @@ export function calculatePayment(
 /* ---------- FORMATTING HELPERS (presentation only) ---------- */
 
 /**
- * Colombian: thousands separated by ".", decimals by ",".
- * The prototype replaced U+00A0 with "."; `\s` generalizes that to every
- * group-separator variant ICU may emit (space, U+00A0, U+202F) so output is
- * stable across Node/ICU builds. On this runtime es-CO already groups with
- * ".", making the replace a no-op.
+ * Colombian: thousands separated by "." (no decimals). Deterministic by
+ * construction — no `toLocaleString`/ICU — so server and client (any engine)
+ * tag the same string, immune to locale/CLDR variance.
  */
 export function fmtCOP(n: number): string {
-  return Math.round(n).toLocaleString("es-CO").replace(/\s/g, ".");
+  const sign = n < 0 ? "-" : "";
+  const digits = Math.round(Math.abs(n)).toString();
+  return sign + digits.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 export function formatCurrencyCOP(n: number): string {

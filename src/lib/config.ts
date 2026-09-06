@@ -83,24 +83,24 @@ export function findUnresolvedPlaceholders(env: Env = process.env): PlaceholderK
 export const PLACEHOLDER_MONTHLY_RATE = 0.026;
 
 /**
- * Validates the monthly interest rate env var. Kept separate from the string
- * placeholder keys because it is numeric, not a secret endpoint, and its error
- * message should name the var and the constraint (0 < r < 1).
+ * Validates the monthly interest rate env var if provided.
+ * Optional in production because Core (RATES_CONFIG_ENDPOINT) is the source of truth,
+ * with PLACEHOLDER_MONTHLY_RATE (0.026) serving as compile-time offline fallback.
  *
  * Pure — accepts an injected env so the production guard can be unit-tested.
  */
 export function findUnresolvedRate(env: Env = process.env): string[] {
   const raw = env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE;
-  if (!raw || raw.length === 0) return ["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"];
+  if (!raw || raw.length === 0) return [];
   const n = Number(raw);
   if (!Number.isFinite(n) || n <= 0 || n >= 1) return ["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"];
   return [];
 }
 
 /**
- * Throws if any ⚠️ placeholder survives or the monthly rate is missing/invalid.
- * Intended to run during a production build so we cannot ship with fake business
- * data or a placeholder rate. Pure/injectable for tests.
+ * Throws if any ⚠️ placeholder survives or an invalid monthly rate was provided.
+ * Intended to run during a production build so we cannot ship with fake backend endpoints.
+ * Pure/injectable for tests.
  */
 export function assertProductionConfig(env: Env = process.env): void {
   const unresolved = findUnresolvedPlaceholders(env);
@@ -114,9 +114,8 @@ export function assertProductionConfig(env: Env = process.env): void {
   const unresolvedRate = findUnresolvedRate(env);
   if (unresolvedRate.length > 0) {
     throw new Error(
-      "Refusing to build for production: unresolved monthly interest rate. " +
-        "Set NEXT_PUBLIC_CREDIT_MONTHLY_RATE to a real decimal (0 < r < 1, " +
-        "e.g. 0.032 for 3.2% monthly).",
+      "Refusing to build for production: invalid monthly interest rate in NEXT_PUBLIC_CREDIT_MONTHLY_RATE. " +
+        "Must be a real decimal between 0 and 1 (e.g. 0.026 for 2.6% monthly).",
     );
   }
 }

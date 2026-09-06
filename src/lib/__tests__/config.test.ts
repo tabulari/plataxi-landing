@@ -75,14 +75,12 @@ describe("monthly rate production guard", () => {
     expect(findUnresolvedRate({ NEXT_PUBLIC_CREDIT_MONTHLY_RATE: "0.032" })).toEqual([]);
   });
 
-  it("flags a missing rate", () => {
-    expect(findUnresolvedRate({})).toEqual(["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"]);
+  it("passes when rate is missing (uses Core or compile-time fallback 0.026)", () => {
+    expect(findUnresolvedRate({})).toEqual([]);
   });
 
-  it("flags an empty rate", () => {
-    expect(findUnresolvedRate({ NEXT_PUBLIC_CREDIT_MONTHLY_RATE: "" })).toEqual([
-      "NEXT_PUBLIC_CREDIT_MONTHLY_RATE",
-    ]);
+  it("passes when rate is empty string (uses fallback)", () => {
+    expect(findUnresolvedRate({ NEXT_PUBLIC_CREDIT_MONTHLY_RATE: "" })).toEqual([]);
   });
 
   it("flags a non-numeric rate", () => {
@@ -103,12 +101,10 @@ describe("monthly rate production guard", () => {
     ).toEqual(["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"]);
   });
 
-  it("assertProductionConfig throws on missing rate even when endpoints are real", () => {
+  it("assertProductionConfig passes when rate is omitted (Core is source of truth)", () => {
     const env = allRealEnv();
     delete env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE;
-    expect(() => assertProductionConfig(env)).toThrow(
-      /NEXT_PUBLIC_CREDIT_MONTHLY_RATE/,
-    );
+    expect(() => assertProductionConfig(env)).not.toThrow();
   });
 
   it("assertProductionConfig throws on invalid rate even when endpoints are real", () => {
