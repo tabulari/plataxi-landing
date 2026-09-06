@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import type { Values } from './use-application-form';
 import { WhatsAppLink } from '../WhatsAppLink';
 import { CloseIcon, ShieldCheckIcon } from '../icons';
+import { FieldError } from '../FieldError';
 
 type FieldHandlers = {
   onFieldChange: (name: FieldName, raw: string) => void;
@@ -29,10 +30,10 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
       onBlur={(e) => handlers.onFieldBlur(name, (e.target as HTMLInputElement).value)}
       aria-invalid={handlers.errors[name] ? true : undefined}
       aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
-      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-sm outline-none focus:border-green focus:ring-2 focus:ring-green/20 transition-colors shadow-2xs"
+      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-sm outline-none transition-[border-color,box-shadow] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       {...props}
     />
-    <span className="text-xs text-destructive min-h-4" id={`err-${name}`} role="alert">{handlers.errors[name] || ''}</span>
+    <FieldError id={`err-${name}`} message={handlers.errors[name]} />
   </label>
 );
 
@@ -45,12 +46,12 @@ const selectEl = (name: FieldName, label: string, placeholder: string, options: 
       onChange={(e) => { handlers.onFieldChange(name, e.target.value); }}
       aria-invalid={handlers.errors[name] ? true : undefined}
       aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
-      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-sm outline-none focus:border-green focus:ring-2 focus:ring-green/20 transition-colors shadow-2xs cursor-pointer"
+      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-sm outline-none transition-[border-color,box-shadow] cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <option value="">{placeholder}</option>
       {options.map((o) => <option key={o}>{o}</option>)}
     </select>
-    <span className="text-xs text-destructive min-h-4" id={`err-${name}`} role="alert">{handlers.errors[name] || ''}</span>
+    <FieldError id={`err-${name}`} message={handlers.errors[name]} />
   </label>
 );
 
@@ -74,15 +75,15 @@ export function Step1({ values, handlers }: {
   };
 
   return (
-    <section className="flex-1 flex flex-col gap-4">
+    <section className="flex-1 flex flex-col gap-5">
       <div>
-        <h2 className="text-xl font-bold text-navy tracking-tight">Datos personales y de contacto</h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+        <h2 className="text-xl font-bold text-navy tracking-tight" aria-label="Paso 1: Datos personales y de contacto">Datos personales y de contacto</h2>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
           Tus datos están protegidos bajo la Ley 1581 y solo se usan para validar tu solicitud.
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4">
         {fieldEl('fullName', 'Nombre completo', handlers, {
           type: 'text',
           autoComplete: 'name',
@@ -91,7 +92,7 @@ export function Step1({ values, handlers }: {
         })}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {fieldEl('idNumber', 'Número de cédula (C.C.)', handlers, {
           type: 'text',
           inputMode: 'numeric',
@@ -119,7 +120,7 @@ export function Step1({ values, handlers }: {
 
       <div className="mt-2 text-center">
         <WhatsAppLink ctx="contact" className="text-xs text-muted-foreground hover:text-green-ink transition-colors underline underline-offset-2">
-          ¿Prefieres solicitar por WhatsApp?
+          Solicitar por WhatsApp
         </WhatsAppLink>
       </div>
     </section>
@@ -128,17 +129,17 @@ export function Step1({ values, handlers }: {
 
 export function Step2({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
   return (
-    <section className="flex-1 flex flex-col gap-4">
+    <section className="flex-1 flex flex-col gap-5">
       <div>
-        <h2 className="text-xl font-bold text-navy tracking-tight">Información de ingresos y desembolso</h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+        <h2 className="text-xl font-bold text-navy tracking-tight" aria-label="Paso 2: Información de ingresos y desembolso">Información de ingresos y desembolso</h2>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
           Ingresa tus datos para transferir los fondos una vez aprobada tu solicitud.
         </p>
       </div>
 
       {selectEl('employmentType', 'Tipo de actividad laboral', 'Selecciona tu actividad', EMPLOYMENT_TYPES, handlers, values.employmentType)}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {fieldEl('income', 'Ingreso mensual aproximado', handlers, {
           type: 'text',
           inputMode: 'numeric',
@@ -161,37 +162,37 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
 }) {
   const [showTerms, setShowTerms] = useState(false);
 
-  const reviewRows: [string, string, boolean?][] = [
-    ['Monto solicitado', `$${fmtCOP(frozen.amount)} COP`],
-    ['Cuota estimada', `$${fmtCOP(frozen.payment)} ${frozen.unit}`],
-    ['Plazo', `${frozen.term} meses (${capFreq(frozen.frequency as 'monthly' | 'biweekly')})`],
-    ['Nombre completo', values.fullName || '—', true],
-    ['Cédula de ciudadanía', values.idNumber || '—'],
-    ['Celular', values.phone || '—'],
-    ['Correo electrónico', values.email || '—', true],
-    ['Actividad laboral', values.employmentType || '—'],
-    ['Cuenta de desembolso', values.bank || '—'],
+  const reviewRows: { k: string; v: string; full?: boolean }[] = [
+    { k: 'Monto solicitado', v: `$${fmtCOP(frozen.amount)} COP` },
+    { k: 'Cuota estimada', v: `$${fmtCOP(frozen.payment)} ${frozen.unit}` },
+    { k: 'Plazo', v: `${frozen.term} meses (${capFreq(frozen.frequency as 'daily' | 'weekly' | 'biweekly' | 'monthly')})` },
+    { k: 'Nombre completo', v: values.fullName || '—', full: true },
+    { k: 'Cédula de ciudadanía', v: values.idNumber || '—' },
+    { k: 'Celular', v: values.phone || '—' },
+    { k: 'Correo electrónico', v: values.email || '—', full: true },
+    { k: 'Actividad laboral', v: values.employmentType || '—' },
+    { k: 'Cuenta de desembolso', v: values.bank || '—' },
   ];
 
   return (
-    <section className="flex-1 flex flex-col gap-4 relative">
+    <section className="flex-1 flex flex-col gap-5 relative">
       <div>
-        <h2 className="text-xl font-bold text-navy tracking-tight">Revisa y confirma tu solicitud</h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+        <h2 className="text-xl font-bold text-navy tracking-tight" aria-label="Paso 3: Revisa y confirma tu solicitud">Revisa y confirma tu solicitud</h2>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
           Verifica que la información sea correcta antes de enviar.
         </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-2.5 p-3.5 bg-bg-soft rounded-xl border border-border/80 text-xs">
-        {reviewRows.map(([k, v, full]) => (
-          <div key={k} className={cn('flex flex-col gap-0.5', full && 'col-span-2')}>
+      <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs">
+        {reviewRows.map(({ k, v, full }) => (
+          <div key={k} className={cn('flex flex-col gap-1', full && 'col-span-2')}>
             <span className="text-muted-2 font-medium">{k}</span>
             <span className="font-semibold text-navy text-xs sm:text-sm">{v}</span>
           </div>
         ))}
       </div>
 
-      <label className="flex gap-3 items-start text-xs sm:text-sm cursor-pointer p-1">
+      <label className="flex gap-3 items-start text-xs sm:text-sm cursor-pointer min-h-[44px] py-2">
         <input
           type="checkbox"
           name="consent"
@@ -199,7 +200,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
           aria-invalid={consentError ? true : undefined}
           aria-describedby={consentError ? 'consentError' : undefined}
           onChange={(e) => { setConsent(e.target.checked); if (e.target.checked) setConsentError(''); }}
-          className="mt-0.5 accent-green w-4 h-4 rounded"
+          className="mt-0.5 accent-green w-5 h-5 rounded shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
         <span className="text-muted-foreground leading-snug">
           {CONSENT_TEXT.split('Política de Privacidad')[0]}
@@ -218,9 +219,12 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
         </span>
       </label>
 
-      <span id="consentError" role="alert" className={cn('text-xs text-destructive', consentError ? 'visible' : 'hidden')}>
-        {consentError}
-      </span>
+      <FieldError
+        id="consentError"
+        message={consentError}
+        reserveSpace={false}
+        className={cn(consentError ? 'flex' : 'hidden')}
+      />
 
       {/* In-Modal Viewable Terms Drawer */}
       {showTerms && (
@@ -228,7 +232,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
           role="dialog"
           aria-modal="true"
           aria-labelledby="terms-drawer-title"
-          className="absolute inset-0 z-20 bg-white rounded-2xl p-5 flex flex-col justify-between border border-border shadow-lg animate-in fade-in zoom-in-95 duration-150"
+          className="absolute inset-0 z-20 bg-white rounded-2xl p-5 flex flex-col justify-between border border-border shadow-lg animate-terms-in"
         >
           <div className="flex items-center justify-between border-b border-border pb-3">
             <div className="flex items-center gap-2 text-navy font-bold text-sm">
@@ -239,13 +243,13 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
               type="button"
               onClick={() => setShowTerms(false)}
               aria-label="Cerrar términos"
-              className="p-1 rounded-lg text-muted-2 hover:bg-bg-soft hover:text-navy transition-colors"
+              className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] -mr-2 rounded-xl text-muted-2 hover:bg-muted hover:text-navy transition-colors"
             >
               <CloseIcon size={18} />
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto py-3 space-y-2.5 text-xs text-muted-foreground leading-relaxed pr-1">
+          <div className="flex-1 overflow-y-auto py-3 space-y-2.5 text-xs text-muted-foreground leading-relaxed pr-1 overscroll-contain">
             <p>
               <strong className="text-navy font-semibold">1. Marco Legal:</strong> Plataxi trata sus datos personales de acuerdo con la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 y demás normas que la modifiquen o complementen.
             </p>
@@ -276,7 +280,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
                 setConsentError('');
                 setShowTerms(false);
               }}
-              className="px-4 py-2 rounded-xl bg-navy text-white text-xs font-bold hover:bg-navy-deep transition-colors"
+              className="px-4 py-2 min-h-[44px] rounded-xl bg-green text-ink font-bold hover:bg-green-bright border-0 transition-colors"
             >
               Entendido y autorizar
             </button>

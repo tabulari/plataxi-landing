@@ -99,19 +99,10 @@ export function Benefits() {
       className="mt-16 md:mt-32"
     >
       <div className="mx-auto max-w-container px-6">
-        <div ref={headerRef} className="max-w-3xl lg:max-w-4xl mx-auto text-center mb-10 lg:mb-12 space-y-2">
-          <h2
-            id="benefits-heading"
-            className="text-3xl sm:text-4xl lg:text-[42px] leading-[1.2] font-display font-bold text-navy tracking-tight"
-          >
-            Tu crédito,{' '}
-            <mark className="inline-block bg-primary-brand text-primary-dark px-3 py-0.5 rounded-lg align-baseline">
-              a tu propio ritmo
-            </mark>
+        <div ref={headerRef} className="max-w-3xl lg:max-w-4xl mx-auto text-center mb-10 lg:mb-12">
+          <h2 id="benefits-heading" className="text-section font-display font-bold text-navy">
+            Tu crédito, a tu propio ritmo
           </h2>
-          <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto">
-            Para el producido del turno, el mantenimiento del taxi o cualquier imprevisto del día.
-          </p>
         </div>
 
         {/* Section panoramic image preserved — inDrive 2:1 aspect ratio with rounded-3xl */}

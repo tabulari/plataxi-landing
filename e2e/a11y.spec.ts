@@ -14,6 +14,8 @@ const EXCLUDE = "nextjs-portal";
 
 test("landing page has no axe violations", async ({ page }) => {
   await page.goto("/");
+  // Allow entrance animations to settle so elements are at 100% opacity
+  await page.waitForTimeout(600);
   const results = await new AxeBuilder({ page })
     .exclude(EXCLUDE)
     // .phone is a decorative product mockup (aria-hidden); treat like an image.
@@ -26,7 +28,7 @@ test("landing page has no axe violations", async ({ page }) => {
 test("apply modal (open) has no axe violations", async ({ page }) => {
   await page.goto("/");
   await page
-    .getByRole("button", { name: "Solicitar crédito" })
+    .getByRole("button", { name: /iniciar solicitud|pedir mi crédito/i })
     .first()
     .click();
   await page.getByRole("dialog").waitFor();

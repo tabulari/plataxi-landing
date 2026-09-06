@@ -79,9 +79,28 @@ export function findUnresolvedPlaceholders(env: Env = process.env): PlaceholderK
   });
 }
 
+/** Placeholder sentinel for the monthly rate (dev/test fallback). */
+export const PLACEHOLDER_MONTHLY_RATE = 0.026;
+
 /**
- * Throws if any ⚠️ placeholder survives. Intended to run during a production
- * build so we cannot ship with fake business data. Pure/injectable for tests.
+ * Validates the monthly interest rate env var. Kept separate from the string
+ * placeholder keys because it is numeric, not a secret endpoint, and its error
+ * message should name the var and the constraint (0 < r < 1).
+ *
+ * Pure — accepts an injected env so the production guard can be unit-tested.
+ */
+export function findUnresolvedRate(env: Env = process.env): string[] {
+  const raw = env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE;
+  if (!raw || raw.length === 0) return ["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"];
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0 || n >= 1) return ["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"];
+  return [];
+}
+
+/**
+ * Throws if any ⚠️ placeholder survives or the monthly rate is missing/invalid.
+ * Intended to run during a production build so we cannot ship with fake business
+ * data or a placeholder rate. Pure/injectable for tests.
  */
 export function assertProductionConfig(env: Env = process.env): void {
   const unresolved = findUnresolvedPlaceholders(env);
@@ -90,6 +109,14 @@ export function assertProductionConfig(env: Env = process.env): void {
       "Refusing to build for production: unresolved placeholder config. " +
         "Set real values for the following env vars (see .env.example):\n  - " +
         unresolved.join("\n  - "),
+    );
+  }
+  const unresolvedRate = findUnresolvedRate(env);
+  if (unresolvedRate.length > 0) {
+    throw new Error(
+      "Refusing to build for production: unresolved monthly interest rate. " +
+        "Set NEXT_PUBLIC_CREDIT_MONTHLY_RATE to a real decimal (0 < r < 1, " +
+        "e.g. 0.032 for 3.2% monthly).",
     );
   }
 }
@@ -115,8 +142,8 @@ export const config = {
   /** Brand display name — used in nav, footer, legal pages, WhatsApp messages, etc. */
   brandName: "Plataxi",
 
-  /** Contact email shown in footer. */
-  contactEmail: "hola@plataxi.co",
+  /** Contact email shown in footer — client requested info@plataxi.com.co (was hola@plataxi.co). */
+  contactEmail: "info@plataxi.com.co",
 
   /** Contact hours shown in footer. */
   contactHours: "Lun a Vie, 8:00–18:00",
@@ -221,17 +248,4 @@ if (
   process.env.NEXT_PUBLIC_PLATAXI_ALLOW_PLACEHOLDERS !== "true"
 ) {
   assertProductionConfig();
-}
-
-/** Runtime warning if placeholder rate is detected in production. */
-if (
-  process.env.NODE_ENV === "production" &&
-  typeof window !== "undefined" &&
-  config.credit.monthlyRate === 0.026 &&
-  process.env.NEXT_PUBLIC_PLATAXI_ALLOW_PLACEHOLDERS !== "true"
-) {
-  console.warn(
-    "⚠️ Plataxi: running in production with the placeholder monthly rate (2.6%). " +
-    "Set NEXT_PUBLIC_CREDIT_MONTHLY_RATE to the real value."
-  );
 }

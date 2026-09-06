@@ -6,7 +6,7 @@ export function SimulateSection({ children }: { children: React.ReactNode }) {
     <SimulateAnim>
       <div className="mx-auto max-w-container px-6">
         <div data-sim="header" className="mb-8 lg:mb-10 text-center space-y-2">
-          <h2 id="simula-heading" className="text-[clamp(2.25rem,6.5vw,4rem)] font-display font-bold text-navy leading-[1.2] tracking-[-0.02em]">
+          <h2 id="simula-heading" className="text-section font-display font-bold text-navy">
             Calcula cuánto pagas y a qué plazo
           </h2>
         </div>
@@ -14,10 +14,10 @@ export function SimulateSection({ children }: { children: React.ReactNode }) {
           {children}
           <WhatsAppLink
             ctx="simula"
-            className="flex items-center justify-center gap-2.5 text-sm font-semibold text-green-ink hover:text-green-ink/80 transition-colors py-3"
+            className="flex items-center justify-center gap-2.5 text-sm font-semibold text-green-ink hover:text-green-ink/80 transition-colors py-3 min-h-[44px]"
           >
             <span className="wa-ico" aria-hidden="true" />
-            ¿Dudas con la cuota? Escríbenos al WhatsApp
+            Hablar con un asesor
           </WhatsAppLink>
         </div>
       </div>

@@ -56,35 +56,25 @@ export function CtaBanner() {
       ref={containerRef}
       id="cta"
       aria-labelledby="cta-heading"
-      className="bg-primary-dark text-white py-16 lg:py-24 relative z-10 -mt-2 overflow-hidden"
+      className="dot-grid bg-primary-dark text-white py-16 lg:py-24 relative z-10 -mt-2 overflow-hidden"
     >
-      {/* Background Dot-Grid Texture */}
-      <div
-        className="absolute inset-0 opacity-10 pointer-events-none"
-        aria-hidden="true"
-        style={{
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.16) 1px, transparent 1px)',
-          backgroundSize: '24px 24px',
-        }}
-      />
-
       <div className="mx-auto max-w-container px-6 relative pb-6 lg:pb-10">
         <div
           ref={panelRef}
           data-cta="panel"
-          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-10 sm:p-12 lg:p-16 backdrop-blur-xl shadow-2xl overflow-hidden"
+          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-10 sm:p-12 lg:p-16 backdrop-blur-xl shadow-lg overflow-hidden"
         >
           {/* Left Column: Pure, Saturated Value Anchor */}
           <div className="flex-1 min-w-0 relative space-y-5 text-left">
             <h2
               id="cta-heading"
               data-cta="heading"
-              className="text-3xl sm:text-4xl lg:text-[42px] font-display tracking-tight text-white leading-[1.18] mb-2"
+              className="text-section font-display font-bold text-white"
             >
-              Plata lista para rodar, <br className="hidden sm:inline" />
-              <span className="inline-block bg-primary-brand text-primary-dark px-3.5 py-1 rounded-xl mt-1.5">
+              Plata lista para rodar,{' '}
+              <mark className="inline-block bg-primary-brand text-primary-dark px-3 py-1 rounded-lg shadow-sm">
                 sin filas ni enredos.
-              </span>
+              </mark>
             </h2>
 
             <p
@@ -104,7 +94,7 @@ export function CtaBanner() {
             <ApplyButton
               origin="cta_banner"
               size="lg"
-              className="w-full min-h-[54px] h-14 bg-green text-ink font-bold shadow-[0_12px_28px_-6px_rgba(255,221,0,0.35),0_8px_10px_-6px_rgba(0,0,0,0.4)] hover:bg-green-bright hover:scale-[1.01] active:scale-[0.98] transition-all text-base rounded-2xl border-0 flex items-center justify-center gap-2"
+              className="w-full min-h-[54px] h-14 bg-green text-ink font-bold shadow-[0_12px_28px_-6px_rgba(246,216,96,0.35),0_8px_10px_-6px_rgba(17,17,16,0.4)] hover:bg-green-bright hover:scale-[1.01] active:scale-[0.98] transition-all text-base rounded-2xl border-0 flex items-center justify-center gap-2"
             >
               <span>Pedir mi crédito</span>
             </ApplyButton>

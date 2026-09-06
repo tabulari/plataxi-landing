@@ -10,11 +10,16 @@ import { loadRatesConfig } from "@/lib/rates-config";
 export async function GET() {
   const rates = await loadRatesConfig(config.ratesConfigEndpoint);
   if (!rates) {
+    console.warn(
+      `[rates-config] Core unreachable at ${config.ratesConfigEndpoint}; ` +
+        `serving config fallback rate ${config.credit.monthlyRate}.`,
+    );
     return NextResponse.json({
       monthly_interest_rate: config.credit.monthlyRate,
       min_amount: config.simulator.amountMin,
       max_amount: config.simulator.amountMax,
       term_options_months: config.simulator.termOptions,
+      source: "fallback",
     });
   }
 
@@ -23,5 +28,6 @@ export async function GET() {
     min_amount: rates.amountMin,
     max_amount: rates.amountMax,
     term_options_months: rates.termOptions,
+    source: "core",
   });
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useId, useEffect } from 'react';
+import { useRef, useId } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 

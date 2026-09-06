@@ -3,6 +3,7 @@ import {
   PLACEHOLDER_KEYS,
   PLACEHOLDERS,
   findUnresolvedPlaceholders,
+  findUnresolvedRate,
   assertProductionConfig,
 } from "@/lib/config";
 
@@ -14,6 +15,7 @@ import {
 const allRealEnv = (): Record<string, string> => {
   const env: Record<string, string> = {};
   for (const k of PLACEHOLDER_KEYS) env[k] = `real-${k}`;
+  env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE = "0.032";
   return env;
 };
 
@@ -65,5 +67,59 @@ describe("production placeholder guard", () => {
       "https://core.example.com/api/v1/sessions/rates-config",
     );
     vi.unstubAllEnvs();
+  });
+});
+
+describe("monthly rate production guard", () => {
+  it("passes when a valid rate is set", () => {
+    expect(findUnresolvedRate({ NEXT_PUBLIC_CREDIT_MONTHLY_RATE: "0.032" })).toEqual([]);
+  });
+
+  it("flags a missing rate", () => {
+    expect(findUnresolvedRate({})).toEqual(["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"]);
+  });
+
+  it("flags an empty rate", () => {
+    expect(findUnresolvedRate({ NEXT_PUBLIC_CREDIT_MONTHLY_RATE: "" })).toEqual([
+      "NEXT_PUBLIC_CREDIT_MONTHLY_RATE",
+    ]);
+  });
+
+  it("flags a non-numeric rate", () => {
+    expect(
+      findUnresolvedRate({ NEXT_PUBLIC_CREDIT_MONTHLY_RATE: "invalid" }),
+    ).toEqual(["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"]);
+  });
+
+  it("flags a zero rate", () => {
+    expect(
+      findUnresolvedRate({ NEXT_PUBLIC_CREDIT_MONTHLY_RATE: "0" }),
+    ).toEqual(["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"]);
+  });
+
+  it("flags a rate >= 1 (not a decimal)", () => {
+    expect(
+      findUnresolvedRate({ NEXT_PUBLIC_CREDIT_MONTHLY_RATE: "1.5" }),
+    ).toEqual(["NEXT_PUBLIC_CREDIT_MONTHLY_RATE"]);
+  });
+
+  it("assertProductionConfig throws on missing rate even when endpoints are real", () => {
+    const env = allRealEnv();
+    delete env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE;
+    expect(() => assertProductionConfig(env)).toThrow(
+      /NEXT_PUBLIC_CREDIT_MONTHLY_RATE/,
+    );
+  });
+
+  it("assertProductionConfig throws on invalid rate even when endpoints are real", () => {
+    const env = allRealEnv();
+    env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE = "0";
+    expect(() => assertProductionConfig(env)).toThrow(
+      /monthly interest rate/,
+    );
+  });
+
+  it("assertProductionConfig passes when rate and endpoints are all real", () => {
+    expect(() => assertProductionConfig(allRealEnv())).not.toThrow();
   });
 });

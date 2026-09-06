@@ -26,12 +26,12 @@ export function Faq() {
     if (header) {
       gsap.fromTo(
         header,
-        { y: 28, autoAlpha: 0 },
+        { y: 14, autoAlpha: 0 },
         {
           y: 0,
           autoAlpha: 1,
-          duration: 0.6,
-          ease: 'power3.out',
+          duration: 0.35,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: header,
             start: 'top 85%',
@@ -44,13 +44,13 @@ export function Faq() {
     if (items && items.length) {
       gsap.fromTo(
         items,
-        { y: 24, autoAlpha: 0 },
+        { y: 14, autoAlpha: 0 },
         {
           y: 0,
           autoAlpha: 1,
-          stagger: 0.08,
-          duration: 0.55,
-          ease: 'power3.out',
+          stagger: 0.06,
+          duration: 0.35,
+          ease: 'power2.out',
           scrollTrigger: {
             trigger: items[0],
             start: 'top 85%',
@@ -88,7 +88,7 @@ export function Faq() {
                 data-faq="item"
                 className="rounded-lg bg-surface-card overflow-hidden"
               >
-                <AccordionTrigger className="px-6 py-5 text-left text-base font-bold text-navy hover:no-underline gap-4">
+                <AccordionTrigger className="px-6 py-5 text-left text-base font-bold text-navy hover:no-underline gap-4 active:scale-[0.97] transition-transform">
                   <span className="leading-snug text-left">{faq.q}</span>
                 </AccordionTrigger>
 

@@ -3,6 +3,8 @@
 import { fmtCOP } from '@/lib/credit';
 import { clampAmount, clampRoundAmount } from '../simulator-store';
 import { MinusIcon, PlusIcon } from '../icons';
+import { FieldError } from '../FieldError';
+import { cn } from '@/lib/utils';
 
 export function AmountInput({
   amount,
@@ -79,19 +81,19 @@ export function AmountInput({
     <div className="space-y-4">
       {/* Amount Input Control */}
       <div>
-        <div className="mb-2">
-          <label htmlFor="amount-input" className="text-sm font-bold text-navy">
+        <div className="mb-1.5">
+          <label htmlFor="amount-input" className="text-sm font-semibold text-foreground">
             ¿Cuánto dinero necesitas?
           </label>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 bg-white rounded-[12px] p-2 border-2 border-border focus-within:border-green transition-colors">
+        <div className="field-shell flex items-center gap-2 sm:gap-3 bg-white rounded-xl p-2 border border-border transition-[border-color,box-shadow]">
           <button
             type="button"
             aria-label="Disminuir monto"
             onClick={() => bump(-1)}
             disabled={amount <= amountMin}
-            className="flex-shrink-0 flex items-center justify-center w-12 h-12 min-h-[48px] min-w-[48px] rounded-lg bg-bg-soft hover:bg-green-soft text-navy disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
+            className="flex-shrink-0 flex items-center justify-center w-12 h-12 min-h-[48px] min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
           >
             <MinusIcon size={18} />
           </button>
@@ -101,6 +103,7 @@ export function AmountInput({
             <input
               id="amount-input"
               ref={inputRef}
+              data-field-bare
               type="text"
               inputMode="numeric"
               value={inputText}
@@ -120,27 +123,26 @@ export function AmountInput({
             aria-label="Aumentar monto"
             onClick={() => bump(1)}
             disabled={amount >= amountMax}
-            className="flex-shrink-0 flex items-center justify-center w-12 h-12 min-h-[48px] min-w-[48px] rounded-lg bg-bg-soft hover:bg-green-soft text-navy disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
+            className="flex-shrink-0 flex items-center justify-center w-12 h-12 min-h-[48px] min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
           >
             <PlusIcon size={18} />
           </button>
         </div>
 
-        <p
+        <FieldError
           id="amountHint"
           role="status"
           aria-live="polite"
-          className={`text-xs font-medium text-orange-ink mt-1.5 pl-1 ${hint ? 'block' : 'sr-only'}`}
+          message={hint}
+          reserveSpace={false}
+          className={cn('mt-1.5 pl-1', hint ? 'flex' : 'sr-only')}
           aria-hidden={!hint || undefined}
-        >
-          {hint || ' '}
-        </p>
+        />
       </div>
 
-      {/* Range Slider — presets removed per humanizer audit; slider + −/+ now handle mobile. Track reliably at 8px after 166 fix. */}
+      {/* Range Slider — single slider for amount 50k-1M (plazo 1-6 now 6 chips) */}
       <div className="space-y-2.5">
         <div className="relative w-full h-12 flex items-center">
-          {/* Track — 8px pill, overflow-hidden so fill caps are always rounded */}
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-border rounded-full overflow-hidden pointer-events-none" aria-hidden="true">
             <div className="h-full bg-green rounded-full transition-[width] duration-150 ease-out" style={{ width: `${pct}%` }} />
           </div>

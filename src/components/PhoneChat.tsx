@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { config } from '@/lib/config';
@@ -10,12 +10,6 @@ import { useSimulator } from './simulator-store';
 import { buildWhatsAppUrl } from '@/lib/whatsapp';
 import { track } from '@/lib/analytics';
 import './phone-chat.css';
-
-const phoneSim = calculatePayment(
-  config.simulator.defaultAmount,
-  config.simulator.defaultTerm,
-  'monthly',
-);
 
 function startMouseTilt(
   shell: HTMLElement,
@@ -88,6 +82,18 @@ export function PhoneChat() {
   const mouseCleanupRef = useRef<(() => void) | null>(null);
   const { openApply } = useSiteUi();
   const { sim } = useSimulator();
+
+  // Derive the demo cuota from the store's live rate so it never shows a
+  // placeholder value that differs from the real SSR cuota above it.
+  const phoneSim = useMemo(
+    () => calculatePayment(
+      config.simulator.defaultAmount,
+      config.simulator.defaultTerm,
+      'monthly',
+      sim.monthlyRate,
+    ),
+    [sim.monthlyRate],
+  );
 
   // Dynamic live device clock & message timestamps
   const [deviceTime, setDeviceTime] = useState<string>('10:33');

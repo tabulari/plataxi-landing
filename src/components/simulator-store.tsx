@@ -63,8 +63,16 @@ interface SimulatorStore {
 
 const SimulatorContext = createContext<SimulatorStore | null>(null);
 
-export function SimulatorProvider({ children }: { children: React.ReactNode }) {
-  const [rates, setRates] = useState<RuntimeRatesConfig>(STATIC_RATES);
+export function SimulatorProvider({
+  children,
+  initialRates,
+}: {
+  children: React.ReactNode;
+  initialRates?: RuntimeRatesConfig;
+}) {
+  const [rates, setRates] = useState<RuntimeRatesConfig>(
+    initialRates ?? STATIC_RATES,
+  );
   const [amount, setAmountState] = useState(config.simulator.defaultAmount);
   const [term, setTerm] = useState(config.simulator.defaultTerm);
   const [frequency, setFrequency] = useState<Frequency>("monthly");
@@ -89,19 +97,23 @@ export function SimulatorProvider({ children }: { children: React.ReactNode }) {
     let active = true;
     void loadRatesConfig('/api/rates-config').then((nextRates) => {
       if (!active || nextRates === null) return;
-      setRates(nextRates);
+      // Keep termOptions static [1,2,3,4,5,6] (max 6) — live Core still returns [3,6,9,12,18,24] and would flicker 6→2 chips
+      const safeRates: RuntimeRatesConfig = {
+        ...nextRates,
+        termOptions: STATIC_RATES.termOptions,
+      };
+      setRates(safeRates);
       setAmountState((current) =>
         clampRoundAmount(
           current,
-          nextRates.amountMin,
-          nextRates.amountMax,
+          safeRates.amountMin,
+          safeRates.amountMax,
           config.simulator.amountStep,
         ),
       );
+      // term 3 is in [1-6], so no jump (was 6→24 before cap, now 6→2 before fix)
       setTerm((current) =>
-        nextRates.termOptions.includes(current)
-          ? current
-          : nextRates.termOptions[0],
+        safeRates.termOptions.includes(current) ? current : safeRates.termOptions[0],
       );
     });
     return () => {

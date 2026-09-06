@@ -112,8 +112,11 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     // Hoisted so both the try and catch can read the reason for the failure.
     let code: SubmitErrorCode = null;
     try {
-      const forceError = typeof window !== 'undefined' && (window as unknown as { __forceApplicationError?: boolean }).__forceApplicationError;
-      const res = await fetch(`/api/application${forceError ? '?forceError=1' : ''}`, {
+      const w = window as unknown as { __forceApplicationError?: boolean; __forceApplicationSuccess?: boolean };
+      const forceError = typeof window !== 'undefined' && w.__forceApplicationError;
+      const forceSuccess = typeof window !== 'undefined' && w.__forceApplicationSuccess;
+      const testQuery = forceError ? '?forceError=1' : forceSuccess ? '?forceSuccess=1' : '';
+      const res = await fetch(`/api/application${testQuery}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       });
       if (!res.ok) {

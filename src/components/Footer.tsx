@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { config } from '@/lib/config';
-import { WhatsAppLink } from './WhatsAppLink';
 import { PlataxiWordmark } from './icons';
 
 export function Footer() {
@@ -24,7 +23,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
-              className="inline-flex items-center justify-center w-10 h-10 rounded-xl text-white/70 hover:bg-green hover:text-ink hover:scale-105 transition-all shrink-0"
+              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-green hover:text-ink hover:scale-105 active:scale-[0.97] transition-all shrink-0"
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M14 8 h2.5 V5 H14 c-2 0-3.3 1.3-3.3 3.4 V10 H8 v3 h2.7 v8 h3.3 v-8 H16 l.5-3 h-2.8 V8.8 C13.7 8.2 14 8 14 8Z" />
@@ -35,7 +34,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
-              className="inline-flex items-center justify-center w-10 h-10 rounded-xl text-white/70 hover:bg-green hover:text-ink hover:scale-105 transition-all shrink-0"
+              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-green hover:text-ink hover:scale-105 active:scale-[0.97] transition-all shrink-0"
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -49,29 +48,29 @@ export function Footer() {
         {/* Column 2: Legal & Plataforma */}
         <nav aria-label="Plataforma" className="flex flex-col space-y-1">
           <h3 className="text-xs font-bold uppercase tracking-wider text-white/50 mb-2">Plataforma</h3>
-          <Link href="/legal/terminos" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[38px]">
+          <Link href="/legal/terminos" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[44px]">
             Términos y condiciones
           </Link>
-          <Link href="/legal/privacidad" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[38px]">
+          <Link href="/legal/privacidad" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[44px]">
             Política de privacidad
           </Link>
-          <Link href="/legal/habeas-data" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[38px]">
+          <Link href="/legal/habeas-data" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[44px]">
             Tratamiento de datos
           </Link>
         </nav>
 
-        {/* Column 3: Soporte & Contacto */}
+        {/* Column 3: Soporte & Contacto — 1 WhatsApp site-wide kept in Simulator + FAQ, footer is legal/support only */}
         <nav aria-label="Soporte" className="flex flex-col space-y-1">
           <h3 className="text-xs font-bold uppercase tracking-wider text-white/50 mb-2">Soporte</h3>
-          <a href="#preguntas" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[38px]">
+          <a href="#preguntas" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[44px]">
             Centro de ayuda
           </a>
-          <WhatsAppLink ctx="contact" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[38px]">
+          <a href={`mailto:${config.contactEmail}`} className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[44px]">
             Contacto
-          </WhatsAppLink>
-          <WhatsAppLink ctx="pqrs" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[38px]">
+          </a>
+          <Link href="/legal/habeas-data" className="text-sm text-white/70 hover:text-green transition-colors flex items-center min-h-[44px]">
             PQRS
-          </WhatsAppLink>
+          </Link>
         </nav>
       </div>
 

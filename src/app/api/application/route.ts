@@ -20,8 +20,10 @@ import { CoreLeadError, forwardApplicationToCore } from "@/lib/core-lead";
  * security response headers, and a shared `X-Landing-Api-Key` secret (never
  * browser-exposed) on the outbound call to Core.
  *
- * Test hook: POST with `?forceError=1` returns 500 so the modal's error panel
- * (and draft-preservation) can be exercised.
+ * Test hooks: POST with `?forceError=1` returns 500 so the modal's error panel
+ * (and draft-preservation) can be exercised, and `?forceSuccess=1` returns a
+ * fake radicado (200) so the success panel can be exercised. Both are dev-gated
+ * (the client only adds the param when a window flag is set manually).
  */
 export async function POST(request: NextRequest) {
   const rateLimitResponse = checkRateLimit(request);
@@ -39,6 +41,18 @@ export async function POST(request: NextRequest) {
       NextResponse.json(
         { error: "Forced error (test hook)." },
         { status: 500 },
+      ),
+    );
+  }
+
+  // Test hook (dev only — users never send this param): returns a fake Core
+  // radicado so the success panel / /s/[radicado] flow can be exercised without
+  // an upstream Core. Mirror of forceError above.
+  if (url.searchParams.get("forceSuccess") === "1") {
+    return applySecurityHeaders(
+      NextResponse.json(
+        { radicado: "CR-2026-TEST0001" },
+        { status: 200 },
       ),
     );
   }

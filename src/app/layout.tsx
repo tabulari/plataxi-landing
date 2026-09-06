@@ -5,7 +5,6 @@ import { config } from "@/lib/config";
 import { fmtCOP } from "@/lib/credit";
 import { StructuredData } from "@/components/StructuredData";
 import { SiteUiProvider } from "@/components/site-ui";
-import { SimulatorProvider } from "@/components/simulator-store";
 import { RevealController } from "@/components/RevealController";
 import { GsapProvider } from "@/components/GsapProvider";
 import "./globals.css";
@@ -115,7 +114,7 @@ export default function RootLayout({
 
         <SiteUiProvider>
           <GsapProvider>
-            <SimulatorProvider>{children}</SimulatorProvider>
+            {children}
           </GsapProvider>
         </SiteUiProvider>
 

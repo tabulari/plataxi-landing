@@ -5,12 +5,26 @@
 /* ===== design tokens (ShadCN semantic vars mapped to brand colors) ===== */
 @layer base {
   :root {
-    /* ===== Paleta Oficial de 5 Colores Plataxi ===== */
-    --color-primary-dark: #111110;       /* 1. Primario Estructural (Dark Onyx) */
-    --color-primary-brand: #f6d860;      /* 2. Primario de Marca (Amarillo Mantequilla) */
-    --color-secondary-surface: #fffbe0;  /* 3. Secundario Superficie (Crema Suave) */
-    --color-secondary-text: #757575;     /* 4. Secundario Texto (Gris Medio) */
-    --color-secondary-border: #c1c1c1;   /* 5. Secundario Bordes (Gris Claro) */
+    /* ===== Paleta Oficial de 5 Colores Plataxi =====
+       Declared as channel triplets, and consumed two ways:
+         - raw CSS in this file reads the rgb() colors below;
+         - Tailwind utilities read the triplets, via tailwind.config.ts.
+       Tailwind can only build a tint (border-green/20, ring-white/12) from a
+       channel list. An opacity modifier applied to a bare var(--x) color is
+       silently dropped and the utility never reaches the stylesheet, so any
+       token that Tailwind exposes has to be reachable as channels. */
+    --color-primary-dark-rgb: 17 17 16;         /* 1. Primario Estructural (Dark Onyx)          #111110 */
+    --color-primary-brand-rgb: 246 216 96;      /* 2. Primario de Marca (Amarillo Mantequilla)  #f6d860 */
+    --color-secondary-surface-rgb: 255 251 224; /* 3. Secundario Superficie (Crema Suave)       #fffbe0 */
+    --color-secondary-text-rgb: 117 117 117;    /* 4. Secundario Texto (Gris Medio)             #757575 */
+    --color-secondary-border-rgb: 193 193 193;  /* 5. Secundario Bordes (Gris Claro)            #c1c1c1 */
+    --color-white-rgb: 255 255 255;
+
+    --color-primary-dark: rgb(var(--color-primary-dark-rgb));
+    --color-primary-brand: rgb(var(--color-primary-brand-rgb));
+    --color-secondary-surface: rgb(var(--color-secondary-surface-rgb));
+    --color-secondary-text: rgb(var(--color-secondary-text-rgb));
+    --color-secondary-border: rgb(var(--color-secondary-border-rgb));
 
     /* Derived value, NOT a sixth brand color: color-mix(in srgb,
        var(--color-primary-dark) 60%, var(--color-secondary-surface)).
@@ -19,7 +33,20 @@
        value clears AA on BOTH — white 5.07:1, cream 4.86:1 — so muted text does
        not have to change token depending on what it sits on. Hard-coded rather
        than color-mix() so it resolves on older Android WebViews. */
-    --color-secondary-text-aa: #706f63;
+    --color-secondary-text-aa-rgb: 112 111 99; /* #706f63 */
+    --color-secondary-text-aa: rgb(var(--color-secondary-text-aa-rgb));
+
+    /* ===== Feedback (user state, not brand identity) =====
+       The palette has no red and no green, so error and success cannot be told
+       apart by hue. Every feedback message therefore pairs the token with an
+       icon — see FieldError. */
+    --color-feedback-error: var(--color-primary-dark);
+    --color-feedback-error-bg: var(--color-secondary-surface);
+    --color-feedback-success: var(--color-primary-brand);
+    --color-feedback-success-bg: var(--color-secondary-surface);
+
+    /* Single focus indicator for form fields and the shells that wrap them. */
+    --focus-ring-brand: 0 0 0 3px rgba(246, 216, 96, 0.35);
 
     /* ===== ShadCN Semantic Tokens ===== */
     /* Canvas is white; cream (palette color 3) is the RAISED SURFACE on top of
@@ -188,6 +215,7 @@
      is needed to override Tailwind's .outline-none and .focus-visible:outline-none
      utilities which set outline: transparent. */
   button:focus-visible,
+  input[type='range']:focus-visible,
   [role='radio']:focus-visible,
   [data-slot='button']:focus-visible,
   [data-slot='accordion-trigger']:focus-visible,
@@ -196,16 +224,36 @@
     outline-offset: 2px !important;
   }
 
-  /* Form inputs focus state: soft butter yellow without black outer ring */
-  input:focus-visible,
+  /* Form field focus state: soft butter yellow without black outer ring.
+     Range inputs and [data-field-bare] inputs opt out — a bare input sits inside
+     a .field-shell that draws the ring for it, so without the exclusion the same
+     indicator gets painted twice, once around the shell and once inside it. */
+  input:not([type='range']):not([data-field-bare]):focus-visible,
   select:focus-visible,
   textarea:focus-visible,
-  input:focus,
+  input:not([type='range']):not([data-field-bare]):focus,
   select:focus,
   textarea:focus {
     outline: none !important;
-    border-color: #f6d860 !important;
-    box-shadow: 0 0 0 3px rgba(246, 216, 96, 0.35) !important;
+    border-color: var(--color-primary-brand) !important;
+    box-shadow: var(--focus-ring-brand) !important;
+  }
+
+  /* A composite field: bordered container wrapping a bare input plus controls
+     (steppers, prefixes). It owns the focus ring of the input nested in it. */
+  .field-shell:focus-within {
+    border-color: var(--color-primary-brand);
+    box-shadow: var(--focus-ring-brand);
+  }
+
+  /* Dark-surface texture. Shared by every #111110 surface so the dark material
+     reads the same in the landing banner and inside the application modal.
+     Painted as the element's own background-image rather than an ::before layer:
+     a positioned pseudo-element paints above non-positioned children, which
+     would force every child of a textured surface to be positioned too. */
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
 }
 
@@ -360,8 +408,21 @@ a:focus-visible {
 
 /* ===== keyframes ===== */
 @keyframes popIn {
-  from { transform: scale(0.4); opacity: 0; }
+  from { transform: scale(0.9); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
+}
+@keyframes step-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes terms-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-step-in { animation: step-in 200ms ease-out; }
+.animate-terms-in { animation: terms-in 150ms ease-out; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-step-in, .animate-terms-in { animation: none !important; }
 }
 @keyframes btnspin {
   to { transform: rotate(360deg); }
@@ -392,9 +453,12 @@ a:focus-visible {
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s, color 0.15s;
+  transition: border-color 0.15s, background 0.15s, color 0.15s, transform 0.15s;
   white-space: nowrap;
   outline: none;
+}
+.chip:active {
+  transform: scale(0.97);
 }
 .chip:hover:not(.active) {
   border-color: #b0bac8;

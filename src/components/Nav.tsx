@@ -289,7 +289,7 @@ export function Nav() {
                   </a>
                 );
               })}
-              <ApplyButton variant="default" size="lg" className="w-full min-h-[50px] mt-3 font-bold">
+              <ApplyButton variant="default" size="lg" className="w-full min-h-[50px] mt-3 font-bold bg-green text-ink hover:bg-green-bright border-0">
                 Iniciar solicitud
               </ApplyButton>
             </div>

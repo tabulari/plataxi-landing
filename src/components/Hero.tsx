@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import { ScrollButton } from './ScrollButton';
 import { HeroAnim } from './HeroAnim';
-import { SectionEyebrow } from './SectionEyebrow';
 
 export function Hero() {
   return (
@@ -19,34 +18,29 @@ export function Hero() {
         style={{ objectPosition: '75% center' }}
       />
 
-      {/* Scrim: 45/70 indrive parity — reveals plate VAL-245 while keeping white AA 6.5:1 */}
+      {/* Scrim: calibrated for WCAG AA compliance (4.5:1 paragraph, 3:1 h1) over bright taxi highlights */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-black/45 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/70 lg:via-black/40 lg:to-black/10"
+        className="absolute inset-0 bg-black/60 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/85 lg:via-black/65 lg:to-black/20"
       />
 
       <div className="relative z-10 w-full mx-auto max-w-container px-6 py-10 sm:py-12 lg:py-16">
         <HeroAnim>
           <div className="max-w-2xl space-y-5">
-            <div data-hero-anim>
-              <span className="inline-flex items-center h-10 px-5 rounded-pill text-sm md:text-base font-medium bg-background text-primary-dark shadow-sm">
-                Hecho para taxistas colombianos
-              </span>
-            </div>
-            {/* Headline — white pill on yellow taxi for contrast (yellow mark on yellow taxi was 0 contrast) */}
+            {/* Headline — white pill on yellow taxi for contrast, weight reduced so h1 doesn't dominate h2 */}
             <h1
               id="hero-heading"
               data-hero-anim
-              className="text-hero font-display font-bold text-white"
+              className="text-hero font-display font-semibold tracking-[-0.015em] text-white"
             >
               Soluciona tu día,{' '}
-              <mark className="inline-block bg-background text-primary-dark px-3 py-1 rounded-lg shadow-sm">
+              <mark className="inline-block bg-background text-primary-dark px-2.5 py-0.5 rounded-lg shadow-xs">
                 crédito en minutos
               </mark>
             </h1>
 
-            <p data-hero-anim className="text-base sm:text-lg text-white/90 leading-relaxed max-w-lg">
-              Sin nómina ni fiador. Pide desde $100.000 hasta $1.000.000 y te llega el dinero directo a tu Nequi hoy mismo.
+            <p data-hero-anim className="text-sm sm:text-base text-white leading-relaxed max-w-md">
+              Sin nómina ni fiador. Pide $100k-$1M y te llega hoy a Nequi.
             </p>
 
             {/* Single focused CTA — inDrive: 48px mobile / 64px desktop, 20-26px radius, yellow on dark */}

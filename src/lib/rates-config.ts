@@ -54,3 +54,33 @@ export async function loadRatesConfig(
     return null;
   }
 }
+
+export type RatesSource = "core" | "fallback";
+
+export interface InitialRatesResult {
+  rates: RuntimeRatesConfig;
+  source: RatesSource;
+}
+
+/**
+ * Server-side helper for seeding the SimulatorProvider during SSR/ISR.
+ * Calls Core directly (server-to-server, no self-fetch through the proxy) and
+ * falls back to config-derived static values when Core is unreachable.
+ *
+ * `termOptions` is always pinned to the config default — Core's live list
+ * includes terms up to 24 months, but the landing UI only offers 1-6.
+ */
+export async function getInitialRates(
+  endpoint: string,
+  fallback: RuntimeRatesConfig,
+  fetchImpl: FetchLike = fetch,
+): Promise<InitialRatesResult> {
+  const coreRates = await loadRatesConfig(endpoint, fetchImpl);
+  if (coreRates) {
+    return {
+      rates: { ...coreRates, termOptions: fallback.termOptions },
+      source: "core",
+    };
+  }
+  return { rates: fallback, source: "fallback" };
+}

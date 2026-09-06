@@ -5,7 +5,6 @@ import { useApplicationForm, useDraftAutoSave, STEP_TITLES } from './apply/use-a
 import { ModalSidebar } from './apply/ModalSidebar';
 import { Step1, Step2, Step3 } from './apply/FormSteps';
 import { ApplicationSuccess, ApplicationError } from './apply/ResultPanels';
-import { track } from '@/lib/analytics';
 import { useSiteUi } from './site-ui';
 import { useSimulator } from './simulator-store';
 import { cn } from '@/lib/utils';
@@ -13,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { CloseIcon } from './icons';
 
 export function ApplyModal() {
-  const { applyOpen, applyOrigin, closeApply, showResumeNudge } = useSiteUi();
+  const { applyOpen, applyOrigin, closeApply } = useSiteUi();
   const { sim } = useSimulator();
 
   const simRef = useRef(sim);
@@ -88,16 +87,6 @@ export function ApplyModal() {
     }
   }, [form.submitStatus, mounted]);
 
-  const editMonto = () => {
-    track('apply_edit_monto', { step: form.step });
-    closeApply();
-    setTimeout(() => {
-      const el = document.getElementById('simula');
-      if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 80, behavior: 'smooth' });
-      showResumeNudge();
-    }, 300);
-  };
-
   if (!mounted || !frozen) return null;
 
   const handlers = {
@@ -108,7 +97,7 @@ export function ApplyModal() {
 
   const stepDot = (i: number) =>
     cn(
-      'flex items-center gap-1.5 text-sm font-semibold',
+      'flex items-center gap-2 text-sm font-semibold',
       i === form.step ? 'text-navy' : i < form.step || form.submitStatus === 'success' ? 'text-ink' : 'text-muted-2',
     );
 
@@ -127,9 +116,9 @@ export function ApplyModal() {
         aria-modal="true"
         aria-labelledby="applyTitle"
         className={cn(
-          'relative flex w-full max-w-[860px] max-h-[90vh] bg-white rounded-2xl shadow-xl overflow-hidden transition-[transform,opacity] duration-200 ease-out',
+          'relative flex w-full max-w-[860px] h-[min(688px,90vh)] max-h-[90vh] bg-white rounded-2xl shadow-lg overflow-hidden transition-[transform,opacity] duration-200 ease-out',
           show ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
-          'max-[760px]:flex-col max-[760px]:max-h-[95vh]',
+          'max-[760px]:flex-col max-[760px]:h-auto max-[760px]:max-h-[95vh]',
         )}
       >
         <h2 id="applyTitle" className="sr-only">Solicitud de credito</h2>
@@ -139,24 +128,47 @@ export function ApplyModal() {
           type="button"
           aria-label="Cerrar"
           onClick={closeApply}
-          className="absolute top-2 right-2 z-10 flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl text-muted-2 hover:bg-bg-soft hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="absolute top-2 right-2 z-10 flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl text-muted-2 hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <CloseIcon size={22} />
         </button>
 
-        <ModalSidebar frozen={frozen} onEditMonto={editMonto} />
+        <ModalSidebar frozen={frozen} />
 
-        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto">
-          <ol className="flex gap-5 px-6 pt-5 pb-3 border-b border-border">
-            {[1, 2, 3].map((i) => (
-              <li key={i} className={stepDot(i)}>
-                <span className={cn(
-                  'flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold',
-                  i === form.step ? 'bg-navy text-white' : i < form.step || form.submitStatus === 'success' ? 'bg-green-ink text-white' : 'bg-border text-muted-2',
-                )}>{i}</span>
-                {STEP_TITLES[i]}
-              </li>
-            ))}
+        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto overscroll-contain">
+          <ol className="flex flex-wrap gap-x-4 gap-y-3 px-6 pt-5 pb-3 border-b border-border" aria-label="Progreso del formulario">
+            {[1, 2, 3].map((i) => {
+              const isClickable = i < form.step || form.submitStatus === 'success';
+              const isCurrent = i === form.step;
+              return (
+                <li key={i} className={stepDot(i)}>
+                  <button
+                    type="button"
+                    disabled={!isClickable && !isCurrent}
+                    aria-current={isCurrent ? 'step' : undefined}
+                    aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isClickable ? '' : ' (incompleto)'}`}
+                    onClick={() => { if (isClickable || isCurrent) form.setStep(i); }}
+                    className={cn(
+                      'flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2',
+                      isCurrent ? 'bg-primary-brand text-primary-dark ring-2 ring-green/40 ring-offset-2' : isClickable ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50 hover:bg-green/30 cursor-pointer' : 'bg-transparent text-muted-2 ring-1 ring-inset ring-border cursor-default',
+                      isClickable && !isCurrent && 'hover:scale-[1.05] active:scale-[0.97]',
+                    )}
+                  >
+                    {i}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={!isClickable && !isCurrent}
+                    aria-current={isCurrent ? 'step' : undefined}
+                    onClick={() => { if (isClickable || isCurrent) form.setStep(i); }}
+                    className={cn('text-left', isClickable && !isCurrent && 'hover:underline underline-offset-2 cursor-pointer', !isClickable && !isCurrent && 'cursor-default')}
+                    tabIndex={isClickable || isCurrent ? 0 : -1}
+                  >
+                    {STEP_TITLES[i]}
+                  </button>
+                </li>
+              );
+            })}
           </ol>
 
           {/* Live announcement region for step transitions and pending network submission */}
@@ -172,7 +184,7 @@ export function ApplyModal() {
 
           <form
             noValidate
-            className="flex-1 px-6 py-5 flex flex-col"
+            className="flex-1 px-6 py-6 flex flex-col gap-4"
             onSubmit={(e) => {
               e.preventDefault();
               if (form.submitStatus === 'pending' || form.submitStatus === 'success') return;
@@ -180,11 +192,15 @@ export function ApplyModal() {
               form.onNext(frozen);
             }}
           >
-            {form.submitStatus === 'success' ? (
-              <ApplicationSuccess radicado={form.radicado} />
-            ) : form.submitStatus === 'error' ? (
-              <ApplicationError code={form.submitErrorCode} />
-            ) : (
+            <div
+              key={`step-${form.step}-${form.submitStatus}`}
+              className="flex-1 flex flex-col animate-step-in"
+            >
+              {form.submitStatus === 'success' ? (
+                <ApplicationSuccess radicado={form.radicado} />
+              ) : form.submitStatus === 'error' ? (
+                <ApplicationError code={form.submitErrorCode} />
+              ) : (
               <>
                 {form.step === 1 && (
                   <Step1 values={form.values} applyOrigin={applyOrigin} handlers={handlers} frozen={frozen} />
@@ -192,7 +208,7 @@ export function ApplyModal() {
                 {form.step === 2 && (
                   <Step2 values={form.values} handlers={handlers} />
                 )}
-                {form.step === 3 && (
+{form.step === 3 && (
                   <Step3
                     values={form.values}
                     consent={form.consent}
@@ -203,20 +219,23 @@ export function ApplyModal() {
                   />
                 )}
               </>
-            )}
+              )}
+            </div>
           </form>
 
           <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-border">
             {form.submitStatus === 'success' ? (
-              <Button variant="default" size="block" onClick={closeApply}>Entendido</Button>
+              <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={closeApply}>Entendido</Button>
             ) : form.submitStatus === 'error' ? (
-              <Button variant="default" size="block" onClick={() => form.submit(frozen)}>Reintentar envío <span aria-hidden="true">→</span></Button>
+              <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={() => form.submit(frozen)}>Reintentar envío <span aria-hidden="true">→</span></Button>
             ) : (
               <>
                 <Button
                   variant="ghost"
                   size="default"
-                  style={{ visibility: form.step > 1 ? 'visible' : 'hidden' }}
+                  className={cn(form.step === 1 && 'invisible pointer-events-none')}
+                  aria-hidden={form.step === 1}
+                  tabIndex={form.step === 1 ? -1 : 0}
                   disabled={form.submitStatus === 'pending'}
                   onClick={() => form.setStep((s) => Math.max(1, s - 1))}
                 >
