@@ -72,7 +72,7 @@ export function CtaBanner() {
               className="text-section font-display font-bold text-white"
             >
               Plata lista para rodar,{' '}
-              <mark className="inline-block bg-primary-brand text-primary-dark px-3 py-1 rounded-lg shadow-sm">
+              <mark className="inline-block bg-background text-primary-dark px-2.5 py-0.5 rounded-lg shadow-xs">
                 sin filas ni enredos.
               </mark>
             </h2>
