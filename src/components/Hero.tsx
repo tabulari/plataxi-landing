@@ -40,7 +40,7 @@ export function Hero() {
             </h1>
 
             <p data-hero-anim className="text-sm sm:text-base text-white leading-relaxed max-w-md">
-              Sin nómina ni fiador. Pide $100k-$1M y te llega hoy a Nequi.
+              Solo con tu cédula y tu celular. Elige el monto que necesitas hoy y págalo a tu ritmo con cuota fija diaria.
             </p>
 
             {/* Single focused CTA — inDrive: 48px mobile / 64px desktop, 20-26px radius, yellow on dark */}
