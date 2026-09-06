@@ -87,19 +87,19 @@ export function AmountInput({
           </label>
         </div>
 
-        <div className="field-shell flex items-center gap-2 sm:gap-3 bg-white rounded-xl p-2 border border-border transition-[border-color,box-shadow]">
+        <div className="field-shell flex items-center gap-1 sm:gap-3 bg-white rounded-xl p-1.5 sm:p-2 border border-border transition-[border-color,box-shadow]">
           <button
             type="button"
             aria-label="Disminuir monto"
             onClick={() => bump(-1)}
             disabled={amount <= amountMin}
-            className="flex-shrink-0 flex items-center justify-center w-12 h-12 min-h-[48px] min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
+            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
           >
             <MinusIcon size={18} />
           </button>
 
-          <div className="flex items-center gap-1.5 flex-1 min-w-0 justify-center sm:justify-start px-2">
-            <span className="text-2xl sm:text-3xl font-extrabold text-navy leading-none select-none">$</span>
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-1 min-w-0 justify-center sm:justify-start px-1 sm:px-2">
+            <span className="text-xl sm:text-3xl font-extrabold text-navy leading-none select-none shrink-0">$</span>
             <input
               id="amount-input"
               ref={inputRef}
@@ -113,9 +113,8 @@ export function AmountInput({
               onChange={handleInputChange}
               onFocus={(e) => e.target.select()}
               onBlur={handleInputBlur}
-              className="w-full h-12 min-h-[48px] text-2xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight"
+              className="w-full min-w-0 h-12 min-h-[48px] text-xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight"
             />
-            <span className="text-xs font-bold text-muted-2 uppercase tracking-wider shrink-0">COP</span>
           </div>
 
           <button
@@ -123,7 +122,7 @@ export function AmountInput({
             aria-label="Aumentar monto"
             onClick={() => bump(1)}
             disabled={amount >= amountMax}
-            className="flex-shrink-0 flex items-center justify-center w-12 h-12 min-h-[48px] min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
+            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
           >
             <PlusIcon size={18} />
           </button>

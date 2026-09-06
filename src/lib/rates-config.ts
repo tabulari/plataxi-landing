@@ -78,7 +78,11 @@ export async function getInitialRates(
   const coreRates = await loadRatesConfig(endpoint, fetchImpl);
   if (coreRates) {
     return {
-      rates: { ...coreRates, termOptions: fallback.termOptions },
+      rates: {
+        ...coreRates,
+        amountMin: Math.max(coreRates.amountMin, fallback.amountMin),
+        termOptions: fallback.termOptions,
+      },
       source: "core",
     };
   }

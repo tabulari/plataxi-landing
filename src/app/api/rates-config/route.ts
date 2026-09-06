@@ -25,7 +25,7 @@ export async function GET() {
 
   return NextResponse.json({
     monthly_interest_rate: rates.monthlyRate,
-    min_amount: rates.amountMin,
+    min_amount: Math.max(rates.amountMin, config.simulator.amountMin),
     max_amount: rates.amountMax,
     term_options_months: rates.termOptions,
     source: "core",

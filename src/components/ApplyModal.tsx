@@ -161,7 +161,11 @@ export function ApplyModal() {
                     disabled={!isClickable && !isCurrent}
                     aria-current={isCurrent ? 'step' : undefined}
                     onClick={() => { if (isClickable || isCurrent) form.setStep(i); }}
-                    className={cn('text-left', isClickable && !isCurrent && 'hover:underline underline-offset-2 cursor-pointer', !isClickable && !isCurrent && 'cursor-default')}
+                    className={cn(
+                      'min-h-[44px] inline-flex items-center text-left text-sm font-semibold',
+                      isClickable && !isCurrent && 'hover:underline underline-offset-2 cursor-pointer',
+                      !isClickable && !isCurrent && 'cursor-default',
+                    )}
                     tabIndex={isClickable || isCurrent ? 0 : -1}
                   >
                     {STEP_TITLES[i]}

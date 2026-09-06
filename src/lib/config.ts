@@ -176,7 +176,7 @@ export const config = {
 
   /** --- Simulator / product parameters — A (hide rates) + max 6 meses (varios plazos 1-6) + 4 freqs Diario/Semanal/Quincenal/Mensual --- */
   simulator: {
-    amountMin: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MIN, 50000),
+    amountMin: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MIN, 100000),
     amountMax: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_MAX, 1000000),
     amountStep: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_STEP, 10000),
     amountStepBig: readNum(process.env.NEXT_PUBLIC_SIM_AMOUNT_STEP_BIG, 50000),

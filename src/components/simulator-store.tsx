@@ -98,8 +98,10 @@ export function SimulatorProvider({
     void loadRatesConfig('/api/rates-config').then((nextRates) => {
       if (!active || nextRates === null) return;
       // Keep termOptions static [1,2,3,4,5,6] (max 6) — live Core still returns [3,6,9,12,18,24] and would flicker 6→2 chips
+      // Clamp amountMin to at least the landing's configured floor (100k) until Core updates its min_amount
       const safeRates: RuntimeRatesConfig = {
         ...nextRates,
+        amountMin: Math.max(nextRates.amountMin, STATIC_RATES.amountMin),
         termOptions: STATIC_RATES.termOptions,
       };
       setRates(safeRates);

@@ -62,7 +62,7 @@ export function CtaBanner() {
         <div
           ref={panelRef}
           data-cta="panel"
-          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-10 sm:p-12 lg:p-16 backdrop-blur-xl shadow-lg overflow-hidden"
+          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-6 sm:p-10 lg:p-16 backdrop-blur-xl shadow-lg overflow-hidden"
         >
           {/* Left Column: Pure, Saturated Value Anchor */}
           <div className="flex-1 min-w-0 relative space-y-5 text-left">

@@ -30,7 +30,7 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
       onBlur={(e) => handlers.onFieldBlur(name, (e.target as HTMLInputElement).value)}
       aria-invalid={handlers.errors[name] ? true : undefined}
       aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
-      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-sm outline-none transition-[border-color,box-shadow] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-base sm:text-sm outline-none transition-[border-color,box-shadow] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       {...props}
     />
     <FieldError id={`err-${name}`} message={handlers.errors[name]} />
@@ -46,7 +46,7 @@ const selectEl = (name: FieldName, label: string, placeholder: string, options: 
       onChange={(e) => { handlers.onFieldChange(name, e.target.value); }}
       aria-invalid={handlers.errors[name] ? true : undefined}
       aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
-      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-sm outline-none transition-[border-color,box-shadow] cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-base sm:text-sm outline-none transition-[border-color,box-shadow] cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <option value="">{placeholder}</option>
       {options.map((o) => <option key={o}>{o}</option>)}
@@ -119,7 +119,7 @@ export function Step1({ values, handlers }: {
       </div>
 
       <div className="mt-2 text-center">
-        <WhatsAppLink ctx="contact" className="text-xs text-muted-foreground hover:text-green-ink transition-colors underline underline-offset-2">
+        <WhatsAppLink ctx="contact" className="inline-flex items-center justify-center min-h-[44px] px-3 py-2 text-xs text-muted-foreground hover:text-green-ink transition-colors underline underline-offset-2">
           Solicitar por WhatsApp
         </WhatsAppLink>
       </div>

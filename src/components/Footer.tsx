@@ -9,7 +9,7 @@ export function Footer() {
         {/* Brand & Social */}
         <div className="sm:col-span-2 flex flex-col justify-between space-y-5">
           <div className="space-y-3">
-            <a href="#top" aria-label={`${config.brandName} — inicio`} className="inline-flex items-center">
+            <a href="#top" aria-label={`${config.brandName} — inicio`} className="inline-flex items-center min-h-[44px]">
               <PlataxiWordmark variant="white" height={32} />
             </a>
             <p className="text-sm text-white/70 leading-relaxed max-w-sm">
