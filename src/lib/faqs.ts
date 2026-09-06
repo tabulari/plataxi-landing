@@ -1,3 +1,6 @@
+import { config } from './config';
+import { fmtCOP } from './credit';
+
 export interface Faq {
   q: string;
   answer: string;
@@ -7,8 +10,7 @@ export interface Faq {
 export const FAQS: Faq[] = [
   {
     q: '¿Qué incluye mi cuota? ¿Hay intereses ocultos?',
-    answer:
-      'Sin interés oculto. Tu cuota 1 a 6 meses ya incluye solo dos rubros fijos y claros: administración ($8.000 total prorrateado por cuota) y fianza ($12.000 total). Eliges abono diario, semanal, quincenal o mensual y pagas cuota fija sin sorpresas.',
+    answer: `Sin interés oculto. Tu cuota 1 a 6 meses ya incluye solo dos rubros fijos y claros: administración ($${fmtCOP(config.credit.adminFeeTotal)} total prorrateado por cuota) y fianza ($${fmtCOP(config.credit.guaranteeFeeTotal)} total). Eliges abono diario, semanal, quincenal o mensual y pagas cuota fija sin sorpresas.`,
     icon: 'document',
   },
   {

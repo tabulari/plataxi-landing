@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { FAQS } from '@/lib/faqs';
 import {
@@ -13,53 +14,102 @@ import {
 import { WhatsAppLink } from './WhatsAppLink';
 import { WhatsAppIcon } from './icons';
 
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
+
 export function Faq() {
   const containerRef = useRef<HTMLElement>(null);
-
-  useGSAP(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
-
-    const header = containerRef.current?.querySelector('[data-faq="header"]');
-    const items = containerRef.current?.querySelectorAll('[data-faq="item"]');
-
-    if (header) {
-      gsap.fromTo(
-        header,
-        { y: 14, autoAlpha: 0 },
-        {
-          y: 0,
-          autoAlpha: 1,
-          duration: 0.35,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: header,
-            start: 'top 85%',
-            once: true,
-          },
-        },
-      );
+  // 10. Deep-link: #faq-2 abre y scrollea la pregunta
+  const [value, setValue] = useState<string[]>(() => {
+    if (typeof window !== 'undefined' && window.location.hash.startsWith('#faq-')) {
+      const h = window.location.hash.slice(1);
+      if (FAQS.some((_, i) => `faq-${i}` === h)) return [h];
     }
-
-    if (items && items.length) {
-      gsap.fromTo(
-        items,
-        { y: 14, autoAlpha: 0 },
-        {
-          y: 0,
-          autoAlpha: 1,
-          stagger: 0.06,
-          duration: 0.35,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: items[0],
-            start: 'top 85%',
-            once: true,
-          },
-        },
-      );
+    return ['faq-0'];
+  });
+  useEffect(() => {
+    const hash = window.location.hash.slice(1);
+    if (hash.startsWith('faq-') && FAQS.some((_, i) => `faq-${i}` === hash)) {
+      setValue((prev) => (prev.includes(hash) ? prev : [...prev, hash]));
+      setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
     }
-  }, { scope: containerRef });
+    const onHashChange = () => {
+      const h = window.location.hash.slice(1);
+      if (h.startsWith('faq-') && FAQS.some((_, i) => `faq-${i}` === h)) {
+        setValue((prev) => (prev.includes(h) ? prev : [...prev, h]));
+      }
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  const handleValueChange = (newVal: string[]) => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768 && newVal.length > 1) {
+      setValue([newVal[newVal.length - 1]]);
+    } else {
+      setValue(newVal);
+    }
+  };
+
+  useGSAP(
+    () => {
+      if (!containerRef.current) return;
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        const root = containerRef.current;
+        if (!root) return;
+        gsap.set(root.querySelectorAll('[data-faq="header"], [data-faq="item"]'), {
+          autoAlpha: 1,
+          y: 0,
+          clearProps: 'transform',
+        });
+      });
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const root = containerRef.current;
+        if (!root) return;
+        const header = root.querySelector('[data-faq="header"]');
+        const items = root.querySelectorAll<HTMLElement>('[data-faq="item"]');
+        if (header) {
+          gsap.fromTo(
+            header,
+            { y: 14, autoAlpha: 0 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              duration: 0.35,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: root,
+                start: 'top 80%',
+                once: true,
+              },
+            },
+          );
+        }
+        if (items.length) {
+          gsap.fromTo(
+            items,
+            { y: 14, autoAlpha: 0 },
+            {
+              y: 0,
+              autoAlpha: 1,
+              stagger: 0.06,
+              duration: 0.35,
+              ease: 'power2.out',
+              scrollTrigger: {
+                trigger: root,
+                start: 'top 80%',
+                once: true,
+              },
+            },
+          );
+        }
+      });
+      return () => mm.revert();
+    },
+    { scope: containerRef },
+  );
 
   return (
     <section
@@ -80,10 +130,11 @@ export function Faq() {
         </div>
 
         <div className="max-w-3xl mx-auto">
-          <Accordion className="space-y-3 min-w-0" defaultValue={['faq-0']}>
+          <Accordion className="space-y-3" multiple value={value} onValueChange={handleValueChange}>
             {FAQS.map((faq, i) => (
               <AccordionItem
                 key={i}
+                id={`faq-${i}`}
                 value={`faq-${i}`}
                 data-faq="item"
                 className="rounded-lg bg-surface-card overflow-hidden"
@@ -132,6 +183,21 @@ export function Faq() {
           </div>
         </noscript>
       </div>
+      {/* 2. FAQPage JSON-LD para indexación aunque JS falle — single source con FAQS */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: FAQS.map((f) => ({
+              '@type': 'Question',
+              name: f.q,
+              acceptedAnswer: { '@type': 'Answer', text: f.answer },
+            })),
+          }),
+        }}
+      />
     </section>
   );
 }
