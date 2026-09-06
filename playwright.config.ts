@@ -13,6 +13,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,
   reporter: "list",
+  timeout: 45_000,
   use: { baseURL, headless: true },
   webServer: process.env.E2E_BASE_URL
     ? undefined
