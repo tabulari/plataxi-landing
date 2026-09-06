@@ -47,11 +47,16 @@ export async function POST(request: NextRequest) {
 
   // Test hook (dev only — users never send this param): returns a fake Core
   // radicado so the success panel / /s/[radicado] flow can be exercised without
-  // an upstream Core. Mirror of forceError above.
+  // an upstream Core. Mirror of forceError above. `withWorkspace=1` simulates a
+  // provisioned workspace session (workspace_url) instead of the WhatsApp fallback.
   if (url.searchParams.get("forceSuccess") === "1") {
+    const workspaceUrl =
+      url.searchParams.get("withWorkspace") === "1"
+        ? "https://plataxi.test/workspace/CR-2026-TEST0001"
+        : null;
     return applySecurityHeaders(
       NextResponse.json(
-        { radicado: "CR-2026-TEST0001" },
+        { radicado: "CR-2026-TEST0001", workspaceUrl },
         { status: 200 },
       ),
     );
@@ -87,7 +92,13 @@ export async function POST(request: NextRequest) {
     });
 
     return applySecurityHeaders(
-      NextResponse.json({ radicado: coreResponse.radicado }, { status: 200 }),
+      NextResponse.json(
+        {
+          radicado: coreResponse.radicado,
+          workspaceUrl: coreResponse.workspace_url,
+        },
+        { status: 200 },
+      ),
     );
   } catch (error) {
     const upstreamStatus = error instanceof CoreLeadError ? error.status : undefined;

@@ -47,6 +47,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
   const [submitStatus, setSubmitStatus] = useState<SubmitStatus>('idle');
   const [submitErrorCode, setSubmitErrorCode] = useState<SubmitErrorCode>(null);
   const [radicado, setRadicado] = useState('');
+  const [workspaceUrl, setWorkspaceUrl] = useState<string | null>(null);
 
   const onFieldChange = useCallback((name: FieldName, raw: string) => {
     let v = raw;
@@ -112,10 +113,15 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     // Hoisted so both the try and catch can read the reason for the failure.
     let code: SubmitErrorCode = null;
     try {
-      const w = window as unknown as { __forceApplicationError?: boolean; __forceApplicationSuccess?: boolean };
+      const w = window as unknown as { __forceApplicationError?: boolean; __forceApplicationSuccess?: boolean; __forceApplicationWorkspace?: boolean };
       const forceError = typeof window !== 'undefined' && w.__forceApplicationError;
       const forceSuccess = typeof window !== 'undefined' && w.__forceApplicationSuccess;
-      const testQuery = forceError ? '?forceError=1' : forceSuccess ? '?forceSuccess=1' : '';
+      const withWorkspace = typeof window !== 'undefined' && w.__forceApplicationWorkspace;
+      const testQuery = forceError
+        ? '?forceError=1'
+        : forceSuccess
+          ? `?forceSuccess=1${withWorkspace ? '&withWorkspace=1' : ''}`
+          : '';
       const res = await fetch(`/api/application${testQuery}`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       });
@@ -131,8 +137,9 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
         if (res.status === 429) code = 'rate_limited';
         throw new Error(`submit failed (${res.status})`);
       }
-      const data = (await res.json()) as { radicado: string };
+      const data = (await res.json()) as { radicado: string; workspaceUrl?: string | null };
       setRadicado(data.radicado);
+      setWorkspaceUrl(data.workspaceUrl ?? null);
       clearDraft();
       setSubmitStatus('success');
       setSubmitErrorCode(null);
@@ -165,6 +172,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     setSubmitStatus('idle');
     setSubmitErrorCode(null);
     setRadicado('');
+    setWorkspaceUrl(null);
   }, []);
 
   const resetForm = useCallback(() => {
@@ -176,6 +184,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     setSubmitStatus('idle');
     setSubmitErrorCode(null);
     setRadicado('');
+    setWorkspaceUrl(null);
   }, []);
 
   return {
@@ -183,7 +192,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     values, onFieldChange, onFieldBlur,
     consent, setConsent,
     errors, consentError, setConsentError,
-    submitStatus, submitErrorCode, radicado,
+    submitStatus, submitErrorCode, radicado, workspaceUrl,
     onNext, submit,
     restoreDraft, resetForm,
   };

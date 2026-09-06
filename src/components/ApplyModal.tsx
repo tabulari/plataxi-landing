@@ -197,7 +197,7 @@ export function ApplyModal() {
               className="flex-1 flex flex-col animate-step-in"
             >
               {form.submitStatus === 'success' ? (
-                <ApplicationSuccess radicado={form.radicado} />
+                <ApplicationSuccess radicado={form.radicado} workspaceUrl={form.workspaceUrl} />
               ) : form.submitStatus === 'error' ? (
                 <ApplicationError code={form.submitErrorCode} />
               ) : (

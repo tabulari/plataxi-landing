@@ -1,22 +1,38 @@
 'use client';
 
+import { config } from '@/lib/config';
 import { CheckIcon, AlertCircleIcon } from '../icons';
 
-export function ApplicationSuccess({ radicado }: { radicado: string }) {
+const WHATSAPP_FOLLOWUP_MESSAGE =
+  'Hola, quiero hacer seguimiento a mi solicitud de crédito.';
+
+export function ApplicationSuccess({ radicado, workspaceUrl }: { radicado: string; workspaceUrl?: string | null }) {
+  const cta = workspaceUrl
+    ? { href: workspaceUrl, label: 'Ir a mi espacio de crédito' }
+    : {
+        href: `https://wa.me/${config.whatsappPhone}?text=${encodeURIComponent(WHATSAPP_FOLLOWUP_MESSAGE)}`,
+        label: 'Continuar el seguimiento por WhatsApp',
+      };
   return (
     <section className="flex-1 flex flex-col items-center justify-center text-center py-8">
       <div className="w-[72px] h-[72px] rounded-full bg-green flex items-center justify-center mb-5 shadow-lg animate-[popIn_0.4s_cubic-bezier(0.2,1.4,0.4,1)] motion-reduce:animate-none">
         <CheckIcon size={40} className="text-ink" />
       </div>
       <h2 className="text-xl font-extrabold text-navy">¡Solicitud enviada con éxito!</h2>
-      <p className="text-sm text-muted-foreground mt-2 max-w-[380px]">Recibimos tu solicitud y la estamos evaluando. Puedes hacer seguimiento en tiempo real desde tu espacio digital.</p>
+      <p className="text-sm text-muted-foreground mt-2 max-w-[380px]">
+        {workspaceUrl
+          ? 'Recibimos tu solicitud y la estamos evaluando. Puedes hacer seguimiento en tiempo real desde tu espacio digital.'
+          : 'Recibimos tu solicitud y la estamos evaluando. Te contactaremos para continuar con tu proceso.'}
+      </p>
       <div className="mt-4 bg-muted border border-border rounded-lg px-4 py-2.5 text-sm text-muted-foreground">Radicado <b className="text-navy font-extrabold tabular-nums">{radicado}</b></div>
-      
+
       <a
-        href={`/s/${radicado}`}
+        href={cta.href}
+        target="_blank"
+        rel="noopener noreferrer"
         className="mt-5 inline-flex items-center justify-center gap-2 px-6 py-3 min-h-[44px] rounded-lg bg-green text-ink font-bold hover:bg-green-bright border-0 transition-colors shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring"
       >
-        <span>Ir a mi espacio de crédito</span>
+        <span>{cta.label}</span>
         <span aria-hidden="true">→</span>
       </a>
     </section>
