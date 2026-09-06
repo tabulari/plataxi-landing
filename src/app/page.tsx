@@ -46,8 +46,8 @@ export default async function Home() {
         {/* 2.5 Beneficios — 4 tarjetas planas estilo inDrive con imagen panorámica */}
         <Benefits />
 
-        {/* 4. Cómo funciona — 3 pasos */}
-        <HowItWorks />
+        {/* 4. Cómo funciona — reservado para el futuro GSAP Interactive Phone Journey (ver roadmap spec) */}
+        {/* <HowItWorks /> */}
 
         {/* 6. FAQ — stack centrado */}
         <Faq />
