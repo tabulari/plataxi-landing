@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { ScrollButton } from './ScrollButton';
 import { HeroAnim } from './HeroAnim';
+import { HeroActiveNotice } from './HeroActiveNotice';
 
 export function Hero() {
   return (
@@ -27,6 +28,8 @@ export function Hero() {
       <div className="relative z-10 w-full mx-auto max-w-container px-6 py-10 sm:py-12 lg:py-16">
         <HeroAnim>
           <div className="max-w-2xl space-y-5">
+            <HeroActiveNotice />
+
             {/* Headline — white pill on yellow taxi for contrast, weight reduced so h1 doesn't dominate h2 */}
             <h1
               id="hero-heading"

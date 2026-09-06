@@ -223,6 +223,10 @@
     outline: 2px solid #111110 !important;
     outline-offset: 2px !important;
   }
+  footer a:focus-visible,
+  footer button:focus-visible {
+    outline-color: #fff !important;
+  }
 
   /* Form field focus state: soft butter yellow without black outer ring.
      Range inputs and [data-field-bare] inputs opt out — a bare input sits inside

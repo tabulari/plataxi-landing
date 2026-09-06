@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
 import { config } from '@/lib/config';
 import { CloseIcon, HamburgerIcon, PlataxiWordmark } from './icons';
 import { ScrollButton } from './ScrollButton';
+import { ApplyButton } from './ApplyButton';
+import { useActiveSubmission } from '@/hooks/use-active-submission';
 
 const HEADER_OFFSET = 80;
 
@@ -25,6 +27,7 @@ export function Nav() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(!isLanding);
   const [activeId, setActiveId] = useState('');
+  const activeSubmission = useActiveSubmission();
   const toggleRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const mobilePanelRef = useRef<HTMLDivElement>(null);
@@ -287,6 +290,21 @@ export function Nav() {
                 </a>
               );
             })}
+            {activeSubmission && (
+              <ApplyButton
+                origin="nav"
+                variant="ghost"
+                className={cn(
+                  'min-h-[36px] h-9 px-3.5 rounded-full inline-flex items-center gap-2 text-xs font-bold border transition-colors shadow-xs cursor-pointer focus-visible:ring-1 focus-visible:ring-green',
+                  scrolled
+                    ? 'bg-green/10 border-green/30 text-navy hover:bg-green/20'
+                    : 'bg-white/15 border-white/25 text-white hover:bg-white/25',
+                )}
+              >
+                <span className="w-2 h-2 rounded-full bg-green animate-pulse" aria-hidden="true" />
+                <span>Mi Solicitud ({activeSubmission.radicado})</span>
+              </ApplyButton>
+            )}
           </nav>
 
           <button
@@ -344,6 +362,28 @@ export function Nav() {
               }}
             >
               <div className="px-6 py-5 flex flex-col gap-2">
+                {activeSubmission && (
+                  <div className="pb-2 border-b border-white/10">
+                    <ApplyButton
+                      origin="nav"
+                      variant="ghost"
+                      onClick={close}
+                      tabIndex={open ? 0 : -1}
+                      className={cn(
+                        'w-full min-h-[44px] flex items-center justify-between p-3 rounded-xl text-xs font-semibold border text-left cursor-pointer focus-visible:ring-1 focus-visible:ring-green',
+                        isDark
+                          ? 'bg-white/10 border-white/15 text-white'
+                          : 'bg-green/10 border-green/30 text-navy',
+                      )}
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-green animate-pulse" aria-hidden="true" />
+                        <span>Tu solicitud: <b className="font-bold tabular-nums">{activeSubmission.radicado}</b></span>
+                      </span>
+                      <span className="text-xs font-bold underline underline-offset-2 shrink-0">Ver estado →</span>
+                    </ApplyButton>
+                  </div>
+                )}
                 <div className="flex flex-col gap-1">
                   {MOBILE_LINKS.map((l, i) => {
                     const isActive = activeId === l.href.slice(1);
