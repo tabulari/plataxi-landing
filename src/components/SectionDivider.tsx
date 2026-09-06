@@ -201,10 +201,11 @@ export function SectionDivider({
         viewBox={viewBox}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-12 sm:h-16 lg:h-20 block transform-gpu will-change-transform"
+        className="w-full h-12 sm:h-16 lg:h-20 block transform-gpu will-change-transform overflow-hidden"
         preserveAspectRatio="none"
         style={{
           marginBottom: '-2px',
+          overflow: 'hidden',
           ...(flip ? { transform: 'scaleX(-1)' } : {}),
         }}
       >

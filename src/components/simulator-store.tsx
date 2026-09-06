@@ -6,6 +6,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -73,24 +74,44 @@ export function SimulatorProvider({
   const [rates, setRates] = useState<RuntimeRatesConfig>(
     initialRates ?? STATIC_RATES,
   );
+  // Ref para evitar cierre stale en setAmount cuando loadRatesConfig resuelve async
+  const ratesRef = useRef(rates);
+  useEffect(() => {
+    ratesRef.current = rates;
+  }, [rates]);
+
   const [amount, setAmountState] = useState(config.simulator.defaultAmount);
-  const [term, setTerm] = useState(config.simulator.defaultTerm);
+  const [term, setTerm] = useState(() => {
+    const d = config.simulator.defaultTerm;
+    const a = config.simulator.defaultAmount;
+    if (a <= config.simulator.amountMin && d !== 1) return 1;
+    if (a > config.credit.highAmountThreshold && d < config.credit.highAmountMinTerm)
+      return config.credit.highAmountMinTerm;
+    return d;
+  });
   const [frequency, setFrequency] = useState<Frequency>("monthly");
+
+  // Auto-corrige el plazo cuando el monto entra en rangos con plazo único
+  useEffect(() => {
+    if (amount <= rates.amountMin && term !== 1) {
+      setTerm(1);
+      return;
+    }
+    if (amount > config.credit.highAmountThreshold && term < config.credit.highAmountMinTerm) {
+      setTerm(config.credit.highAmountMinTerm);
+    }
+  }, [amount, rates.amountMin, term]);
 
   const setAmount = useCallback(
     (value: number, round = true) => {
+      const { amountMin, amountMax } = ratesRef.current;
       setAmountState(
         round
-          ? clampRoundAmount(
-              value,
-              rates.amountMin,
-              rates.amountMax,
-              config.simulator.amountStep,
-            )
-          : clampAmount(value, rates.amountMin, rates.amountMax),
+          ? clampRoundAmount(value, amountMin, amountMax, config.simulator.amountStep)
+          : clampAmount(value, amountMin, amountMax),
       );
     },
-    [rates.amountMax, rates.amountMin],
+    [],
   );
 
   useEffect(() => {

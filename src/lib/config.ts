@@ -190,10 +190,6 @@ export const config = {
   credit: {
     /** Monthly interest rate as decimal (e.g. 0.026 = 2.6%). */
     monthlyRate: readNum(process.env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE, 0.026),
-    /** Eligibility: small-amount threshold below which long terms aren't offered. */
-    smallAmountThreshold: readNum(process.env.NEXT_PUBLIC_CREDIT_SMALL_AMOUNT_THRESHOLD, 200000),
-    /** Eligibility: max term (months) for amounts below smallAmountThreshold. */
-    smallAmountMaxTerm: readNum(process.env.NEXT_PUBLIC_CREDIT_SMALL_AMOUNT_MAX_TERM, 18),
     /** Eligibility: high-amount threshold above which a minimum term applies. */
     highAmountThreshold: readNum(process.env.NEXT_PUBLIC_CREDIT_HIGH_AMOUNT_THRESHOLD, 800000),
     /** Eligibility: min term (months) for amounts above highAmountThreshold. */

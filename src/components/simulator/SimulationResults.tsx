@@ -49,7 +49,10 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-md pt-1.5">
             Cuota final fija con todo incluido. Cero cobros por adelantado ni sorpresas.{" "}
-            <a href="#preguntas" className="font-semibold text-navy underline underline-offset-2 hover:text-green-ink">
+            <a
+              href="#preguntas"
+              className="font-semibold text-navy underline underline-offset-2 hover:text-green-ink inline-flex items-center min-h-[44px] py-1"
+            >
               Ver detalle en preguntas frecuentes
             </a>
             .

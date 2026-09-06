@@ -38,6 +38,20 @@ export interface Validity {
 }
 
 /**
+ * Single source of truth para qué plazos están deshabilitados según el monto.
+ * Usado tanto por validateApplication (bloqueo CTA) como por Simulator (chips disabled).
+ */
+export function isTermDisabled(amount: number, termMonths: number): boolean {
+  if (amount <= config.simulator.amountMin && termMonths !== 1) return true;
+  if (amount > config.credit.highAmountThreshold && termMonths < config.credit.highAmountMinTerm) return true;
+  return false;
+}
+
+export function getDisabledTerms(amount: number, termOptions: number[]): number[] {
+  return termOptions.filter((t) => isTermDisabled(amount, t));
+}
+
+/**
  * Eligibility / constraint rules. Returns { ok, message } — message is shown to
  * the user and the apply CTA is disabled while ok === false.
  *
@@ -49,23 +63,19 @@ export function validateApplication(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _frequency: Frequency,
 ): Validity {
-  const { smallAmountThreshold, smallAmountMaxTerm, highAmountThreshold, highAmountMinTerm } = config.credit;
+  if (!isTermDisabled(amount, termMonths)) return { ok: true, message: "" };
 
-  if (amount < smallAmountThreshold && termMonths >= smallAmountMaxTerm) {
+  const { highAmountThreshold, highAmountMinTerm } = config.credit;
+  if (amount <= config.simulator.amountMin) {
     return {
       ok: false,
-      message:
-        `Este monto no aplica para plazos de ${smallAmountMaxTerm} meses o más. Reduce el plazo o aumenta el monto.`,
+      message: `Para el monto mínimo de $${fmtCOP(config.simulator.amountMin)} el plazo disponible es de 1 mes.`,
     };
   }
-  if (amount > highAmountThreshold && termMonths < highAmountMinTerm) {
-    return {
-      ok: false,
-      message:
-        `Para montos superiores a $${fmtCOP(highAmountThreshold)} el plazo mínimo es de ${highAmountMinTerm} meses.`,
-    };
-  }
-  return { ok: true, message: "" };
+  return {
+    ok: false,
+    message: `Para montos superiores a $${fmtCOP(highAmountThreshold)} el plazo mínimo es de ${highAmountMinTerm} meses.`,
+  };
 }
 
 export function calculatePayment(
@@ -124,11 +134,7 @@ export function fmtCOP(n: number): string {
 }
 
 export function formatCurrencyCOP(n: number): string {
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(Math.round(n));
+  return `$${fmtCOP(n)}`;
 }
 
 export function fmtPct(decimal: number, dec: number): string {

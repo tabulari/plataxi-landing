@@ -128,6 +128,12 @@ export function Step1({ values, handlers }: {
 }
 
 export function Step2({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
+  const formatIncome = (val: string) => {
+    const digits = val.replace(/\D/g, '');
+    if (!digits) return '';
+    return fmtCOP(parseInt(digits, 10));
+  };
+
   return (
     <section className="flex-1 flex flex-col gap-5">
       <div>
@@ -143,8 +149,9 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
         {fieldEl('income', 'Ingreso mensual aproximado', handlers, {
           type: 'text',
           inputMode: 'numeric',
-          placeholder: '$ 0 COP',
+          placeholder: 'Ej. 2.500.000',
           value: values.income,
+          onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
         })}
         {selectEl('bank', 'Cuenta o billetera para desembolso', 'Selecciona Nequi, DaviPlata o Banco', BANKS, handlers, values.bank)}
       </div>
@@ -185,9 +192,9 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
 
       <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs">
         {reviewRows.map(({ k, v, full }) => (
-          <div key={k} className={cn('flex flex-col gap-1', full && 'col-span-2')}>
+          <div key={k} className={cn('flex flex-col gap-1 min-w-0', full && 'col-span-2')}>
             <span className="text-muted-2 font-medium">{k}</span>
-            <span className="font-semibold text-navy text-xs sm:text-sm">{v}</span>
+            <span className="font-semibold text-navy text-xs sm:text-sm break-words">{v}</span>
           </div>
         ))}
       </div>

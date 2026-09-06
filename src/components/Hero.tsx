@@ -44,7 +44,7 @@ export function Hero() {
             </p>
 
             {/* Single focused CTA — inDrive: 48px mobile / 64px desktop, 20-26px radius, yellow on dark */}
-            <div data-hero-anim className="pt-1">
+            <div data-hero-anim data-slot="hero-ctas" className="pt-1">
               <ScrollButton
                 variant="default"
                 size="lg"

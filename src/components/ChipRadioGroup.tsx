@@ -19,6 +19,8 @@ const Check = () => (
 interface Option<T> {
   value: T;
   label: string;
+  disabled?: boolean;
+  title?: string;
 }
 
 export function ChipRadioGroup<T extends string | number>({
@@ -26,6 +28,7 @@ export function ChipRadioGroup<T extends string | number>({
   value,
   onChange,
   ariaLabelledBy,
+  ariaDescribedBy,
   className,
   chipClassName,
   checkBefore = false,
@@ -35,6 +38,7 @@ export function ChipRadioGroup<T extends string | number>({
   value: T;
   onChange: (value: T) => void;
   ariaLabelledBy: string;
+  ariaDescribedBy?: string;
   className: string;
   chipClassName?: string;
   checkBefore?: boolean;
@@ -46,18 +50,29 @@ export function ChipRadioGroup<T extends string | number>({
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const i = activeIndex < 0 ? 0 : activeIndex;
     let next: number | null = null;
-    if (e.key === "ArrowRight" || e.key === "ArrowDown")
-      next = (i + 1) % options.length;
-    else if (e.key === "ArrowLeft" || e.key === "ArrowUp")
-      next = (i - 1 + options.length) % options.length;
-    else if (e.key === "Home") next = 0;
-    else if (e.key === "End") next = options.length - 1;
-    else if (e.key === " " || e.key === "Enter") {
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      // skip disabled
+      let n = (i + 1) % options.length;
+      for (let k = 0; k < options.length; k++) {
+        if (!options[n].disabled) { next = n; break; }
+        n = (n + 1) % options.length;
+      }
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      let n = (i - 1 + options.length) % options.length;
+      for (let k = 0; k < options.length; k++) {
+        if (!options[n].disabled) { next = n; break; }
+        n = (n - 1 + options.length) % options.length;
+      }
+    } else if (e.key === "Home") {
+      next = options.findIndex((o) => !o.disabled);
+    } else if (e.key === "End") {
+      for (let k = options.length - 1; k >= 0; k--) if (!options[k].disabled) { next = k; break; }
+    } else if (e.key === " " || e.key === "Enter") {
       e.preventDefault();
-      onChange(options[i].value);
+      if (!options[i].disabled) onChange(options[i].value);
       return;
     }
-    if (next !== null) {
+    if (next !== null && next >= 0) {
       e.preventDefault();
       onChange(options[next].value);
       refs.current[next]?.focus();
@@ -68,11 +83,13 @@ export function ChipRadioGroup<T extends string | number>({
     <div
       role="radiogroup"
       aria-labelledby={ariaLabelledBy}
+      aria-describedby={ariaDescribedBy}
       className={className}
       onKeyDown={handleKeyDown}
     >
       {options.map((o, i) => {
         const active = o.value === value;
+        const disabled = !!o.disabled;
         return (
           <button
             key={String(o.value)}
@@ -82,9 +99,13 @@ export function ChipRadioGroup<T extends string | number>({
             type="button"
             role="radio"
             aria-checked={active}
-            tabIndex={active ? 0 : -1}
-            className={`chip${active ? " active" : ""}${chipClassName ? ` ${chipClassName}` : ""}`}
-            onClick={() => onChange(o.value)}
+            aria-disabled={disabled || undefined}
+            tabIndex={disabled ? -1 : active ? 0 : -1}
+            disabled={disabled}
+            title={o.title}
+            aria-label={disabled && o.title ? `${o.label} — ${o.title}` : undefined}
+            className={`chip${active ? " active" : ""}${chipClassName ? ` ${chipClassName}` : ""}${disabled ? " opacity-40 cursor-not-allowed" : ""}`}
+            onClick={() => { if (!disabled) onChange(o.value); }}
           >
             {!hideCheck && checkBefore && <Check />}
             {o.label}

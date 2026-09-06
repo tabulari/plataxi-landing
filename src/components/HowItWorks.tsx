@@ -2,7 +2,12 @@
 
 import { useRef } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface Step {
   n: string;
@@ -33,22 +38,36 @@ export function HowItWorks() {
 
   useGSAP(
     () => {
+      if (!containerRef.current) return;
       const mm = gsap.matchMedia();
+      // 4. Reduce: asegura contenido visible sin animar (no queda autoAlpha:0)
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        const root = containerRef.current;
+        if (!root) return;
+        gsap.set(root.querySelectorAll('[data-hiw="header"] > *, [data-hiw="step"]'), {
+          autoAlpha: 1,
+          y: 0,
+          clearProps: 'transform',
+        });
+      });
       mm.add('(prefers-reduced-motion: no-preference)', () => {
-        const header = containerRef.current?.querySelectorAll<HTMLElement>('[data-hiw="header"] > *');
-        const items = containerRef.current?.querySelectorAll<HTMLElement>('[data-hiw="step"]');
+        const root = containerRef.current;
+        if (!root) return;
+        const header = root.querySelectorAll<HTMLElement>('[data-hiw="header"] > *');
+        const items = root.querySelectorAll<HTMLElement>('[data-hiw="step"]');
+        if (!header.length && !items.length) return;
         const tl = gsap.timeline({
           defaults: { ease: 'power2.out' },
           scrollTrigger: {
-            trigger: containerRef.current,
-            start: 'top 85%',
+            trigger: root,
+            start: 'top 80%',
             once: true,
           },
         });
-        if (header?.length) {
+        if (header.length) {
           tl.fromTo(header, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.35, stagger: 0.05 }, 0);
         }
-        if (items?.length) {
+        if (items.length) {
           tl.fromTo(items, { y: 14, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.35, stagger: 0.06 }, 0.08);
         }
         return () => tl.kill();
@@ -76,13 +95,15 @@ export function HowItWorks() {
         </div>
 
         {/* Connected Steps Journey — Mathematical Alignment, Zero Clutter */}
-        <ol className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-8 lg:gap-12 max-w-5xl mx-auto">
+        <ol aria-label="Pasos para obtener tu crédito" className="grid grid-cols-1 md:grid-cols-3 gap-0 md:gap-8 lg:gap-12 max-w-5xl mx-auto">
           {STEPS.map((s, idx) => {
             const isLast = idx === STEPS.length - 1;
             return (
               <li
                 key={s.n}
                 data-hiw="step"
+                aria-posinset={idx + 1}
+                aria-setsize={STEPS.length}
                 className="flex flex-row md:flex-col items-start text-left relative gap-4 sm:gap-6 md:gap-0"
               >
                 {/* Node with Continuous Rail Line */}
@@ -92,19 +113,19 @@ export function HowItWorks() {
                     {s.n}
                   </span>
 
-                  {/* Vertical connector on mobile (< md) */}
+                  {/* Vertical connector on mobile (< md) — altura fija, no flex-1 dependiente del contenido */}
                   {!isLast && (
                     <div
                       aria-hidden="true"
-                      className="w-0.5 flex-1 min-h-[48px] bg-border my-2 rounded-full md:hidden"
+                      className="w-0.5 h-8 bg-border my-2 rounded-full md:hidden shrink-0"
                     />
                   )}
 
-                  {/* Horizontal continuous rail line on desktop (md+) bridging column gaps */}
+                  {/* Horizontal rail on desktop (md+) — usa right negativo en vez de calc frágil */}
                   {!isLast && (
                     <div
                       aria-hidden="true"
-                      className="hidden md:block absolute top-1/2 -translate-y-1/2 left-10 w-[calc(100%+2rem-2.5rem)] lg:w-[calc(100%+3rem-2.5rem)] h-0.5 bg-border/80"
+                      className="hidden md:block absolute top-1/2 -translate-y-1/2 left-10 right-[-2rem] lg:right-[-3rem] h-0.5 bg-border/80"
                     />
                   )}
                 </div>

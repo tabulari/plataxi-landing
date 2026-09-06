@@ -134,8 +134,8 @@
 
   html {
     scroll-behavior: smooth;
-    /* 68px sticky nav + breathing room, since sections no longer carry py-* */
-    scroll-padding-top: 96px;
+    /* 68px sticky nav + 12px breathing room = 80px, synced with Nav HEADER_OFFSET */
+    scroll-padding-top: 80px;
     font-family: var(--font-jakarta), Inter, system-ui, sans-serif;
     overscroll-behavior: none;
   }
@@ -457,12 +457,15 @@ a:focus-visible {
   white-space: nowrap;
   outline: none;
 }
-.chip:active {
+.chip:active:not(:disabled) {
   transform: scale(0.97);
 }
-.chip:hover:not(.active) {
+.chip:hover:not(.active):not(:disabled) {
   border-color: #b0bac8;
   background: var(--bg-soft);
+}
+.chip:disabled {
+  pointer-events: none;
 }
 .chip:focus-visible {
   outline: 2px solid var(--color-primary-brand);

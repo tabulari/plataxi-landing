@@ -36,15 +36,22 @@ export function AmountInput({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     markInteract('amount');
     const digits = e.target.value.replace(/\D/g, '');
-    setInputText(digits ? fmtCOP(parseInt(digits, 10)) : '');
     if (!digits) {
+      setInputText('');
       setHint(`Ingresa un monto entre $${fmtCOP(amountMin)} y $${fmtCOP(amountMax)}.`);
       return;
     }
     const raw = parseInt(digits, 10);
-    if (raw > amountMax) setHint(`El monto máximo es $${fmtCOP(amountMax)}.`);
-    else if (raw < amountMin) setHint(`El monto mínimo es $${fmtCOP(amountMin)}.`);
-    else setHint('');
+    setInputText(fmtCOP(raw));
+    if (raw > amountMax) {
+      setHint(`El monto máximo es $${fmtCOP(amountMax)}.`);
+      return;
+    }
+    if (raw < amountMin) {
+      setHint(`El monto mínimo es $${fmtCOP(amountMin)}.`);
+      return;
+    }
+    setHint('');
     setAmount(clampAmount(raw, amountMin, amountMax), false);
   };
 
@@ -155,7 +162,7 @@ export function AmountInput({
             aria-valuemin={amountMin}
             aria-valuemax={amountMax}
             aria-valuenow={amount}
-            aria-valuetext={`$${fmtCOP(amount)} COP`}
+            aria-valuetext={`$${fmtCOP(amount)}`}
             onChange={handleSliderChange}
             className="relative w-full h-12 min-h-[48px] appearance-none bg-transparent cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2 rounded-full [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[2.5px] [&::-webkit-slider-thumb]:border-green [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-webkit-slider-thumb]:cursor-pointer motion-safe:[&::-webkit-slider-thumb]:hover:scale-110 motion-safe:[&::-webkit-slider-thumb]:active:scale-125 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-track]:h-2 [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-[2.5px] [&::-moz-range-thumb]:border-green [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-moz-range-thumb]:cursor-pointer motion-safe:[&::-moz-range-thumb]:hover:scale-110 motion-safe:[&::-moz-range-thumb]:active:scale-125 [&::-moz-range-thumb]:transition-transform"
           />

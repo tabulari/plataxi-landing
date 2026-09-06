@@ -9,7 +9,14 @@ import {
   type FieldName,
 } from '@/lib/application-schema';
 import { track } from '@/lib/analytics';
-import { saveDraft, loadDraft, clearDraft } from '@/lib/draft-storage';
+import {
+  saveDraft,
+  loadDraft,
+  clearDraft,
+  saveSubmittedApplication,
+  loadSubmittedApplication,
+  clearSubmittedApplication,
+} from '@/lib/draft-storage';
 
 export type SubmitStatus = 'idle' | 'pending' | 'success' | 'error';
 /** Machine-readable reason for a failed submit — mirrors the route's `code` field. */
@@ -48,6 +55,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
   const [submitErrorCode, setSubmitErrorCode] = useState<SubmitErrorCode>(null);
   const [radicado, setRadicado] = useState('');
   const [workspaceUrl, setWorkspaceUrl] = useState<string | null>(null);
+  const [submittedAt, setSubmittedAt] = useState<number | null>(null);
 
   const onFieldChange = useCallback((name: FieldName, raw: string) => {
     let v = raw;
@@ -138,9 +146,20 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
         throw new Error(`submit failed (${res.status})`);
       }
       const data = (await res.json()) as { radicado: string; workspaceUrl?: string | null };
+      const now = Date.now();
       setRadicado(data.radicado);
       setWorkspaceUrl(data.workspaceUrl ?? null);
+      setSubmittedAt(now);
       clearDraft();
+      if (frozen) {
+        saveSubmittedApplication({
+          radicado: data.radicado,
+          workspaceUrl: data.workspaceUrl ?? null,
+          submittedAt: now,
+          values,
+          terms: frozen,
+        });
+      }
       setSubmitStatus('success');
       setSubmitErrorCode(null);
       track('apply_submit_success', { radicado: data.radicado });
@@ -158,7 +177,25 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     else setStep((s) => s + 1);
   }, [step, validateStep, submit]);
 
-  const restoreDraft = useCallback(() => {
+  const restoreDraft = useCallback((onRestoredSubmission?: (terms: Simulation) => void): boolean => {
+    // 1. Check if an application has already been submitted
+    const submitted = loadSubmittedApplication();
+    if (submitted && submitted.radicado) {
+      setRadicado(submitted.radicado);
+      setWorkspaceUrl(submitted.workspaceUrl ?? null);
+      setSubmittedAt(submitted.submittedAt ?? null);
+      setValues((prev) => ({ ...prev, ...(submitted.values as Values) }));
+      setConsent(true);
+      setStep(3);
+      setSubmitStatus('success');
+      setSubmitErrorCode(null);
+      if (onRestoredSubmission && submitted.terms) {
+        onRestoredSubmission(submitted.terms as Simulation);
+      }
+      return true;
+    }
+
+    // 2. Otherwise restore draft in progress
     let draft: { step?: number } & Partial<Values> & { consent?: boolean } = {};
     const loaded = loadDraft() as { step?: number } & Partial<Values> & { consent?: boolean } | null;
     if (loaded) draft = loaded;
@@ -173,6 +210,8 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     setSubmitErrorCode(null);
     setRadicado('');
     setWorkspaceUrl(null);
+    setSubmittedAt(null);
+    return false;
   }, []);
 
   const resetForm = useCallback(() => {
@@ -185,16 +224,23 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     setSubmitErrorCode(null);
     setRadicado('');
     setWorkspaceUrl(null);
+    setSubmittedAt(null);
   }, []);
+
+  const startNewApplication = useCallback(() => {
+    clearSubmittedApplication();
+    clearDraft();
+    resetForm();
+  }, [resetForm]);
 
   return {
     step, setStep,
     values, onFieldChange, onFieldBlur,
     consent, setConsent,
     errors, consentError, setConsentError,
-    submitStatus, submitErrorCode, radicado, workspaceUrl,
+    submitStatus, submitErrorCode, radicado, workspaceUrl, submittedAt,
     onNext, submit,
-    restoreDraft, resetForm,
+    restoreDraft, resetForm, startNewApplication,
   };
 }
 

@@ -4,6 +4,7 @@ import {
   validateApplication,
   fmtCOP,
   fmtPct,
+  formatCurrencyCOP,
 } from "@/lib/credit";
 
 /**
@@ -54,13 +55,12 @@ describe("calculatePayment — verification numbers (amount 500.000)", () => {
 });
 
 describe("validateApplication — eligibility gate", () => {
-  it("amount < 200.000 && term >= 18 → invalid", () => {
-    expect(validateApplication(150000, 18, "monthly").ok).toBe(false);
-    expect(calculatePayment(150000, 18, "monthly").valid).toBe(false);
-    // boundary: exactly 200.000 is allowed (rule is strict <)
-    expect(validateApplication(200000, 18, "monthly").ok).toBe(true);
-    // boundary: term 12 with small amount is allowed
-    expect(validateApplication(150000, 12, "monthly").ok).toBe(true);
+  it("monto mínimo (100.000) solo permite 1 mes", () => {
+    expect(validateApplication(100000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(100000, 2, "monthly").ok).toBe(false);
+    expect(validateApplication(100000, 6, "monthly").ok).toBe(false);
+    expect(validateApplication(110000, 2, "monthly").ok).toBe(true);
+    expect(calculatePayment(100000, 2, "monthly").valid).toBe(false);
   });
 
   it("amount > 800.000 && term < 6 → invalid", () => {
@@ -73,9 +73,12 @@ describe("validateApplication — eligibility gate", () => {
   });
 
   it("carries the guidance message onto the Simulation when invalid", () => {
-    const s = calculatePayment(150000, 18, "monthly");
+    const s = calculatePayment(100000, 2, "monthly");
     expect(s.valid).toBe(false);
-    expect(s.message).toContain("18 meses");
+    expect(s.message).toContain("1 mes");
+    const s2 = calculatePayment(900000, 3, "monthly");
+    expect(s2.valid).toBe(false);
+    expect(s2.message).toContain("6 meses");
   });
 });
 
@@ -94,5 +97,11 @@ describe("formatters", () => {
   it("fmtPct renders with a comma decimal separator", () => {
     expect(fmtPct(0.3607, 2)).toBe("36,07");
     expect(fmtPct(0.026, 1)).toBe("2,6");
+  });
+
+  it("formatCurrencyCOP is deterministic via fmtCOP (no Intl)", () => {
+    expect(formatCurrencyCOP(500000)).toBe("$500.000");
+    expect(formatCurrencyCOP(1000000)).toBe("$1.000.000");
+    expect(formatCurrencyCOP(100000)).toBe("$100.000");
   });
 });

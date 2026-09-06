@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { loadRatesConfig, parseRatesConfig } from "../rates-config";
+import { getInitialRates, loadRatesConfig, parseRatesConfig } from "../rates-config";
 
 const validPayload = {
   monthly_interest_rate: "0.0320",
@@ -30,5 +30,28 @@ describe("dynamic rates config", () => {
     await expect(
       loadRatesConfig("https://core.example.com/api/v1/sessions/rates-config", fetchMock),
     ).resolves.toBeNull();
+  });
+
+  it("clamps amountMin to landing floor (100k) when Core still sends 50k", async () => {
+    const corePayload = {
+      monthly_interest_rate: "0.026",
+      min_amount: "50000.00",
+      max_amount: "1000000.00",
+      term_options_months: [3, 6, 12],
+    };
+    const fetchMock = vi.fn<typeof fetch>().mockResolvedValue({
+      ok: true,
+      json: async () => corePayload,
+    } as Response);
+    const fallback = {
+      monthlyRate: 0.026,
+      amountMin: 100000,
+      amountMax: 1000000,
+      termOptions: [1, 2, 3, 4, 5, 6],
+    };
+    const { rates, source } = await getInitialRates("https://core.example.com/api/v1/sessions/rates-config", fallback, fetchMock);
+    expect(source).toBe("core");
+    expect(rates.amountMin).toBe(100000);
+    expect(rates.termOptions).toEqual([1, 2, 3, 4, 5, 6]);
   });
 });

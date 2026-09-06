@@ -12,22 +12,22 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
       {/* Mobile Compact Header (<760px): single sleek row saving ~110px vertical space */}
       <div className="hidden max-[760px]:flex items-center justify-between w-full gap-3 text-left">
         <div>
-          <span className="text-[11px] font-semibold text-white/60 block leading-none mb-1">Tu cuota estimada</span>
-          <span className="text-base font-extrabold text-white leading-none">
+          <span className="text-xs font-semibold text-white/70 block leading-none mb-2">Tu solicitud</span>
+          <span className="text-lg font-extrabold text-white leading-none">
             {`$${fmtCOP(frozen.payment)}`}{' '}
             <span className="text-xs font-semibold text-white/60">{frozen.unit}</span>
           </span>
         </div>
-        <span className="text-xs font-semibold text-white/80 bg-white/10 px-2.5 py-1 rounded-lg border border-white/10 shrink-0">
+        <span className="text-xs font-semibold text-white/90 bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 shrink-0">
           {`$${fmtCOP(frozen.amount)} · ${frozen.term}m`}
         </span>
       </div>
 
       {/* Desktop Rich Sidebar (>=760px) */}
-      <p className="text-sm font-semibold text-white/60 max-[760px]:hidden">Tu solicitud</p>
-      <div className="text-2xl font-extrabold mt-1 max-[760px]:hidden">
+      <p className="text-xs uppercase tracking-wider font-bold text-white/60 mb-2.5 max-[760px]:hidden">Tu solicitud</p>
+      <div className="text-2xl font-extrabold max-[760px]:hidden tracking-tight">
         {`$${fmtCOP(frozen.payment)}`}
-        <small className="text-sm font-semibold text-white/60 ml-1">{frozen.unit}</small>
+        <small className="text-sm font-semibold text-white/60 ml-1.5">{frozen.unit}</small>
       </div>
       <ul className="mt-5 flex flex-col gap-2 rounded-xl bg-white/[0.05] ring-1 ring-white/12 p-3.5 text-sm max-[760px]:hidden">
         {[['Monto', `$${fmtCOP(frozen.amount)}`], ['Plazo', `${frozen.term} meses`], ['Frecuencia', capFreq(frozen.frequency)]].map(([k, v]) => (

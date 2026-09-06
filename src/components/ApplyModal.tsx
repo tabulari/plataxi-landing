@@ -34,13 +34,16 @@ export function ApplyModal() {
   useEffect(() => {
     if (applyOpen) {
       lastFocusedRef.current = document.activeElement as HTMLElement | null;
-      setFrozen(simRef.current);
-      form.restoreDraft();
+      let initialFrozen = simRef.current;
+      form.restoreDraft((submittedTerms) => {
+        initialFrozen = submittedTerms;
+      });
+      setFrozen(initialFrozen);
       setMounted(true);
       document.body.style.overflow = 'hidden';
       const t1 = setTimeout(() => setShow(true), 16);
       const t2 = setTimeout(() => {
-        modalRef.current?.querySelector<HTMLElement>('input, select')?.focus();
+        modalRef.current?.querySelector<HTMLElement>('input, select, a[href]')?.focus();
       }, 280);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
@@ -97,7 +100,7 @@ export function ApplyModal() {
 
   const stepDot = (i: number) =>
     cn(
-      'flex items-center gap-2 text-sm font-semibold',
+      'flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm font-semibold transition-colors',
       i === form.step ? 'text-navy' : i < form.step || form.submitStatus === 'success' ? 'text-ink' : 'text-muted-2',
     );
 
@@ -135,41 +138,65 @@ export function ApplyModal() {
 
         <ModalSidebar frozen={frozen} />
 
-        <div className="flex-1 flex flex-col min-h-0 overflow-y-auto overscroll-contain">
-          <ol className="flex flex-wrap gap-x-4 gap-y-3 px-6 pt-5 pb-3 border-b border-border" aria-label="Progreso del formulario">
+        <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+          <ol className="shrink-0 flex items-center justify-between sm:justify-start gap-1 sm:gap-3 px-3 sm:px-6 py-2.5 sm:py-3.5 border-b border-border bg-card" aria-label="Progreso del formulario">
             {[1, 2, 3].map((i) => {
-              const isClickable = i < form.step || form.submitStatus === 'success';
-              const isCurrent = i === form.step;
+              const isClickable = form.submitStatus !== 'success' && i < form.step;
+              const isCurrent = form.submitStatus === 'success' ? i === 3 : i === form.step;
+              const isCompleted = form.submitStatus === 'success' || i < form.step;
               return (
-                <li key={i} className={stepDot(i)}>
+                <li key={i} className="flex items-center">
                   <button
                     type="button"
                     disabled={!isClickable && !isCurrent}
                     aria-current={isCurrent ? 'step' : undefined}
-                    aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isClickable ? '' : ' (incompleto)'}`}
-                    onClick={() => { if (isClickable || isCurrent) form.setStep(i); }}
+                    aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado)' : ' (incompleto)'}`}
+                    onClick={() => { if (isClickable) form.setStep(i); }}
                     className={cn(
-                      'flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-full text-sm font-bold transition-colors focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2',
-                      isCurrent ? 'bg-primary-brand text-primary-dark ring-2 ring-green/40 ring-offset-2' : isClickable ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50 hover:bg-green/30 cursor-pointer' : 'bg-transparent text-muted-2 ring-1 ring-inset ring-border cursor-default',
-                      isClickable && !isCurrent && 'hover:scale-[1.05] active:scale-[0.97]',
+                      'flex items-center gap-1.5 sm:gap-2 min-h-[44px] py-1 px-1 sm:px-2 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green',
+                      stepDot(i),
+                      isClickable && !isCurrent && 'hover:bg-muted/60 cursor-pointer',
+                      !isClickable && !isCurrent && 'cursor-default opacity-60',
                     )}
                   >
-                    {i}
+                    <span
+                      className={cn(
+                        'flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-xs font-bold transition-all shrink-0',
+                        form.submitStatus === 'success'
+                          ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/60'
+                          : isCurrent
+                          ? 'bg-primary-brand text-primary-dark ring-2 ring-primary-brand/50 shadow-xs'
+                          : isClickable
+                          ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50'
+                          : 'bg-muted text-muted-2 ring-1 ring-inset ring-border',
+                      )}
+                    >
+                      {form.submitStatus === 'success' ? '✓' : i}
+                    </span>
+                    <span className="font-semibold whitespace-nowrap text-xs sm:text-sm">
+                      {i === 1 ? (
+                        <>
+                          <span className="sm:hidden">Datos</span>
+                          <span className="hidden sm:inline">Tus datos</span>
+                        </>
+                      ) : i === 2 ? (
+                        <>
+                          <span className="sm:hidden">Ingresos</span>
+                          <span className="hidden sm:inline">Tus ingresos</span>
+                        </>
+                      ) : (
+                        'Revisión'
+                      )}
+                    </span>
                   </button>
-                  <button
-                    type="button"
-                    disabled={!isClickable && !isCurrent}
-                    aria-current={isCurrent ? 'step' : undefined}
-                    onClick={() => { if (isClickable || isCurrent) form.setStep(i); }}
-                    className={cn(
-                      'min-h-[44px] inline-flex items-center text-left text-sm font-semibold',
-                      isClickable && !isCurrent && 'hover:underline underline-offset-2 cursor-pointer',
-                      !isClickable && !isCurrent && 'cursor-default',
-                    )}
-                    tabIndex={isClickable || isCurrent ? 0 : -1}
-                  >
-                    {STEP_TITLES[i]}
-                  </button>
+
+                  {/* Connecting divider between step 1-2 and 2-3 */}
+                  {i < 3 && (
+                    <div
+                      aria-hidden="true"
+                      className="w-2 sm:w-5 h-px bg-border mx-0.5 sm:mx-1 shrink"
+                    />
+                  )}
                 </li>
               );
             })}
@@ -188,7 +215,7 @@ export function ApplyModal() {
 
           <form
             noValidate
-            className="flex-1 px-6 py-6 flex flex-col gap-4"
+            className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 py-5 flex flex-col gap-4"
             onSubmit={(e) => {
               e.preventDefault();
               if (form.submitStatus === 'pending' || form.submitStatus === 'success') return;
@@ -201,7 +228,15 @@ export function ApplyModal() {
               className="flex-1 flex flex-col animate-step-in"
             >
               {form.submitStatus === 'success' ? (
-                <ApplicationSuccess radicado={form.radicado} workspaceUrl={form.workspaceUrl} />
+                <ApplicationSuccess
+                  radicado={form.radicado}
+                  workspaceUrl={form.workspaceUrl}
+                  submittedAt={form.submittedAt}
+                  onNewApplication={() => {
+                    form.startNewApplication();
+                    setFrozen(simRef.current);
+                  }}
+                />
               ) : form.submitStatus === 'error' ? (
                 <ApplicationError code={form.submitErrorCode} />
               ) : (
@@ -227,9 +262,29 @@ export function ApplyModal() {
             </div>
           </form>
 
-          <div className="flex items-center justify-between gap-3 px-6 py-4 border-t border-border">
+          <div className="shrink-0 bg-card flex items-center justify-between gap-3 px-5 sm:px-6 py-3.5 sm:py-4 border-t border-border">
             {form.submitStatus === 'success' ? (
-              <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={closeApply}>Entendido</Button>
+              <div className="flex items-center justify-between w-full gap-3">
+                <Button
+                  variant="ghost"
+                  size="default"
+                  onClick={() => {
+                    form.startNewApplication();
+                    setFrozen(simRef.current);
+                  }}
+                  className="text-xs text-muted-foreground hover:text-navy"
+                >
+                  Nueva solicitud
+                </Button>
+                <Button
+                  variant="default"
+                  size="default"
+                  className="bg-green text-ink hover:bg-green-bright border-0 font-bold"
+                  onClick={closeApply}
+                >
+                  Entendido
+                </Button>
+              </div>
             ) : form.submitStatus === 'error' ? (
               <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={() => form.submit(frozen)}>Reintentar envío <span aria-hidden="true">→</span></Button>
             ) : (
