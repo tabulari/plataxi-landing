@@ -7,6 +7,7 @@ import {
   saveSubmittedApplication,
   loadSubmittedApplication,
   clearSubmittedApplication,
+  onSubmissionChange,
   type SubmittedApplication,
 } from '../draft-storage';
 
@@ -75,6 +76,23 @@ describe('draft-storage', () => {
 
       clearSubmittedApplication();
       expect(loadSubmittedApplication()).toBeNull();
+    });
+
+    it('notifies subscribers via onSubmissionChange when submission changes', () => {
+      let notifyCount = 0;
+      const unsubscribe = onSubmissionChange(() => {
+        notifyCount += 1;
+      });
+
+      saveSubmittedApplication(mockSubmission);
+      expect(notifyCount).toBe(1);
+
+      clearSubmittedApplication();
+      expect(notifyCount).toBe(2);
+
+      unsubscribe();
+      saveSubmittedApplication(mockSubmission);
+      expect(notifyCount).toBe(2); // no further notifications after unsubscribe
     });
   });
 });

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { fmtCOP } from '@/lib/credit';
 import { config } from '@/lib/config';
 import { CheckIcon, CalendarIcon, DocUploadIcon, ReturnArrowIcon, VerifiedCircleIcon } from '@/components/icons';
+import { loadSubmittedApplication } from '@/lib/draft-storage';
 
 export default function ActiveCreditPage() {
   const [proofFile, setProofFile] = useState<File | null>(null);
@@ -13,8 +14,8 @@ export default function ActiveCreditPage() {
   const [isSubmittingProof, setIsSubmittingProof] = useState(false);
   const [proofSuccess, setProofSuccess] = useState(false);
 
-  // Mock Active Credit details
-  const credit = {
+  // Active Credit details hydrated from submitted application
+  const [credit, setCredit] = useState({
     creditId: 'CR-2026-90412',
     borrowerName: 'Laura Martínez Gómez',
     totalAmount: 500000,
@@ -25,7 +26,22 @@ export default function ActiveCreditPage() {
     paidInstallments: 3,
     totalInstallments: 12,
     monthlyRatePct: '2.6% m.v.',
-  };
+  });
+
+  useEffect(() => {
+    const sub = loadSubmittedApplication();
+    if (sub) {
+      setCredit((prev) => ({
+        ...prev,
+        creditId: sub.radicado || prev.creditId,
+        borrowerName: sub.values?.fullName || prev.borrowerName,
+        totalAmount: sub.terms?.amount || prev.totalAmount,
+        currentBalance: Math.round((sub.terms?.amount || 500000) * 0.75),
+        nextPaymentAmount: sub.terms?.payment || prev.nextPaymentAmount,
+        totalInstallments: sub.terms?.term || prev.totalInstallments,
+      }));
+    }
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {

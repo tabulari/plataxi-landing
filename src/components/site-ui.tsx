@@ -14,7 +14,7 @@ import { track } from "@/lib/analytics";
  * open intent (so every apply CTA routes through one seam).
  */
 
-export type ApplyOrigin = "direct" | "simulator" | "resume" | "hiw" | "cta_banner";
+export type ApplyOrigin = "direct" | "simulator" | "resume" | "hiw" | "cta_banner" | "hero" | "nav";
 
 interface SiteUi {
   applyOpen: boolean;

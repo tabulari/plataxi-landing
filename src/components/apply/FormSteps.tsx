@@ -8,10 +8,8 @@ import {
   EMPLOYMENT_TYPES,
   type FieldName,
 } from '@/lib/application-schema';
-import { capFreq } from './use-application-form';
+import { capFreq, type Values } from './use-application-form';
 import { cn } from '@/lib/utils';
-import type { Values } from './use-application-form';
-import { WhatsAppLink } from '../WhatsAppLink';
 import { CloseIcon, ShieldCheckIcon } from '../icons';
 import { FieldError } from '../FieldError';
 
@@ -87,6 +85,7 @@ export function Step1({ values, handlers }: {
         {fieldEl('fullName', 'Nombre completo', handlers, {
           type: 'text',
           autoComplete: 'name',
+          enterKeyHint: 'next',
           placeholder: 'Ej. Laura Martínez',
           value: values.fullName,
         })}
@@ -96,6 +95,8 @@ export function Step1({ values, handlers }: {
         {fieldEl('idNumber', 'Número de cédula (C.C.)', handlers, {
           type: 'text',
           inputMode: 'numeric',
+          autoComplete: 'off',
+          enterKeyHint: 'next',
           placeholder: 'Ej. 1.024.567.890',
           value: values.idNumber,
           onChange: (e) => handlers.onFieldChange('idNumber', formatCedula(e.target.value)),
@@ -103,6 +104,8 @@ export function Step1({ values, handlers }: {
         {fieldEl('phone', 'Celular Colombia (+57)', handlers, {
           type: 'tel',
           inputMode: 'numeric',
+          autoComplete: 'tel',
+          enterKeyHint: 'next',
           placeholder: 'Ej. 300 123 4567',
           value: values.phone,
           onChange: (e) => handlers.onFieldChange('phone', formatPhone(e.target.value)),
@@ -113,15 +116,10 @@ export function Step1({ values, handlers }: {
         {fieldEl('email', 'Correo electrónico', handlers, {
           type: 'email',
           autoComplete: 'email',
+          enterKeyHint: 'next',
           placeholder: 'tucorreo@ejemplo.com',
           value: values.email,
         })}
-      </div>
-
-      <div className="mt-2 text-center">
-        <WhatsAppLink ctx="contact" className="inline-flex items-center justify-center min-h-[44px] px-3 py-2 text-xs text-muted-foreground hover:text-green-ink transition-colors underline underline-offset-2">
-          Solicitar por WhatsApp
-        </WhatsAppLink>
       </div>
     </section>
   );
@@ -149,6 +147,7 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
         {fieldEl('income', 'Ingreso mensual aproximado', handlers, {
           type: 'text',
           inputMode: 'numeric',
+          enterKeyHint: 'done',
           placeholder: 'Ej. 2.500.000',
           value: values.income,
           onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),

@@ -45,7 +45,7 @@ test.describe('Application submission persistence', () => {
     // Open the modal
     await page.locator('#simula').scrollIntoViewIfNeeded();
     await page.waitForTimeout(300);
-    await page.getByRole('button', { name: /pedir mi crédito|iniciar solicitud/i }).first().click();
+    await page.getByRole('button', { name: /pedir mi crédito|iniciar solicitud|ver estado/i }).first().click();
 
     // Verify the dialog is visible and shows the success state instead of resetting to step 1
     const dialog = page.getByRole('dialog');
@@ -56,11 +56,11 @@ test.describe('Application submission persistence', () => {
     await expect(dialog.getByText('$800.000', { exact: true })).toBeVisible();
 
     // Close the modal
-    await dialog.getByRole('button', { name: 'Entendido' }).click();
+    await dialog.getByRole('button', { name: 'Cerrar' }).click();
     await expect(dialog).not.toBeVisible();
 
     // Re-open the modal: verify state was NOT wiped out
-    await page.getByRole('button', { name: /pedir mi crédito|iniciar solicitud/i }).first().click();
+    await page.getByRole('button', { name: /pedir mi crédito|iniciar solicitud|ver estado/i }).first().click();
     await expect(dialog).toBeVisible();
     await expect(dialog.getByText('¡Solicitud enviada con éxito!')).toBeVisible();
     await expect(dialog.locator('b', { hasText: 'CR-2026-PERSIST01' })).toBeVisible();

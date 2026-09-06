@@ -1,29 +1,58 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import { SevenStageStepper, type StageId } from '@/components/borrower/SevenStageStepper';
 import { KycDocumentStation } from '@/components/borrower/KycDocumentStation';
 import { OtpContractModal } from '@/components/borrower/OtpContractModal';
 import { LockIcon, ShieldCheckIcon, CheckIcon, ReturnArrowIcon } from '@/components/icons';
 import { fmtCOP } from '@/lib/credit';
+import { loadSubmittedApplication } from '@/lib/draft-storage';
 
 export default function BorrowerWorkspacePage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = use(params);
   const [stage, setStage] = useState<StageId>(2); // Default to stage 2: Verificación de Identidad
   const [isOtpOpen, setIsOtpOpen] = useState(false);
 
-  // Mock application details derived from session token
-  const mockApplication = {
+  // Application details derived from session token or submitted application
+  const [application, setApplication] = useState({
     radicado: token.startsWith('CR-') ? token : `CR-2026-${token.slice(0, 8).toUpperCase()}`,
     borrowerName: 'Laura Martínez Gómez',
     borrowerId: '1.024.567.890',
     amount: 500000,
     termMonths: 12,
     monthlyPayment: 49039,
+    frequencyUnit: '/mes',
+    frequencyLabel: 'Mensual',
     bankName: 'Bancolombia',
     accountType: 'Ahorros ***4829',
-  };
+  });
+
+  useEffect(() => {
+    const sub = loadSubmittedApplication();
+    if (sub) {
+      const freqLabel =
+        sub.terms?.frequency === 'daily'
+          ? 'Diaria'
+          : sub.terms?.frequency === 'weekly'
+            ? 'Semanal'
+            : sub.terms?.frequency === 'biweekly'
+              ? 'Quincenal'
+              : 'Mensual';
+      setApplication((prev) => ({
+        ...prev,
+        radicado: sub.radicado || prev.radicado,
+        borrowerName: sub.values?.fullName || prev.borrowerName,
+        borrowerId: sub.values?.idNumber || prev.borrowerId,
+        amount: sub.terms?.amount || prev.amount,
+        termMonths: sub.terms?.term || prev.termMonths,
+        monthlyPayment: sub.terms?.payment || prev.monthlyPayment,
+        frequencyUnit: sub.terms?.unit || prev.frequencyUnit,
+        frequencyLabel: freqLabel,
+        bankName: sub.values?.bank || prev.bankName,
+      }));
+    }
+  }, []);
 
   const handleOtpSuccess = () => {
     setIsOtpOpen(false);
@@ -50,7 +79,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
                 </span>
               </div>
               <p className="text-xs text-muted-foreground tabular-nums mt-0.5">
-                Radicado: <b className="text-navy">{mockApplication.radicado}</b> • Titular: <b>{mockApplication.borrowerName}</b>
+                Radicado: <b className="text-navy">{application.radicado}</b> • Titular: <b>{application.borrowerName}</b>
               </p>
             </div>
           </div>
@@ -119,19 +148,19 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 tabular-nums">
               <div className="p-3.5 rounded-xl bg-bg-soft border border-border">
                 <span className="text-xs text-muted-2 font-medium block">Monto Aprobado</span>
-                <strong className="text-lg font-extrabold text-navy">${fmtCOP(mockApplication.amount)} COP</strong>
+                <strong className="text-lg font-extrabold text-navy">${fmtCOP(application.amount)} COP</strong>
               </div>
               <div className="p-3.5 rounded-xl bg-bg-soft border border-border">
                 <span className="text-xs text-muted-2 font-medium block">Plazo</span>
-                <strong className="text-lg font-extrabold text-navy">{mockApplication.termMonths} meses</strong>
+                <strong className="text-lg font-extrabold text-navy">{application.termMonths} meses</strong>
               </div>
               <div className="p-3.5 rounded-xl bg-bg-soft border border-border">
                 <span className="text-xs text-muted-2 font-medium block">Cuota Mensual</span>
-                <strong className="text-lg font-extrabold text-green-ink">${fmtCOP(mockApplication.monthlyPayment)} /mes</strong>
+                <strong className="text-lg font-extrabold text-green-ink">${fmtCOP(application.monthlyPayment)} /mes</strong>
               </div>
               <div className="p-3.5 rounded-xl bg-bg-soft border border-border">
                 <span className="text-xs text-muted-2 font-medium block">Cuenta de Desembolso</span>
-                <strong className="text-sm font-bold text-navy">{mockApplication.bankName}</strong>
+                <strong className="text-sm font-bold text-navy">{application.bankName}</strong>
               </div>
             </div>
 
@@ -172,7 +201,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
             </div>
             <h3 className="text-lg font-extrabold text-navy">Desembolso en Proceso</h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Estamos realizando la transferencia por <b>${fmtCOP(mockApplication.amount)} COP</b> a tu cuenta <b>{mockApplication.bankName}</b>. Recibirás la notificación en unos minutos.
+              Estamos realizando la transferencia por <b>${fmtCOP(application.amount)} COP</b> a tu cuenta <b>{application.bankName}</b>. Recibirás la notificación en unos minutos.
             </p>
             <button
               type="button"
@@ -211,11 +240,11 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
         isOpen={isOtpOpen}
         onClose={() => setIsOtpOpen(false)}
         onSuccess={handleOtpSuccess}
-        amount={mockApplication.amount}
-        termMonths={mockApplication.termMonths}
-        monthlyPayment={mockApplication.monthlyPayment}
-        borrowerName={mockApplication.borrowerName}
-        borrowerId={mockApplication.borrowerId}
+        amount={application.amount}
+        termMonths={application.termMonths}
+        monthlyPayment={application.monthlyPayment}
+        borrowerName={application.borrowerName}
+        borrowerId={application.borrowerId}
       />
     </div>
   );

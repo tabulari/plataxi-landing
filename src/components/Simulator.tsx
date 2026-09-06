@@ -10,6 +10,8 @@ import { AmountInput } from './simulator/AmountInput';
 import { SimulationResults } from './simulator/SimulationResults';
 import { FieldError } from './FieldError';
 import { track } from '@/lib/analytics';
+import { clearDraft, clearSubmittedApplication } from '@/lib/draft-storage';
+import { useActiveSubmission } from '@/hooks/use-active-submission';
 import { cn } from '@/lib/utils';
 
 const FREQUENCIES: { value: Frequency; label: string }[] = [
@@ -68,6 +70,7 @@ export function Simulator() {
   const [inputText, setInputText] = useState(() => fmtCOP(amount));
   const [hint, setHint] = useState('');
   const [snapAnnouncement, setSnapAnnouncement] = useState('');
+  const activeSubmission = useActiveSubmission();
 
   // 9. Anuncio accesible cuando el plazo hace auto-snap (sin animación silenciosa)
   const prevTermRef = useRef(term);
@@ -206,9 +209,51 @@ export function Simulator() {
           aria-live="polite"
           aria-hidden={liveValidity.ok ? true : undefined}
         />
-        <ApplyButton origin="simulator" variant="default" size="block" disabled={!liveValidity.ok} className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0">
-          Pedir mi crédito
+        {activeSubmission && (
+          <div
+            role="status"
+            aria-label="Solicitud activa encontrada"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3.5 rounded-xl bg-green/10 border border-green/30 text-xs sm:text-sm text-navy"
+          >
+            <span className="flex items-center gap-2 min-w-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-green shrink-0 animate-pulse" aria-hidden="true" />
+              <span className="truncate">
+                Tu solicitud está en evaluación (Radicado:{' '}
+                <b className="font-bold tabular-nums">{activeSubmission.radicado}</b>)
+              </span>
+            </span>
+            <ApplyButton
+              origin="simulator"
+              variant="ghost"
+              className="text-xs sm:text-sm font-bold text-navy hover:text-navy underline underline-offset-2 p-0 h-auto shrink-0 bg-transparent hover:bg-transparent shadow-none self-end sm:self-center cursor-pointer focus-visible:ring-1 focus-visible:ring-green"
+            >
+              Ver estado →
+            </ApplyButton>
+          </div>
+        )}
+        <ApplyButton
+          origin="simulator"
+          variant="default"
+          size="block"
+          disabled={!liveValidity.ok}
+          className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer"
+        >
+          {activeSubmission ? 'Ver estado de mi solicitud' : 'Pedir mi crédito'}
         </ApplyButton>
+        {activeSubmission && (
+          <div className="text-center pt-0.5">
+            <button
+              type="button"
+              onClick={() => {
+                clearSubmittedApplication();
+                clearDraft();
+              }}
+              className="text-xs text-muted-foreground hover:text-navy underline underline-offset-4 cursor-pointer py-1 transition-colors"
+            >
+              ¿Deseas simular otra cuota? Iniciar nueva solicitud
+            </button>
+          </div>
+        )}
       </div>
     </form>
   );
