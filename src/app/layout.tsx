@@ -5,6 +5,8 @@ import { config } from "@/lib/config";
 import { fmtCOP } from "@/lib/credit";
 import { StructuredData } from "@/components/StructuredData";
 import { SiteUiProvider } from "@/components/site-ui";
+import { SimulatorProvider } from "@/components/simulator-store";
+import { loadRatesConfig } from "@/lib/rates-config";
 import { RevealController } from "@/components/RevealController";
 import { GsapProvider } from "@/components/GsapProvider";
 import "./globals.css";
@@ -77,9 +79,18 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+// Render per request so the simulator reflects the admin's latest financial
+// settings without a redeploy. The layout reads Core server-side (below) and
+// seeds the client simulator with the active row (ADR-0001).
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // Server-side read of Core's public rates-config (no CORS, in the initial
+  // HTML). Falls back to the provider's STATIC_RATES when Core is unreachable.
+  const initialRates = await loadRatesConfig(config.ratesConfigEndpoint);
+
   return (
     <html lang="es" className={`${jakarta.variable} ${display.variable}`} suppressHydrationWarning>
       <body>
@@ -114,7 +125,9 @@ export default function RootLayout({
 
         <SiteUiProvider>
           <GsapProvider>
-            {children}
+            <SimulatorProvider initialRates={initialRates ?? undefined}>
+              {children}
+            </SimulatorProvider>
           </GsapProvider>
         </SiteUiProvider>
 

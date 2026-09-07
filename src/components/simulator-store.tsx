@@ -80,14 +80,23 @@ export function SimulatorProvider({
     ratesRef.current = rates;
   }, [rates]);
 
-  const [amount, setAmountState] = useState(config.simulator.defaultAmount);
+  // El servidor (RSC) siembra los rates iniciales: el monto/plazo por defecto se
+  // ajusta al rango servido para que el primer paint ya muestre valores válidos.
+  const [amount, setAmountState] = useState(() =>
+    clampRoundAmount(
+      config.simulator.defaultAmount,
+      rates.amountMin,
+      rates.amountMax,
+      config.simulator.amountStep,
+    ),
+  );
   const [term, setTerm] = useState(() => {
     const d = config.simulator.defaultTerm;
     const a = config.simulator.defaultAmount;
-    if (a <= config.simulator.amountMin && d !== 1) return 1;
+    if (a <= rates.amountMin && d !== 1) return 1;
     if (a > config.credit.highAmountThreshold && d < config.credit.highAmountMinTerm)
       return config.credit.highAmountMinTerm;
-    return d;
+    return rates.termOptions.includes(d) ? d : rates.termOptions[0];
   });
   const [frequency, setFrequency] = useState<Frequency>("monthly");
 
@@ -114,7 +123,11 @@ export function SimulatorProvider({
     [],
   );
 
+  // Respaldo client-side: si el servidor (RSC) ya sembró rates en vivo se
+  // respeta (el refresh client pinea termOptions estáticos y pisaría la
+  // config del admin). Solo refresca cuando el servidor no pudo leer Core.
   useEffect(() => {
+    if (initialRates) return;
     let active = true;
     void loadRatesConfig('/api/rates-config').then((nextRates) => {
       if (!active || nextRates === null) return;
@@ -142,14 +155,21 @@ export function SimulatorProvider({
     return () => {
       active = false;
     };
-  }, []);
+  }, [initialRates]);
 
   // Settle the amount before deriving sim. Dragging the slider fires every ~15ms;
   // rendering every change (~90/sec) reads as an odometer not a calculation.
   // Debounce to a calm settled value used for all downstream displays (payment,
   // total cost, validity, sticky bar, etc.) — keeps them all consistent and
   // responsive, not rolling.
-  const [settledAmount, setSettledAmount] = useState(config.simulator.defaultAmount);
+  const [settledAmount, setSettledAmount] = useState(() =>
+    clampRoundAmount(
+      config.simulator.defaultAmount,
+      rates.amountMin,
+      rates.amountMax,
+      config.simulator.amountStep,
+    ),
+  );
   useEffect(() => {
     const t = setTimeout(() => setSettledAmount(amount), 150);
     return () => clearTimeout(t);
