@@ -1,29 +1,30 @@
 import { z } from "zod";
-import { config } from "./config";
 
 /**
  * Single source of validation for the application form — used by the client
- * (inline per-field + per-step) AND the server route. Rules and messages are
- * ported verbatim from the prototype `solicitud.js` RULES. Field identifiers
- * are English; user-facing messages/options stay Spanish.
+ * (inline per-field + per-step) AND the server route. Field identifiers are
+ * English; user-facing messages/options stay Spanish.
  *
- * Banks and employment types come from config (env-driven).
+ * IP-163: expanded to 4-step flow (Tus datos → Tu taxi → Tus ingresos → Revisión).
  */
 
-export const EMPLOYMENT_TYPES = config.application.employmentTypes;
-export const BANKS = config.application.banks;
+export const TAXI_ROLES = ["Taxi propio", "Conduzco taxi"] as const;
+export type TaxiRole = (typeof TAXI_ROLES)[number];
 
 const MSG = {
   fullName: "¿Cómo te llamas? Nombre y apellido.",
   idNumber: "Revisa tu cédula. 7 a 10 dígitos.",
   phone: "Teléfono inválido. 10 dígitos, empieza en 3.",
-  phone2: "Si lo pones, que sea un número distinto y válido.",
+  contactPhone: "Si lo pones, que sea un número válido de 10 dígitos.",
   email: "Ese correo no se ve bien.",
-  employmentType: "Elige en qué trabajas.",
+  taxiRole: "Elige tu rol en el taxi.",
+  taxiPlate: "Ingresa la placa del taxi.",
+  taxiCompany: "Ingresa la empresa a la que estás afiliado.",
+  drivingTime: "Indica cuántos años llevas conduciendo.",
   income: "Cuéntanos cuánto ganas.",
   incomeType: "Elige diario o mensual.",
-  bank: "Elige dónde te consignamos.",
-  accountNumber: "Número de cuenta inválido. 7 a 20 dígitos.",
+  hasBank: "Indica si tienes entidad bancaria.",
+  bankEntity: "Elige tu entidad bancaria.",
   consent: "Autoriza el tratamiento de datos para seguir.",
 } as const;
 
@@ -32,6 +33,7 @@ const digits = (s: string) => s.replace(/\D/g, "");
 
 /** Per-field schemas — reused for inline client validation and the composite. */
 export const fieldSchemas = {
+  // Step 1 — Tus datos
   fullName: z
     .string()
     .refine((v) => v.trim().length >= 5 && v.trim().includes(" "), MSG.fullName),
@@ -43,37 +45,48 @@ export const fieldSchemas = {
     const d = digits(v);
     return d.length === 10 && d.startsWith("3");
   }, MSG.phone),
-  phone2: z.string().refine((v) => {
+  contactName: z.string(), // optional — always valid (validated per-step as needed)
+  contactPhone: z.string().refine((v) => {
     if (!v || v.trim() === "") return true;
     const d = digits(v);
     return d.length === 10 && d.startsWith("3");
-  }, MSG.phone2),
+  }, MSG.contactPhone),
   email: z.string().refine((v) => EMAIL_RE.test(v.trim()), MSG.email),
-  employmentType: z
+
+  // Step 2 — Tu taxi
+  taxiRole: z
     .string()
-    .refine((v) => (EMPLOYMENT_TYPES as readonly string[]).includes(v), MSG.employmentType),
+    .refine((v) => (TAXI_ROLES as readonly string[]).includes(v), MSG.taxiRole),
+  taxiPlate: z.string(), // conditional — validated cross-field in validateStep
+  taxiCompany: z.string().refine((v) => v.trim().length >= 2, MSG.taxiCompany),
+  drivingTime: z.string().refine((v) => {
+    const n = parseInt(v, 10);
+    return Number.isFinite(n) && n >= 1 && n <= 10;
+  }, MSG.drivingTime),
+
+  // Step 3 — Tus ingresos
   income: z.string().refine((v) => digits(v).length >= 5, MSG.income),
   incomeType: z.enum(["daily", "monthly"], { message: MSG.incomeType }),
-  bank: z.string().refine((v) => (BANKS as readonly string[]).includes(v), MSG.bank),
-  accountNumber: z.string().refine((v) => {
-    if (!v || v.trim() === "") return true;
-    const d = digits(v);
-    return d.length >= 7 && d.length <= 20;
-  }, MSG.accountNumber),
+  hasBank: z.enum(["yes", "no"], { message: MSG.hasBank }),
+  bankEntity: z.string(), // conditional — validated cross-field in validateStep
 } as const;
 
 export type FieldName = keyof typeof fieldSchemas;
 
 export const STEP_FIELDS: Record<number, FieldName[]> = {
-  1: ["fullName", "idNumber", "phone", "phone2", "email"],
-  2: ["employmentType", "income", "incomeType"],
+  1: ["fullName", "idNumber", "phone", "email"],
+  // contactName/contactPhone are optional — not in required validation list
+  2: ["taxiRole", "taxiCompany", "drivingTime"],
+  // taxiPlate is conditional on taxiRole — handled in validateStep
+  3: ["income", "incomeType", "hasBank"],
+  // bankEntity is conditional on hasBank="yes" — handled in validateStep
 };
 
 export const CONSENT_MESSAGE = MSG.consent;
 
 /**
  * Canonical consent text. Must stay byte-identical to the authorization
- * sentence rendered in the apply form (FormSteps Step3) — Core stores a
+ * sentence rendered in the apply form (FormSteps Step4) — Core stores a
  * SHA-256 of this string as consent evidence, so any drift breaks the audit
  * trail. Keep this and the JSX in sync.
  */
@@ -89,16 +102,23 @@ export function validateField(name: FieldName, value: string): string {
 /** Composite schema for the server route (and a full client check). */
 export const applicationSchema = z
   .object({
+    // Step 1
     fullName: fieldSchemas.fullName,
     idNumber: fieldSchemas.idNumber,
     phone: fieldSchemas.phone,
-    phone2: fieldSchemas.phone2.optional().or(z.literal("")),
+    contactName: z.string().optional().or(z.literal("")),
+    contactPhone: fieldSchemas.contactPhone.optional().or(z.literal("")),
     email: fieldSchemas.email,
-    employmentType: fieldSchemas.employmentType,
+    // Step 2
+    taxiRole: fieldSchemas.taxiRole,
+    taxiPlate: z.string().optional().or(z.literal("")),
+    taxiCompany: fieldSchemas.taxiCompany,
+    drivingTime: fieldSchemas.drivingTime,
+    // Step 3
     income: fieldSchemas.income,
     incomeType: fieldSchemas.incomeType.default("monthly"),
-    bank: fieldSchemas.bank.optional().or(z.literal("")),
-    accountNumber: fieldSchemas.accountNumber.optional().or(z.literal("")),
+    hasBank: fieldSchemas.hasBank,
+    bankEntity: z.string().optional().or(z.literal("")),
     consent: z.boolean().refine((v) => v === true, { message: MSG.consent }),
     // Frozen simulator snapshot shown to the applicant and locked by Core.
     terms: z
@@ -112,12 +132,17 @@ export const applicationSchema = z
   })
   .refine(
     (data) => {
-      const p1 = (data.phone || "").replace(/\D/g, "");
-      const p2 = (data.phone2 || "").replace(/\D/g, "");
-      if (!p2) return true;
-      return p1 !== p2;
+      if (data.taxiRole === "Taxi propio" && !data.taxiPlate?.trim()) return false;
+      return true;
     },
-    { message: "Que sea distinto al primero.", path: ["phone2"] },
+    { message: MSG.taxiPlate, path: ["taxiPlate"] },
+  )
+  .refine(
+    (data) => {
+      if (data.hasBank === "yes" && !data.bankEntity?.trim()) return false;
+      return true;
+    },
+    { message: MSG.bankEntity, path: ["bankEntity"] },
   );
 
 export type ApplicationInput = z.infer<typeof applicationSchema>;
