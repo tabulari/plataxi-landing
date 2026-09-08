@@ -8,30 +8,12 @@ import { CtaBanner } from "@/components/CtaBanner";
 import { Footer } from "@/components/Footer";
 import { LandingOverlays } from "@/components/LandingOverlays";
 import { SectionDivider } from "@/components/SectionDivider";
-import { SimulatorProvider } from "@/components/simulator-store";
-import { config } from "@/lib/config";
-import { getInitialRates, type RuntimeRatesConfig } from "@/lib/rates-config";
-
-/** ISR: revalidate the server-seeded rates every 5 minutes so the SSR cuota
- *  stays in sync with Core without losing CDN cache. */
-export const revalidate = 300;
-
-/** Static fallback used when Core is unreachable at build/revalidation time. */
-const STATIC_RATES: RuntimeRatesConfig = {
-  monthlyRate: config.credit.monthlyRate,
-  amountMin: config.simulator.amountMin,
-  amountMax: config.simulator.amountMax,
-  termOptions: config.simulator.termOptions,
-};
 
 export default async function Home() {
-  const { rates } = await getInitialRates(
-    config.ratesConfigEndpoint,
-    STATIC_RATES,
-  );
-
+  // Los rates los siembra el layout (único SimulatorProvider, force-dynamic):
+  // esta página solo consume el store, sin re-sembrar.
   return (
-    <SimulatorProvider initialRates={rates}>
+    <>
       <Nav />
       <main>
         {/* 1. Hero — full-bleed, foto + titular + un solo CTA */}
@@ -59,6 +41,6 @@ export default async function Home() {
 
       {/* landing-only overlays (sticky bar, resume nudge, apply modal) */}
       <LandingOverlays />
-    </SimulatorProvider>
+    </>
   );
 }
