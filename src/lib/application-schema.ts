@@ -20,7 +20,8 @@ const MSG = {
   phone2: "Si lo pones, que sea un número distinto y válido.",
   email: "Ese correo no se ve bien.",
   employmentType: "Elige en qué trabajas.",
-  income: "Cuéntanos cuánto ganas al mes.",
+  income: "Cuéntanos cuánto ganas.",
+  incomeType: "Elige diario o mensual.",
   bank: "Elige dónde te consignamos.",
   accountNumber: "Número de cuenta inválido. 7 a 20 dígitos.",
   consent: "Autoriza el tratamiento de datos para seguir.",
@@ -52,6 +53,7 @@ export const fieldSchemas = {
     .string()
     .refine((v) => (EMPLOYMENT_TYPES as readonly string[]).includes(v), MSG.employmentType),
   income: z.string().refine((v) => digits(v).length >= 5, MSG.income),
+  incomeType: z.enum(["daily", "monthly"], { message: MSG.incomeType }),
   bank: z.string().refine((v) => (BANKS as readonly string[]).includes(v), MSG.bank),
   accountNumber: z.string().refine((v) => {
     if (!v || v.trim() === "") return true;
@@ -64,7 +66,7 @@ export type FieldName = keyof typeof fieldSchemas;
 
 export const STEP_FIELDS: Record<number, FieldName[]> = {
   1: ["fullName", "idNumber", "phone", "phone2", "email"],
-  2: ["employmentType", "income"],
+  2: ["employmentType", "income", "incomeType"],
 };
 
 export const CONSENT_MESSAGE = MSG.consent;
@@ -94,6 +96,7 @@ export const applicationSchema = z
     email: fieldSchemas.email,
     employmentType: fieldSchemas.employmentType,
     income: fieldSchemas.income,
+    incomeType: fieldSchemas.incomeType.default("monthly"),
     bank: fieldSchemas.bank.optional().or(z.literal("")),
     accountNumber: fieldSchemas.accountNumber.optional().or(z.literal("")),
     consent: z.boolean().refine((v) => v === true, { message: MSG.consent }),

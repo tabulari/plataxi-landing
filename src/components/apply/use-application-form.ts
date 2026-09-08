@@ -28,7 +28,7 @@ export type SubmitErrorCode =
 export type Values = Record<FieldName, string>;
 
 export const FIELDS: FieldName[] = [
-  'fullName', 'idNumber', 'phone', 'phone2', 'email', 'employmentType', 'income', 'bank', 'accountNumber',
+  'fullName', 'idNumber', 'phone', 'phone2', 'email', 'employmentType', 'income', 'incomeType', 'bank', 'accountNumber',
 ];
 
 export const STEP_TITLES: Record<number, string> = {
@@ -39,7 +39,7 @@ export const STEP_TITLES: Record<number, string> = {
 
 export const emptyValues: Values = {
   fullName: '', idNumber: '', phone: '', phone2: '', email: '',
-  employmentType: '', income: '', bank: '', accountNumber: '',
+  employmentType: '', income: '', incomeType: 'monthly', bank: '', accountNumber: '',
 };
 
 export const capFreq = (f: Simulation['frequency']) =>

@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { gsap } from 'gsap';
-import { useGSAP } from '@gsap/react';
 import * as FocusScope from '@radix-ui/react-focus-scope';
 import { fmtCOP } from '@/lib/credit';
 import {
@@ -25,7 +23,7 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
   const { className, ...rest } = props;
   return (
     <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_input]:border-destructive')}>
-      <span className="text-sm font-semibold text-foreground dark:text-white">{label}</span>
+      <span className="text-sm font-semibold text-foreground">{label}</span>
       <input
         name={name}
         onChange={(e) => handlers.onFieldChange(name, e.target.value)}
@@ -33,7 +31,7 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
         aria-invalid={handlers.errors[name] ? true : undefined}
         aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
         className={cn(
-          'h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-base sm:text-sm outline-none transition-[border-color,box-shadow,transform] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] dark:bg-white/[0.06] dark:text-white dark:border-white/10',
+          'h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow,transform] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]',
           className,
         )}
         {...rest}
@@ -45,14 +43,14 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
 
 const selectEl = (name: FieldName, label: string, placeholder: string, options: readonly string[], handlers: FieldHandlers, value: string) => (
   <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_select]:border-destructive')}>
-    <span className="text-sm font-semibold text-foreground dark:text-white">{label}</span>
+    <span className="text-sm font-semibold text-foreground">{label}</span>
     <select
       name={name}
       value={value}
       onChange={(e) => { handlers.onFieldChange(name, e.target.value); }}
       aria-invalid={handlers.errors[name] ? true : undefined}
       aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
-      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-base sm:text-sm outline-none transition-[border-color,box-shadow,transform] cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] dark:bg-white/[0.06] dark:text-white dark:border-white/10"
+      className="h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow,transform] cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] focus:border-primary-brand"
     >
       <option value="">{placeholder}</option>
       {options.map((o) => <option key={o}>{o}</option>)}
@@ -82,38 +80,21 @@ export function Step1({ values, handlers }: {
 
   const stepRef = useRef<HTMLElement>(null);
   const [showPhone2, setShowPhone2] = useState(() => !!values.phone2);
-  useGSAP(
-    () => {
-      if (!stepRef.current) return;
-      const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.fromTo(
-          stepRef.current!.children,
-          { y: 6, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.05, ease: 'power2.out', clearProps: 'transform' },
-        );
-      });
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set(stepRef.current!.children, { autoAlpha: 1, y: 0, clearProps: 'transform' });
-      });
-      return () => mm.revert();
-    },
-    { scope: stepRef, dependencies: [showPhone2] },
-  );
+  // GSAP removido temporalmente — el modal ya anima, este stagger dejaba el step en blanco cuando el modal estaba oculto al montar
 
   return (
     <section ref={stepRef} className="flex-1 flex flex-col gap-5">
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1 dark:bg-white/10">
+      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
         <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '33%' }} />
       </div>
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 1 de 3</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 1: Datos personales y de contacto">
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 1: Datos personales y de contacto">
           Cuéntanos de ti
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
           <ShieldCheckIcon size={14} aria-hidden="true" className="text-green-ink shrink-0" />
-          Tus datos están protegidos bajo la Ley 1581.
+          Tus datos van cifrados. Solo los usamos para tu crédito.
         </p>
       </div>
 
@@ -192,50 +173,65 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
   };
 
   const stepRef = useRef<HTMLElement>(null);
-  useGSAP(
-    () => {
-      if (!stepRef.current) return;
-      const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.fromTo(
-          stepRef.current!.children,
-          { y: 6, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.05, ease: 'power2.out', clearProps: 'transform' },
-        );
-      });
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set(stepRef.current!.children, { autoAlpha: 1, y: 0, clearProps: 'transform' });
-      });
-      return () => mm.revert();
-    },
-    { scope: stepRef },
-  );
 
   return (
     <section ref={stepRef} className="flex-1 flex flex-col gap-5">
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1 dark:bg-white/10">
+      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
         <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '66%' }} />
       </div>
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 3</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 2: Para girarte la plata">
-          ¿En qué trabajas?
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tu taxi y tus ingresos">
+          Tu taxi y tus ingresos
         </h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Solo 2 datos para validar tu capacidad de pago.</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">2 datos para validar tu capacidad de pago.</p>
       </div>
 
-      {selectEl('employmentType', '¿En qué trabajas?', 'Ej. Conduzco taxi', EMPLOYMENT_TYPES, handlers, values.employmentType)}
+      {selectEl('employmentType', '¿Cuál es tu rol en el taxi?', 'Selecciona tu rol', EMPLOYMENT_TYPES, handlers, values.employmentType)}
 
-      {fieldEl('income', '¿Cuánto ganas al mes? (aprox)', handlers, {
+      <div className="flex flex-col gap-1.5">
+        <span className="text-sm font-semibold text-foreground">¿Cuánto ganas? Elige cómo prefieres contarlo</span>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => handlers.onFieldChange('incomeType', 'daily')}
+            aria-pressed={values.incomeType === 'daily'}
+            className={cn(
+              'h-11 rounded-xl border text-sm font-semibold transition-all active:scale-[0.98]',
+              values.incomeType === 'daily'
+                ? 'bg-green border-green text-ink shadow-sm'
+                : 'bg-white border-gray-300 text-foreground hover:border-primary-brand',
+            )}
+          >
+            Diario
+          </button>
+          <button
+            type="button"
+            onClick={() => handlers.onFieldChange('incomeType', 'monthly')}
+            aria-pressed={values.incomeType === 'monthly'}
+            className={cn(
+              'h-11 rounded-xl border text-sm font-semibold transition-all active:scale-[0.98]',
+              values.incomeType === 'monthly'
+                ? 'bg-green border-green text-ink shadow-sm'
+                : 'bg-white border-gray-300 text-foreground hover:border-primary-brand',
+            )}
+          >
+            Mensual
+          </button>
+        </div>
+        <FieldError id="err-incomeType" message={handlers.errors.incomeType} />
+      </div>
+
+      {fieldEl('income', values.incomeType === 'daily' ? '¿Cuánto ganas al día?' : '¿Cuánto ganas al mes? (aprox)', handlers, {
         type: 'text',
         inputMode: 'numeric',
         enterKeyHint: 'done',
-        placeholder: 'Ej. 2.500.000',
+        placeholder: values.incomeType === 'daily' ? 'Ej. 80.000' : 'Ej. 2.500.000',
         value: values.income,
         onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
       })}
 
-      <div className="flex items-start gap-2 text-xs text-muted-foreground bg-green/5 border border-green/20 rounded-xl px-3.5 py-3 dark:bg-white/[0.06] dark:border-white/10">
+      <div className="flex items-start gap-2 text-xs text-muted-foreground bg-green/5 border border-green/20 rounded-xl px-3.5 py-3">
         <ShieldCheckIcon size={16} aria-hidden="true" className="text-green-ink shrink-0 mt-0.5" />
         <p className="leading-relaxed">La cuenta donde te consignamos la defines después, cuando estés aprobado — en tu espacio seguro.</p>
       </div>
@@ -254,24 +250,6 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
   const [showTerms, setShowTerms] = useState(false);
   const stepRef = useRef<HTMLElement>(null);
   const termsCloseRef = useRef<HTMLButtonElement>(null);
-  useGSAP(
-    () => {
-      if (!stepRef.current) return;
-      const mm = gsap.matchMedia();
-      mm.add('(prefers-reduced-motion: no-preference)', () => {
-        gsap.fromTo(
-          stepRef.current!.children,
-          { y: 6, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.04, ease: 'power2.out', clearProps: 'transform' },
-        );
-      });
-      mm.add('(prefers-reduced-motion: reduce)', () => {
-        gsap.set(stepRef.current!.children, { autoAlpha: 1, y: 0, clearProps: 'transform' });
-      });
-      return () => mm.revert();
-    },
-    { scope: stepRef },
-  );
   useEffect(() => {
     if (!showTerms) return;
     const onKey = (e: KeyboardEvent) => {
@@ -299,22 +277,22 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
 
   return (
     <section ref={stepRef} className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1 dark:bg-white/10">
+      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
         <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '100%' }} />
       </div>
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 3: ¿Todo bien?">
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: ¿Todo bien?">
           ¿Todo bien? Revisa y envía
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">Un último vistazo antes de mandar tu solicitud.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs dark:bg-white/[0.04] dark:border-white/10">
+      <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs">
         {reviewRows.map(({ k, v, full }) => (
           <div key={k} className={cn('flex flex-col gap-1 min-w-0', full && 'col-span-2')}>
-            <span className="text-muted-2 font-medium dark:text-white/60">{k}</span>
-            <span className="font-semibold text-navy dark:text-white text-[clamp(0.75rem,2.5vw,0.875rem)] break-words">{v}</span>
+            <span className="text-muted-2 font-medium">{k}</span>
+            <span className="font-semibold text-navy text-[clamp(0.75rem,2.5vw,0.875rem)] break-words">{v}</span>
           </div>
         ))}
       </div>

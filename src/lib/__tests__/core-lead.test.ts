@@ -12,6 +12,7 @@ const input = {
   email: "laura@example.com",
   employmentType: "Empleado",
   income: "$ 2.500.000",
+  incomeType: "monthly" as const,
   bank: "Bancolombia",
   consent: true,
   terms: {
@@ -32,9 +33,14 @@ const context = {
 describe("Core web-lead integration", () => {
   it("builds the authoritative Core payload and consent evidence", () => {
     expect(buildCoreLeadPayload(input, context)).toEqual({
-      ...input,
+      fullName: input.fullName,
       idNumber: "1020304050",
       phone: "3101234567",
+      email: input.email,
+      employmentType: "Empleado",
+      income: "$ 2.500.000",
+      bank: "Bancolombia",
+      consent: true,
       clientIp: "203.0.113.7",
       userAgent: "Vitest",
       consentTextHash: consentTextHash(),

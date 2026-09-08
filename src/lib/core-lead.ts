@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import type { ApplicationInput } from "./application-schema";
 import { CONSENT_TEXT } from "./application-schema";
+import { fmtCOP } from "./credit";
 
 type FetchLike = typeof fetch;
 
@@ -53,23 +54,43 @@ export function consentTextHash(): string {
  * clientIp/userAgent and consent hash.
  */
 export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadContext) {
-  // phone2/accountNumber son opcionales en landing y no existen aún en Core — no enviar vacíos
+  // phone2/accountNumber/incomeType son opcionales en landing y no existen aún en Core — no enviar vacíos
   const {
     phone2: _phone2,
     accountNumber: _acc,
     bank: _bank,
+    incomeType: _incomeType,
     ...rest
   } = input as ApplicationInput & {
     phone2?: string;
     accountNumber?: string;
     bank?: string;
+    incomeType?: string;
   };
   void _phone2;
   void _acc;
+  void _incomeType;
   const bank = _bank && _bank.trim() ? _bank : 'PENDIENTE';
+  // Mapea roles taxi a enum Core (Core solo conoce Empleado/Independiente/Pensionado)
+  const taxiMap: Record<string, string> = {
+    'Taxi propio': 'Independiente',
+    'Conduzco taxi': 'Independiente',
+  };
+  const employmentType = taxiMap[input.employmentType] ?? input.employmentType;
+  // Convierte ingreso diario a mensual para Core (Core espera mensual)
+  let income = input.income;
+  if (input.incomeType === 'daily') {
+    const d = parseInt((input.income || '').replace(/\D/g, ''), 10);
+    if (Number.isFinite(d) && d > 0) {
+      const monthly = d * 30;
+      income = `$ ${fmtCOP(monthly)}`;
+    }
+  }
   return {
     ...rest,
     bank,
+    employmentType,
+    income,
     idNumber: input.idNumber.replace(/\D/g, ""),
     phone: input.phone.replace(/\D/g, ""),
     clientIp: context.clientIp,
