@@ -71,10 +71,12 @@ export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadC
   void _acc;
   void _incomeType;
   const bank = _bank && _bank.trim() ? _bank : 'PENDIENTE';
-  // Mapea roles taxi a enum Core (Core solo conoce Empleado/Independiente/Pensionado)
+  // Mapea roles taxi/plataforma a enum Core (Core solo conoce Empleado/Independiente/Pensionado)
   const taxiMap: Record<string, string> = {
     'Taxi propio': 'Independiente',
     'Conduzco taxi': 'Independiente',
+    'Conductor plataforma (Uber/DiDi)': 'Independiente',
+    'Conductor plataforma': 'Independiente',
   };
   const employmentType = taxiMap[input.employmentType] ?? input.employmentType;
   // Convierte ingreso diario a mensual para Core (Core espera mensual)

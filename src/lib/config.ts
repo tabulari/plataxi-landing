@@ -207,10 +207,10 @@ export const config = {
       process.env.NEXT_PUBLIC_APPLICATION_BANKS,
       ["Bancolombia", "Davivienda", "BBVA", "Banco de Bogotá", "Nequi", "Daviplata"],
     ),
-    /** Comma-separated taxi roles for the employment dropdown (taxi-first pilot). */
+    /** Comma-separated roles for taxi + plataforma (Uber/DiDi) pilot. */
     employmentTypes: readStrList(
       process.env.NEXT_PUBLIC_APPLICATION_EMPLOYMENT_TYPES,
-      ["Taxi propio", "Conduzco taxi", "Empleado", "Independiente"],
+      ["Taxi propio", "Conduzco taxi", "Conductor plataforma (Uber/DiDi)", "Empleado", "Independiente"],
     ),
   },
 
