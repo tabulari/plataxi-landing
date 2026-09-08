@@ -6,7 +6,7 @@ import { fmtCOP } from "@/lib/credit";
 import { StructuredData } from "@/components/StructuredData";
 import { SiteUiProvider } from "@/components/site-ui";
 import { SimulatorProvider } from "@/components/simulator-store";
-import { loadRatesConfig } from "@/lib/rates-config";
+import { getInitialRates, type RuntimeRatesConfig } from "@/lib/rates-config";
 import { RevealController } from "@/components/RevealController";
 import { GsapProvider } from "@/components/GsapProvider";
 import "./globals.css";
@@ -88,8 +88,19 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   // Server-side read of Core's public rates-config (no CORS, in the initial
-  // HTML). Falls back to the provider's STATIC_RATES when Core is unreachable.
-  const initialRates = await loadRatesConfig(config.ratesConfigEndpoint);
+  // HTML). Único SimulatorProvider del árbol: las páginas consumen estos rates
+  // sin re-sembrar. Falls back to static config when Core is unreachable.
+  const fallbackRates: RuntimeRatesConfig = {
+    monthlyRate: config.credit.monthlyRate,
+    amountMin: config.simulator.amountMin,
+    amountMax: config.simulator.amountMax,
+    termOptions: config.simulator.termOptions,
+    offeredFrequencies: ['daily', 'weekly', 'biweekly', 'monthly'],
+  };
+  const { rates: initialRates } = await getInitialRates(
+    config.ratesConfigEndpoint,
+    fallbackRates,
+  );
 
   return (
     <html lang="es" className={`${jakarta.variable} ${display.variable}`} suppressHydrationWarning>
@@ -125,7 +136,7 @@ export default async function RootLayout({
 
         <SiteUiProvider>
           <GsapProvider>
-            <SimulatorProvider initialRates={initialRates ?? undefined}>
+            <SimulatorProvider initialRates={initialRates}>
               {children}
             </SimulatorProvider>
           </GsapProvider>

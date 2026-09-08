@@ -13,7 +13,7 @@
 
 import { config } from './config';
 
-export type Frequency = "daily" | "weekly" | "biweekly" | "monthly";
+export type Frequency = "daily" | "weekly" | "biweekly" | "monthly" | "bimonthly" | "quarterly";
 
 export interface Simulation {
   amount: number;
@@ -25,7 +25,8 @@ export interface Simulation {
   monthlyRate: number; // decimal, monthly
   ea: number; // decimal, effective annual (E.A.)
   nPeriods: number;
-  unit: "/día" | "/semana" | "/quincena" | "/mes";
+  unit: "/día" | "/semana" | "/quincena" | "/mes" | "/bimestre" | "/trimestre";
+  isEstimate: boolean;
   adminFeePerPeriod: number; // COP por cuota (administración)
   guaranteeFeeTotal: number; // COP total fianza
   valid: boolean; // false when the amount/term combo isn't offered
@@ -85,8 +86,14 @@ export function calculatePayment(
   monthlyRate: number = config.credit.monthlyRate,
 ): Simulation {
   const MONTHLY_RATE = monthlyRate;
+  // periodsPerMonth: how many payments per calendar month (< 1 for multi-month periods)
   const periodsPerMonth =
-    frequency === "daily" ? 30 : frequency === "weekly" ? 4 : frequency === "biweekly" ? 2 : 1;
+    frequency === "daily" ? 30
+    : frequency === "weekly" ? 4
+    : frequency === "biweekly" ? 2
+    : frequency === "bimonthly" ? 0.5   // 1 payment every 2 months
+    : frequency === "quarterly" ? 1 / 3  // 1 payment every 3 months
+    : 1;
   const nPeriods = termMonths * periodsPerMonth;
   const periodRate = MONTHLY_RATE / periodsPerMonth;
 
@@ -112,7 +119,13 @@ export function calculatePayment(
     ea, // decimal, annual
     nPeriods,
     unit:
-      frequency === "daily" ? "/día" : frequency === "weekly" ? "/semana" : frequency === "biweekly" ? "/quincena" : "/mes",
+      frequency === "daily" ? "/día"
+      : frequency === "weekly" ? "/semana"
+      : frequency === "biweekly" ? "/quincena"
+      : frequency === "bimonthly" ? "/bimestre"
+      : frequency === "quarterly" ? "/trimestre"
+      : "/mes",
+    isEstimate: frequency === "bimonthly" || frequency === "quarterly",
     adminFeePerPeriod,
     guaranteeFeeTotal,
     valid: validity.ok, // false when the combo is not offered

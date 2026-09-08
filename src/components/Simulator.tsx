@@ -14,11 +14,13 @@ import { clearDraft, clearSubmittedApplication } from '@/lib/draft-storage';
 import { useActiveSubmission } from '@/hooks/use-active-submission';
 import { cn } from '@/lib/utils';
 
-const FREQUENCIES: { value: Frequency; label: string }[] = [
+const ALL_FREQUENCIES: { value: Frequency; label: string; estimate?: true }[] = [
   { value: 'daily', label: 'Diario' },
   { value: 'weekly', label: 'Semanal' },
   { value: 'biweekly', label: 'Quincenal' },
   { value: 'monthly', label: 'Mensual' },
+  { value: 'bimonthly', label: 'Bimestral', estimate: true },
+  { value: 'quarterly', label: 'Trimestral', estimate: true },
 ];
 
 export function Simulator() {
@@ -30,12 +32,18 @@ export function Simulator() {
     amountStepBig,
     term,
     termOptions,
+    offeredFrequencies,
     frequency,
     sim,
     setAmount,
     setTerm,
     setFrequency,
   } = useSimulator();
+
+  const frequencies = useMemo(
+    () => ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)),
+    [offeredFrequencies],
+  );
   const isMinAmount = amount <= amountMin;
   const isHighAmount = amount > config.credit.highAmountThreshold;
   const terms = useMemo(
@@ -175,7 +183,7 @@ export function Simulator() {
         </div>
       </div>
 
-      {/* Payment Frequency Selector — 4 options: Diario, Semanal, Quincenal, Mensual */}
+      {/* Payment Frequency Selector */}
       <div>
         <p className="text-sm font-semibold text-foreground mb-1.5" id="freqLabel">
           Frecuencia de pago
@@ -185,10 +193,19 @@ export function Simulator() {
           ariaLabelledBy="freqLabel"
           chipClassName="chip-freq"
           hideCheck
-          options={FREQUENCIES}
+          options={frequencies.map((f) => ({
+            value: f.value,
+            label: f.estimate ? `${f.label} *` : f.label,
+            title: f.estimate ? 'Cuota estimada — el cargo definitivo se confirma en la oferta' : undefined,
+          }))}
           value={frequency}
           onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
         />
+        {(frequency === 'bimonthly' || frequency === 'quarterly') && (
+          <p className="text-xs text-muted-foreground mt-1.5">
+            * Cuota estimada. El cargo definitivo se confirmará en la oferta.
+          </p>
+        )}
       </div>
 
       <div aria-live="polite" aria-atomic="true" className="sr-only">

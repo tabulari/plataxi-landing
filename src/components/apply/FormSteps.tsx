@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { fmtCOP } from '@/lib/credit';
+import { fmtCOP, type Frequency } from '@/lib/credit';
 import {
   BANKS,
   CONSENT_TEXT,
@@ -164,14 +164,14 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
   consentError: string;
   setConsent: (v: boolean) => void;
   setConsentError: (v: string) => void;
-  frozen: { amount: number; term: number; payment: number; unit: string; frequency: string; periodRate: number };
+  frozen: { amount: number; term: number; payment: number; unit: string; frequency: Frequency; periodRate: number };
 }) {
   const [showTerms, setShowTerms] = useState(false);
 
   const reviewRows: { k: string; v: string; full?: boolean }[] = [
     { k: 'Monto solicitado', v: `$${fmtCOP(frozen.amount)} COP` },
     { k: 'Cuota estimada', v: `$${fmtCOP(frozen.payment)} ${frozen.unit}` },
-    { k: 'Plazo', v: `${frozen.term} meses (${capFreq(frozen.frequency as 'daily' | 'weekly' | 'biweekly' | 'monthly')})` },
+    { k: 'Plazo', v: `${frozen.term} meses (${capFreq(frozen.frequency)})` },
     { k: 'Nombre completo', v: values.fullName || '—', full: true },
     { k: 'Cédula de ciudadanía', v: values.idNumber || '—' },
     { k: 'Celular', v: values.phone || '—' },
