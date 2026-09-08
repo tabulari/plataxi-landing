@@ -103,7 +103,11 @@ export function Step1({ values, handlers }: {
 
   return (
     <section ref={stepRef} className="flex-1 flex flex-col gap-5">
+      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1 dark:bg-white/10">
+        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '33%' }} />
+      </div>
       <div>
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 1 de 3</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 1: Datos personales y de contacto">
           Cuéntanos de ti
         </h2>
@@ -209,7 +213,11 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
 
   return (
     <section ref={stepRef} className="flex-1 flex flex-col gap-5">
+      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1 dark:bg-white/10">
+        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '66%' }} />
+      </div>
       <div>
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 3</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 2: Para girarte la plata">
           ¿En qué trabajas?
         </h2>
@@ -291,7 +299,11 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
 
   return (
     <section ref={stepRef} className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
+      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1 dark:bg-white/10">
+        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '100%' }} />
+      </div>
       <div>
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 3: ¿Todo bien?">
           ¿Todo bien? Revisa y envía
         </h2>
