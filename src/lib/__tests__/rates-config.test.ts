@@ -15,6 +15,7 @@ describe("dynamic rates config", () => {
       amountMin: 60000,
       amountMax: 1200000,
       termOptions: [3, 6, 12],
+      offeredFrequencies: ['daily', 'weekly', 'biweekly', 'monthly'],
     });
   });
 
@@ -32,10 +33,10 @@ describe("dynamic rates config", () => {
     ).resolves.toBeNull();
   });
 
-  it("clamps amountMin to landing floor (100k) when Core still sends 50k", async () => {
+  it("respeta el min_amount de Core sin pisos de la landing (Core manda)", async () => {
     const corePayload = {
       monthly_interest_rate: "0.026",
-      min_amount: "50000.00",
+      min_amount: "20000.00",
       max_amount: "1000000.00",
       term_options_months: [3, 6, 12],
     };
@@ -45,13 +46,14 @@ describe("dynamic rates config", () => {
     } as Response);
     const fallback = {
       monthlyRate: 0.026,
-      amountMin: 100000,
+      amountMin: 20000,
       amountMax: 1000000,
       termOptions: [1, 2, 3, 4, 5, 6],
+      offeredFrequencies: ['daily', 'weekly', 'biweekly', 'monthly'],
     };
     const { rates, source } = await getInitialRates("https://core.example.com/api/v1/sessions/rates-config", fallback, fetchMock);
     expect(source).toBe("core");
-    expect(rates.amountMin).toBe(100000);
-    expect(rates.termOptions).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(rates.amountMin).toBe(20000);
+    expect(rates.termOptions).toEqual([3, 6, 12]);
   });
 });

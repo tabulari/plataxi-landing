@@ -3,7 +3,11 @@ export interface RuntimeRatesConfig {
   amountMin: number;
   amountMax: number;
   termOptions: number[];
+  /** Frequency IDs offered by the admin. Fallback: four standard frequencies. */
+  offeredFrequencies: string[];
 }
+
+const STANDARD_FREQUENCIES = ['daily', 'weekly', 'biweekly', 'monthly'] as const;
 
 type FetchLike = typeof fetch;
 
@@ -31,11 +35,19 @@ export function parseRatesConfig(payload: unknown): RuntimeRatesConfig | null {
     return null;
   }
 
+  const KNOWN_FREQUENCIES = new Set(['daily','weekly','biweekly','monthly','bimonthly','quarterly']);
+  const rawFreqs = record.offered_frequencies;
+  const offeredFrequencies: string[] =
+    Array.isArray(rawFreqs) && rawFreqs.every((f) => typeof f === 'string' && KNOWN_FREQUENCIES.has(f))
+      ? rawFreqs
+      : [...STANDARD_FREQUENCIES];
+
   return {
     monthlyRate,
     amountMin,
     amountMax,
     termOptions: [...new Set(termOptions)].sort((a, b) => a - b),
+    offeredFrequencies,
   };
 }
 
@@ -67,8 +79,8 @@ export interface InitialRatesResult {
  * Calls Core directly (server-to-server, no self-fetch through the proxy) and
  * falls back to config-derived static values when Core is unreachable.
  *
- * `termOptions` is always pinned to the config default — Core's live list
- * includes terms up to 24 months, but the landing UI only offers 1-6.
+ * Core es la fuente de verdad: tasa, montos Y plazos vienen del backoffice
+ * (financial_settings). El fallback solo se usa si Core no responde.
  */
 export async function getInitialRates(
   endpoint: string,
@@ -77,14 +89,8 @@ export async function getInitialRates(
 ): Promise<InitialRatesResult> {
   const coreRates = await loadRatesConfig(endpoint, fetchImpl);
   if (coreRates) {
-    return {
-      rates: {
-        ...coreRates,
-        amountMin: Math.max(coreRates.amountMin, fallback.amountMin),
-        termOptions: fallback.termOptions,
-      },
-      source: "core",
-    };
+    // Core es la fuente de verdad para tasa, montos y plazos: se respeta tal cual.
+    return { rates: coreRates, source: "core" };
   }
   return { rates: fallback, source: "fallback" };
 }
