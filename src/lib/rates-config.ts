@@ -35,7 +35,7 @@ export function parseRatesConfig(payload: unknown): RuntimeRatesConfig | null {
     return null;
   }
 
-  const KNOWN_FREQUENCIES = new Set(['daily','weekly','biweekly','monthly','bimonthly','quarterly']);
+  const KNOWN_FREQUENCIES = new Set(['daily', 'weekly', 'biweekly', 'monthly']);
   const rawFreqs = record.offered_frequencies;
   const offeredFrequencies: string[] =
     Array.isArray(rawFreqs) && rawFreqs.every((f) => typeof f === 'string' && KNOWN_FREQUENCIES.has(f))

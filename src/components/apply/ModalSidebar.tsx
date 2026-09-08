@@ -3,19 +3,7 @@
 import { fmtCOP, fmtPct, type Simulation } from '@/lib/credit';
 import { capFreq } from './use-application-form';
 
-const CALC_FORMULAS: Record<string, { formula: string; legend: string }> = {
-  bimonthly: {
-    formula: 'C = P × 2i / (1 − (1+2i)^−n)',
-    legend: 'i = tasa mensual · n = meses ÷ 2',
-  },
-  quarterly: {
-    formula: 'C = P × 3i / (1 − (1+3i)^−n)',
-    legend: 'i = tasa mensual · n = meses ÷ 3',
-  },
-};
-
 export function ModalSidebar({ frozen }: { frozen: Simulation }) {
-  const calc = CALC_FORMULAS[frozen.frequency];
 
   return (
     <aside
@@ -65,9 +53,7 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
       )}
 
       <p className="text-xs text-white/50 mt-auto max-[760px]:hidden">
-        {frozen.isEstimate
-          ? 'Cuota estimada. Cargo definitivo se confirma en la oferta.'
-          : 'Sujeto a verificación. No representa aprobación definitiva.'}
+        Sujeto a verificación. No representa aprobación definitiva.
       </p>
     </aside>
   );

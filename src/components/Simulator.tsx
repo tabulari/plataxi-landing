@@ -14,13 +14,11 @@ import { clearDraft, clearSubmittedApplication } from '@/lib/draft-storage';
 import { useActiveSubmission } from '@/hooks/use-active-submission';
 import { cn } from '@/lib/utils';
 
-const ALL_FREQUENCIES: { value: Frequency; label: string; estimate?: true }[] = [
+const ALL_FREQUENCIES: { value: Frequency; label: string }[] = [
   { value: 'daily', label: 'Diario' },
   { value: 'weekly', label: 'Semanal' },
   { value: 'biweekly', label: 'Quincenal' },
   { value: 'monthly', label: 'Mensual' },
-  { value: 'bimonthly', label: 'Bimestral', estimate: true },
-  { value: 'quarterly', label: 'Trimestral', estimate: true },
 ];
 
 export function Simulator() {
@@ -195,17 +193,11 @@ export function Simulator() {
           hideCheck
           options={frequencies.map((f) => ({
             value: f.value,
-            label: f.estimate ? `${f.label} *` : f.label,
-            title: f.estimate ? 'Cuota estimada — el cargo definitivo se confirma en la oferta' : undefined,
+            label: f.label,
           }))}
           value={frequency}
           onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
         />
-        {(frequency === 'bimonthly' || frequency === 'quarterly') && (
-          <p className="text-xs text-muted-foreground mt-1.5">
-            * Cuota estimada. El cargo definitivo se confirmará en la oferta.
-          </p>
-        )}
       </div>
 
       <div aria-live="polite" aria-atomic="true" className="sr-only">
