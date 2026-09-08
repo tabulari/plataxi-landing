@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { fmtCOP, type Frequency } from '@/lib/credit';
 import {
-  BANKS,
   CONSENT_TEXT,
   EMPLOYMENT_TYPES,
   type FieldName,
@@ -101,7 +100,7 @@ export function Step1({ values, handlers }: {
           value: values.idNumber,
           onChange: (e) => handlers.onFieldChange('idNumber', formatCedula(e.target.value)),
         })}
-        {fieldEl('phone', 'Celular Colombia (+57)', handlers, {
+        {fieldEl('phone', 'Teléfono', handlers, {
           type: 'tel',
           inputMode: 'numeric',
           autoComplete: 'tel',
@@ -112,7 +111,16 @@ export function Step1({ values, handlers }: {
         })}
       </div>
 
-      <div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {fieldEl('phone2', 'Teléfono secundario (opcional)', handlers, {
+          type: 'tel',
+          inputMode: 'numeric',
+          autoComplete: 'tel',
+          enterKeyHint: 'next',
+          placeholder: 'Ej. 300 765 4321',
+          value: values.phone2 || '',
+          onChange: (e) => handlers.onFieldChange('phone2', formatPhone(e.target.value)),
+        })}
         {fieldEl('email', 'Correo electrónico', handlers, {
           type: 'email',
           autoComplete: 'email',
@@ -143,17 +151,18 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
 
       {selectEl('employmentType', 'Tipo de actividad laboral', 'Selecciona tu actividad', EMPLOYMENT_TYPES, handlers, values.employmentType)}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {fieldEl('income', 'Ingreso mensual aproximado', handlers, {
-          type: 'text',
-          inputMode: 'numeric',
-          enterKeyHint: 'done',
-          placeholder: 'Ej. 2.500.000',
-          value: values.income,
-          onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
-        })}
-        {selectEl('bank', 'Cuenta o billetera para desembolso', 'Selecciona Nequi, DaviPlata o Banco', BANKS, handlers, values.bank)}
-      </div>
+      {fieldEl('income', 'Ingreso mensual aproximado', handlers, {
+        type: 'text',
+        inputMode: 'numeric',
+        enterKeyHint: 'done',
+        placeholder: 'Ej. 2.500.000',
+        value: values.income,
+        onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
+      })}
+
+      <p className="text-xs text-muted-foreground bg-muted/50 border border-border/40 rounded-lg px-3 py-2">
+        La cuenta de desembolso la confirmas después de la aprobación, en tu espacio seguro.
+      </p>
     </section>
   );
 }
@@ -174,10 +183,11 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
     { k: 'Plazo', v: `${frozen.term} meses (${capFreq(frozen.frequency)})` },
     { k: 'Nombre completo', v: values.fullName || '—', full: true },
     { k: 'Cédula de ciudadanía', v: values.idNumber || '—' },
-    { k: 'Celular', v: values.phone || '—' },
+    { k: 'Teléfono', v: values.phone || '—' },
+    ...(values.phone2 ? [{ k: 'Teléfono secundario', v: values.phone2 }] : []),
     { k: 'Correo electrónico', v: values.email || '—', full: true },
     { k: 'Actividad laboral', v: values.employmentType || '—' },
-    { k: 'Cuenta de desembolso', v: values.bank || '—' },
+    { k: 'Cuenta de desembolso', v: values.bank ? `${values.bank}${values.accountNumber ? ` - ${values.accountNumber}` : ''}` : 'Se define tras aprobación', full: !values.bank ? true : undefined },
   ];
 
   return (

@@ -63,7 +63,8 @@ export function Simulator() {
           title: reason,
         };
       }),
-    [termOptions, amount, amountMin, isMinAmount, isHighAmount],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [termOptions, amount, amountMin],
   );
 
   // 5. Validación instantánea (amount vivo) para que chips/hint y CTA/mensaje estén sincronizados

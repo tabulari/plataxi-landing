@@ -9,6 +9,7 @@ const WHATSAPP_FOLLOWUP_MESSAGE =
 export function ApplicationSuccess({
   radicado,
   workspaceUrl,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   submittedAt,
   onNewApplication,
 }: {

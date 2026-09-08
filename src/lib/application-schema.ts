@@ -14,14 +14,16 @@ export const EMPLOYMENT_TYPES = config.application.employmentTypes;
 export const BANKS = config.application.banks;
 
 const MSG = {
-  fullName: "Ingresa tu nombre y apellido.",
-  idNumber: "Ingresa un número de cédula válido (7 a 10 dígitos).",
-  phone: "Ingresa un celular colombiano válido (10 dígitos, inicia en 3).",
-  email: "Ingresa un correo válido.",
-  employmentType: "Selecciona tu tipo de empleo.",
-  income: "Ingresa tu ingreso mensual.",
-  bank: "Selecciona tu banco.",
-  consent: "Debes autorizar el tratamiento de datos para continuar.",
+  fullName: "¿Cómo te llamas? Nombre y apellido.",
+  idNumber: "Revisa tu cédula. 7 a 10 dígitos.",
+  phone: "Teléfono inválido. 10 dígitos, empieza en 3.",
+  phone2: "Si lo pones, que sea un número distinto y válido.",
+  email: "Ese correo no se ve bien.",
+  employmentType: "Elige en qué trabajas.",
+  income: "Cuéntanos cuánto ganas al mes.",
+  bank: "Elige dónde te consignamos.",
+  accountNumber: "Número de cuenta inválido. 7 a 20 dígitos.",
+  consent: "Autoriza el tratamiento de datos para seguir.",
 } as const;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,19 +42,29 @@ export const fieldSchemas = {
     const d = digits(v);
     return d.length === 10 && d.startsWith("3");
   }, MSG.phone),
+  phone2: z.string().refine((v) => {
+    if (!v || v.trim() === "") return true;
+    const d = digits(v);
+    return d.length === 10 && d.startsWith("3");
+  }, MSG.phone2),
   email: z.string().refine((v) => EMAIL_RE.test(v.trim()), MSG.email),
   employmentType: z
     .string()
     .refine((v) => (EMPLOYMENT_TYPES as readonly string[]).includes(v), MSG.employmentType),
   income: z.string().refine((v) => digits(v).length >= 5, MSG.income),
   bank: z.string().refine((v) => (BANKS as readonly string[]).includes(v), MSG.bank),
+  accountNumber: z.string().refine((v) => {
+    if (!v || v.trim() === "") return true;
+    const d = digits(v);
+    return d.length >= 7 && d.length <= 20;
+  }, MSG.accountNumber),
 } as const;
 
 export type FieldName = keyof typeof fieldSchemas;
 
 export const STEP_FIELDS: Record<number, FieldName[]> = {
-  1: ["fullName", "idNumber", "phone", "email"],
-  2: ["employmentType", "income", "bank"],
+  1: ["fullName", "idNumber", "phone", "phone2", "email"],
+  2: ["employmentType", "income"],
 };
 
 export const CONSENT_MESSAGE = MSG.consent;
@@ -73,24 +85,36 @@ export function validateField(name: FieldName, value: string): string {
 }
 
 /** Composite schema for the server route (and a full client check). */
-export const applicationSchema = z.object({
-  fullName: fieldSchemas.fullName,
-  idNumber: fieldSchemas.idNumber,
-  phone: fieldSchemas.phone,
-  email: fieldSchemas.email,
-  employmentType: fieldSchemas.employmentType,
-  income: fieldSchemas.income,
-  bank: fieldSchemas.bank,
-  consent: z.boolean().refine((v) => v === true, { message: MSG.consent }),
-  // Frozen simulator snapshot shown to the applicant and locked by Core.
-  terms: z
-    .object({
-      amount: z.number().positive(),
-      term: z.number().int().positive(),
-      monthlyRate: z.number().positive(),
-      frequency: z.enum(["daily", "weekly", "biweekly", "monthly"]),
-    })
-    .passthrough(),
-});
+export const applicationSchema = z
+  .object({
+    fullName: fieldSchemas.fullName,
+    idNumber: fieldSchemas.idNumber,
+    phone: fieldSchemas.phone,
+    phone2: fieldSchemas.phone2.optional().or(z.literal("")),
+    email: fieldSchemas.email,
+    employmentType: fieldSchemas.employmentType,
+    income: fieldSchemas.income,
+    bank: fieldSchemas.bank.optional().or(z.literal("")),
+    accountNumber: fieldSchemas.accountNumber.optional().or(z.literal("")),
+    consent: z.boolean().refine((v) => v === true, { message: MSG.consent }),
+    // Frozen simulator snapshot shown to the applicant and locked by Core.
+    terms: z
+      .object({
+        amount: z.number().positive(),
+        term: z.number().int().positive(),
+        monthlyRate: z.number().positive(),
+        frequency: z.enum(["daily", "weekly", "biweekly", "monthly"]),
+      })
+      .passthrough(),
+  })
+  .refine(
+    (data) => {
+      const p1 = (data.phone || "").replace(/\D/g, "");
+      const p2 = (data.phone2 || "").replace(/\D/g, "");
+      if (!p2) return true;
+      return p1 !== p2;
+    },
+    { message: "Que sea distinto al primero.", path: ["phone2"] },
+  );
 
 export type ApplicationInput = z.infer<typeof applicationSchema>;

@@ -53,8 +53,23 @@ export function consentTextHash(): string {
  * clientIp/userAgent and consent hash.
  */
 export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadContext) {
+  // phone2/accountNumber son opcionales en landing y no existen aún en Core — no enviar vacíos
+  const {
+    phone2: _phone2,
+    accountNumber: _acc,
+    bank: _bank,
+    ...rest
+  } = input as ApplicationInput & {
+    phone2?: string;
+    accountNumber?: string;
+    bank?: string;
+  };
+  void _phone2;
+  void _acc;
+  const bank = _bank && _bank.trim() ? _bank : 'PENDIENTE';
   return {
-    ...input,
+    ...rest,
+    bank,
     idNumber: input.idNumber.replace(/\D/g, ""),
     phone: input.phone.replace(/\D/g, ""),
     clientIp: context.clientIp,

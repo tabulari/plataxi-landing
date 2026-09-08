@@ -178,10 +178,7 @@ export function Nav() {
 
       // 5. Descubre secciones que se montan tarde (RSC/CSR race)
       const sectionsMO = new MutationObserver(() => {
-        const fresh = getSections().filter((s) => {
-          // evita observar duplicado: IntersectionObserver ignora duplicados, pero igual filtramos
-          return true;
-        });
+        const fresh = getSections();
         fresh.forEach((s) => sectionIO.observe(s));
       });
       sectionsMO.observe(document.body, { childList: true, subtree: true });

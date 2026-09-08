@@ -28,7 +28,7 @@ export type SubmitErrorCode =
 export type Values = Record<FieldName, string>;
 
 export const FIELDS: FieldName[] = [
-  'fullName', 'idNumber', 'phone', 'email', 'employmentType', 'income', 'bank',
+  'fullName', 'idNumber', 'phone', 'phone2', 'email', 'employmentType', 'income', 'bank', 'accountNumber',
 ];
 
 export const STEP_TITLES: Record<number, string> = {
@@ -38,8 +38,8 @@ export const STEP_TITLES: Record<number, string> = {
 };
 
 export const emptyValues: Values = {
-  fullName: '', idNumber: '', phone: '', email: '',
-  employmentType: '', income: '', bank: '',
+  fullName: '', idNumber: '', phone: '', phone2: '', email: '',
+  employmentType: '', income: '', bank: '', accountNumber: '',
 };
 
 export const capFreq = (f: Simulation['frequency']) =>
@@ -70,7 +70,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     } else if (name === 'idNumber') {
       const d = raw.replace(/\D/g, '').slice(0, 10);
       v = d ? fmtCOP(parseInt(d, 10)) : '';
-    } else if (name === 'phone') {
+    } else if (name === 'phone' || name === 'phone2') {
       const d = raw.replace(/\D/g, '').slice(0, 10);
       if (d.length <= 3) {
         v = d;
@@ -79,6 +79,8 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
       } else {
         v = `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6, 10)}`;
       }
+    } else if (name === 'accountNumber') {
+      v = raw.replace(/\D/g, '').slice(0, 20);
     }
     setValues((prev) => ({ ...prev, [name]: v }));
     setErrors((prev) => prev[name] ? { ...prev, [name]: '' } : prev);
