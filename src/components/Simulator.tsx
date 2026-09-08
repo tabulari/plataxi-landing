@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { fmtCOP, validateApplication, isTermDisabled, type Frequency } from '@/lib/credit';
+import { fmtCOP, validateApplication, type Frequency } from '@/lib/credit';
 import { config } from '@/lib/config';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
@@ -31,12 +31,10 @@ export function Simulator() {
     amountStep,
     amountStepBig,
     term,
-    termOptions,
     offeredFrequencies,
     frequency,
     sim,
     setAmount,
-    setTerm,
     setFrequency,
   } = useSimulator();
 
@@ -46,26 +44,6 @@ export function Simulator() {
   );
   const isMinAmount = amount <= amountMin;
   const isHighAmount = amount > config.credit.highAmountThreshold;
-  const terms = useMemo(
-    () =>
-      termOptions.map((value) => {
-        const disabled = isTermDisabled(amount, value);
-        let reason: string | undefined;
-        if (disabled) {
-          reason = isMinAmount
-            ? `Solo 1 mes disponible para $${fmtCOP(amountMin)}`
-            : `Plazo mínimo ${config.credit.highAmountMinTerm} meses para montos superiores a $${fmtCOP(config.credit.highAmountThreshold)}`;
-        }
-        return {
-          value,
-          label: `${value} ${value === 1 ? 'mes' : 'meses'}`,
-          disabled,
-          title: reason,
-        };
-      }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [termOptions, amount, amountMin],
-  );
 
   // 5. Validación instantánea (amount vivo) para que chips/hint y CTA/mensaje estén sincronizados
   // sim usa settledAmount (150ms debounce) solo para la cuota; validación no debe laggear
@@ -81,7 +59,8 @@ export function Simulator() {
   const [snapAnnouncement, setSnapAnnouncement] = useState('');
   const activeSubmission = useActiveSubmission();
 
-  // 9. Anuncio accesible cuando el plazo hace auto-snap (sin animación silenciosa)
+  // 9. Anuncio accesible cuando el plazo interno hace auto-snap (el selector visible
+  // se retiró — el plazo lo determina el sistema; este anuncio solo alimenta lectores).
   const prevTermRef = useRef(term);
   useEffect(() => {
     if (prevTermRef.current !== term && (isMinAmount || isHighAmount)) {
@@ -91,12 +70,6 @@ export function Simulator() {
           : `Plazo ajustado a ${term} meses para montos superiores a $${fmtCOP(config.credit.highAmountThreshold)}`;
       setSnapAnnouncement(msg);
       const t = setTimeout(() => setSnapAnnouncement(''), 3000);
-      // flash visual sutil en el radiogroup
-      const el = document.getElementById('plazoGroup');
-      if (el) {
-        el.classList.add('flash');
-        setTimeout(() => el.classList.remove('flash'), 300);
-      }
       prevTermRef.current = term;
       return () => clearTimeout(t);
     }
@@ -149,39 +122,10 @@ export function Simulator() {
         markInteract={markInteract}
       />
 
-      {/* Term Selector — 6 chips 1-6 meses (discrete, scannable, 1 tap) */}
-      <div>
-        <p className="text-sm font-semibold text-foreground mb-1.5" id="plazoLabel">
-          Elige el plazo
-        </p>
-        <div id="plazoGroup">
-          <ChipRadioGroup
-            className="flex flex-wrap gap-2"
-            ariaLabelledBy="plazoLabel"
-            ariaDescribedBy={isMinAmount || isHighAmount ? "plazoHint" : undefined}
-            hideCheck
-            options={terms}
-            value={term}
-            onChange={(v) => {
-              markInteract('term');
-              setTerm(v);
-            }}
-          />
-        </div>
-        {(isMinAmount || isHighAmount) ? (
-          <p
-            id="plazoHint"
-            className="text-xs text-muted-foreground mt-2"
-            aria-live="polite"
-          >
-            {isHighAmount
-              ? `Para montos superiores a $${fmtCOP(config.credit.highAmountThreshold)} el plazo mínimo es ${config.credit.highAmountMinTerm} meses.`
-              : `Para $${fmtCOP(amountMin)} solo está disponible 1 mes. Aumenta el monto para desbloquear 2–6 meses.`}
-          </p>
-        ) : null}
-        <div aria-live="polite" aria-atomic="true" className="sr-only">
-          {snapAnnouncement}
-        </div>
+      {/* Plazo interno — el selector visible ("Elige el plazo") se retiró por decisión
+          de producto: el sistema determina el plazo (store, auto-snap por monto). */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {snapAnnouncement}
       </div>
 
       {/* Payment Frequency Selector */}

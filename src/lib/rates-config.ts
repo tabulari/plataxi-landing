@@ -18,8 +18,12 @@ export function parseRatesConfig(payload: unknown): RuntimeRatesConfig | null {
   const monthlyRate = Number(record.monthly_interest_rate);
   const amountMin = Number(record.min_amount);
   const amountMax = Number(record.max_amount);
-  const termOptions = Array.isArray(record.term_options_months)
-    ? record.term_options_months.map(Number)
+  // Core retiró term_options_months (ya no hay elección de plazo): los plazos son
+  // opcionales y los completa quien llama con los estáticos. Un array presente pero
+  // malformado sigue siendo inseguro y rechaza el payload completo.
+  const hasTerms = Array.isArray(record.term_options_months);
+  const termOptions = hasTerms
+    ? (record.term_options_months as unknown[]).map(Number)
     : [];
 
   if (
@@ -29,18 +33,33 @@ export function parseRatesConfig(payload: unknown): RuntimeRatesConfig | null {
     amountMin <= 0 ||
     !Number.isFinite(amountMax) ||
     amountMax <= amountMin ||
-    termOptions.length === 0 ||
-    termOptions.some((term) => !Number.isInteger(term) || term <= 0)
+    (hasTerms &&
+      (termOptions.length === 0 ||
+        termOptions.some((term) => !Number.isInteger(term) || term <= 0)))
   ) {
     return null;
   }
 
   const KNOWN_FREQUENCIES = new Set(['daily','weekly','biweekly','monthly','bimonthly','quarterly']);
+  // Core habla IDs en español (diario/semanal/quincenal/mensual); la landing usa códigos
+  // en inglés. Sin este mapeo, lo que el admin configura en backoffice jamás llega al
+  // simulador (caía al fallback estándar con mensual incluido).
+  const CORE_TO_LANDING: Record<string, string> = {
+    diario: 'daily',
+    semanal: 'weekly',
+    quincenal: 'biweekly',
+    mensual: 'monthly',
+    bimestral: 'bimonthly',
+    trimestral: 'quarterly',
+  };
   const rawFreqs = record.offered_frequencies;
+  const mappedFrequencies: string[] = Array.isArray(rawFreqs)
+    ? rawFreqs
+        .map((f) => (typeof f === 'string' ? CORE_TO_LANDING[f] : undefined))
+        .filter((f): f is string => typeof f === 'string' && KNOWN_FREQUENCIES.has(f))
+    : [];
   const offeredFrequencies: string[] =
-    Array.isArray(rawFreqs) && rawFreqs.every((f) => typeof f === 'string' && KNOWN_FREQUENCIES.has(f))
-      ? rawFreqs
-      : [...STANDARD_FREQUENCIES];
+    mappedFrequencies.length > 0 ? mappedFrequencies : [...STANDARD_FREQUENCIES];
 
   return {
     monthlyRate,
@@ -79,8 +98,9 @@ export interface InitialRatesResult {
  * Calls Core directly (server-to-server, no self-fetch through the proxy) and
  * falls back to config-derived static values when Core is unreachable.
  *
- * Core es la fuente de verdad: tasa, montos Y plazos vienen del backoffice
- * (financial_settings). El fallback solo se usa si Core no responde.
+ * Core es la fuente de verdad para tasa, montos y frecuencias (financial_settings).
+ * Los plazos ya no vienen de Core (sin elección de plazo): se completan con los
+ * estáticos internos, que el simulador usa sin mostrar selector.
  */
 export async function getInitialRates(
   endpoint: string,
@@ -89,8 +109,14 @@ export async function getInitialRates(
 ): Promise<InitialRatesResult> {
   const coreRates = await loadRatesConfig(endpoint, fetchImpl);
   if (coreRates) {
-    // Core es la fuente de verdad para tasa, montos y plazos: se respeta tal cual.
-    return { rates: coreRates, source: "core" };
+    // Core manda tasa, montos y frecuencias; los plazos los pone el fallback interno.
+    return {
+      rates: {
+        ...coreRates,
+        termOptions: coreRates.termOptions.length > 0 ? coreRates.termOptions : fallback.termOptions,
+      },
+      source: "core",
+    };
   }
   return { rates: fallback, source: "fallback" };
 }
