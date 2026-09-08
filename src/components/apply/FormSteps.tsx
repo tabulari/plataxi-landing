@@ -1,7 +1,10 @@
 'use client';
 
-import { useState } from 'react';
-import { fmtCOP, type Frequency } from '@/lib/credit';
+import { useState, useRef, useEffect } from 'react';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
+import * as FocusScope from '@radix-ui/react-focus-scope';
+import { fmtCOP } from '@/lib/credit';
 import {
   CONSENT_TEXT,
   EMPLOYMENT_TYPES,
@@ -18,32 +21,38 @@ type FieldHandlers = {
   errors: Partial<Record<FieldName, string>>;
 };
 
-const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => (
-  <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_input]:border-destructive')}>
-    <span className="text-sm font-semibold text-foreground">{label}</span>
-    <input
-      name={name}
-      onChange={(e) => handlers.onFieldChange(name, e.target.value)}
-      onBlur={(e) => handlers.onFieldBlur(name, (e.target as HTMLInputElement).value)}
-      aria-invalid={handlers.errors[name] ? true : undefined}
-      aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
-      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-base sm:text-sm outline-none transition-[border-color,box-shadow] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-      {...props}
-    />
-    <FieldError id={`err-${name}`} message={handlers.errors[name]} />
-  </label>
-);
+const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => {
+  const { className, ...rest } = props;
+  return (
+    <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_input]:border-destructive')}>
+      <span className="text-sm font-semibold text-foreground dark:text-white">{label}</span>
+      <input
+        name={name}
+        onChange={(e) => handlers.onFieldChange(name, e.target.value)}
+        onBlur={(e) => handlers.onFieldBlur(name, (e.target as HTMLInputElement).value)}
+        aria-invalid={handlers.errors[name] ? true : undefined}
+        aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
+        className={cn(
+          'h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-base sm:text-sm outline-none transition-[border-color,box-shadow,transform] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] dark:bg-white/[0.06] dark:text-white dark:border-white/10',
+          className,
+        )}
+        {...rest}
+      />
+      <FieldError id={`err-${name}`} message={handlers.errors[name]} />
+    </label>
+  );
+};
 
 const selectEl = (name: FieldName, label: string, placeholder: string, options: readonly string[], handlers: FieldHandlers, value: string) => (
   <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_select]:border-destructive')}>
-    <span className="text-sm font-semibold text-foreground">{label}</span>
+    <span className="text-sm font-semibold text-foreground dark:text-white">{label}</span>
     <select
       name={name}
       value={value}
       onChange={(e) => { handlers.onFieldChange(name, e.target.value); }}
       aria-invalid={handlers.errors[name] ? true : undefined}
       aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
-      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-base sm:text-sm outline-none transition-[border-color,box-shadow] cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-base sm:text-sm outline-none transition-[border-color,box-shadow,transform] cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] dark:bg-white/[0.06] dark:text-white dark:border-white/10"
     >
       <option value="">{placeholder}</option>
       {options.map((o) => <option key={o}>{o}</option>)}
@@ -71,36 +80,62 @@ export function Step1({ values, handlers }: {
     return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
   };
 
+  const stepRef = useRef<HTMLElement>(null);
+  const [showPhone2, setShowPhone2] = useState(() => !!values.phone2);
+  useGSAP(
+    () => {
+      if (!stepRef.current) return;
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.fromTo(
+          stepRef.current!.children,
+          { y: 6, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.05, ease: 'power2.out', clearProps: 'transform' },
+        );
+      });
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(stepRef.current!.children, { autoAlpha: 1, y: 0, clearProps: 'transform' });
+      });
+      return () => mm.revert();
+    },
+    { scope: stepRef, dependencies: [showPhone2] },
+  );
+
   return (
-    <section className="flex-1 flex flex-col gap-5">
+    <section ref={stepRef} className="flex-1 flex flex-col gap-5">
       <div>
-        <h2 className="text-xl font-bold text-navy tracking-tight" aria-label="Paso 1: Datos personales y de contacto">Datos personales y de contacto</h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-          Tus datos están protegidos bajo la Ley 1581 y solo se usan para validar tu solicitud.
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 1: Datos personales y de contacto">
+          Cuéntanos de ti
+        </h2>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
+          <ShieldCheckIcon size={14} aria-hidden="true" className="text-green-ink shrink-0" />
+          Tus datos están protegidos bajo la Ley 1581.
         </p>
       </div>
 
       <div className="flex flex-col gap-4">
-        {fieldEl('fullName', 'Nombre completo', handlers, {
+        {fieldEl('fullName', 'Tu nombre completo', handlers, {
           type: 'text',
           autoComplete: 'name',
           enterKeyHint: 'next',
           placeholder: 'Ej. Laura Martínez',
           value: values.fullName,
+          className: 'h-[52px] text-[15px] font-medium',
         })}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {fieldEl('idNumber', 'Número de cédula (C.C.)', handlers, {
+        {fieldEl('idNumber', 'Cédula', handlers, {
           type: 'text',
           inputMode: 'numeric',
           autoComplete: 'off',
+          spellCheck: false,
           enterKeyHint: 'next',
           placeholder: 'Ej. 1.024.567.890',
           value: values.idNumber,
           onChange: (e) => handlers.onFieldChange('idNumber', formatCedula(e.target.value)),
         })}
-        {fieldEl('phone', 'Teléfono', handlers, {
+        {fieldEl('phone', 'Tu número principal', handlers, {
           type: 'tel',
           inputMode: 'numeric',
           autoComplete: 'tel',
@@ -111,24 +146,36 @@ export function Step1({ values, handlers }: {
         })}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {fieldEl('phone2', 'Teléfono secundario (opcional)', handlers, {
-          type: 'tel',
-          inputMode: 'numeric',
-          autoComplete: 'tel',
-          enterKeyHint: 'next',
-          placeholder: 'Ej. 300 765 4321',
-          value: values.phone2 || '',
-          onChange: (e) => handlers.onFieldChange('phone2', formatPhone(e.target.value)),
-        })}
-        {fieldEl('email', 'Correo electrónico', handlers, {
-          type: 'email',
-          autoComplete: 'email',
-          enterKeyHint: 'next',
-          placeholder: 'tucorreo@ejemplo.com',
-          value: values.email,
-        })}
-      </div>
+      {!showPhone2 ? (
+        <button
+          type="button"
+          onClick={() => setShowPhone2(true)}
+          className="self-start text-xs font-semibold text-green-ink hover:text-navy underline underline-offset-2 min-h-[44px] px-2 py-2 -ml-2 -mt-1 active:scale-[0.98] transition-transform focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
+        >
+          + Agregar teléfono secundario
+        </button>
+      ) : (
+        <div className="motion-safe:animate-step-in">
+          {fieldEl('phone2', '¿Otro número donde ubicarte?', handlers, {
+            type: 'tel',
+            inputMode: 'numeric',
+            autoComplete: 'tel',
+            enterKeyHint: 'next',
+            placeholder: 'Ej. 300 765 4321 — opcional',
+            value: values.phone2 || '',
+            onChange: (e) => handlers.onFieldChange('phone2', formatPhone(e.target.value)),
+          })}
+        </div>
+      )}
+
+        {fieldEl('email', 'Correo', handlers, {
+        type: 'email',
+        autoComplete: 'email',
+        spellCheck: false,
+        enterKeyHint: 'next',
+        placeholder: 'tucorreo@ejemplo.com',
+        value: values.email,
+      })}
     </section>
   );
 }
@@ -140,18 +187,38 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
     return fmtCOP(parseInt(digits, 10));
   };
 
+  const stepRef = useRef<HTMLElement>(null);
+  useGSAP(
+    () => {
+      if (!stepRef.current) return;
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.fromTo(
+          stepRef.current!.children,
+          { y: 6, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.05, ease: 'power2.out', clearProps: 'transform' },
+        );
+      });
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(stepRef.current!.children, { autoAlpha: 1, y: 0, clearProps: 'transform' });
+      });
+      return () => mm.revert();
+    },
+    { scope: stepRef },
+  );
+
   return (
-    <section className="flex-1 flex flex-col gap-5">
+    <section ref={stepRef} className="flex-1 flex flex-col gap-5">
       <div>
-        <h2 className="text-xl font-bold text-navy tracking-tight" aria-label="Paso 2: Información de ingresos y desembolso">Información de ingresos y desembolso</h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-          Ingresa tus datos para transferir los fondos una vez aprobada tu solicitud.
-        </p>
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 2: Para girarte la plata">
+          ¿En qué trabajas?
+        </h2>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Solo 2 datos para validar tu capacidad de pago.</p>
       </div>
 
-      {selectEl('employmentType', 'Tipo de actividad laboral', 'Selecciona tu actividad', EMPLOYMENT_TYPES, handlers, values.employmentType)}
+      {selectEl('employmentType', '¿En qué trabajas?', 'Ej. Conduzco taxi', EMPLOYMENT_TYPES, handlers, values.employmentType)}
 
-      {fieldEl('income', 'Ingreso mensual aproximado', handlers, {
+      {fieldEl('income', '¿Cuánto ganas al mes? (aprox)', handlers, {
         type: 'text',
         inputMode: 'numeric',
         enterKeyHint: 'done',
@@ -160,9 +227,10 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
         onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
       })}
 
-      <p className="text-xs text-muted-foreground bg-muted/50 border border-border/40 rounded-lg px-3 py-2">
-        La cuenta de desembolso la confirmas después de la aprobación, en tu espacio seguro.
-      </p>
+      <div className="flex items-start gap-2 text-xs text-muted-foreground bg-green/5 border border-green/20 rounded-xl px-3.5 py-3 dark:bg-white/[0.06] dark:border-white/10">
+        <ShieldCheckIcon size={16} aria-hidden="true" className="text-green-ink shrink-0 mt-0.5" />
+        <p className="leading-relaxed">La cuenta donde te consignamos la defines después, cuando estés aprobado — en tu espacio seguro.</p>
+      </div>
     </section>
   );
 }
@@ -173,14 +241,45 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
   consentError: string;
   setConsent: (v: boolean) => void;
   setConsentError: (v: string) => void;
-  frozen: { amount: number; term: number; payment: number; unit: string; frequency: Frequency; periodRate: number };
+  frozen: { amount: number; term: number; payment: number; unit: string; frequency: string; periodRate: number };
 }) {
   const [showTerms, setShowTerms] = useState(false);
+  const stepRef = useRef<HTMLElement>(null);
+  const termsCloseRef = useRef<HTMLButtonElement>(null);
+  useGSAP(
+    () => {
+      if (!stepRef.current) return;
+      const mm = gsap.matchMedia();
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        gsap.fromTo(
+          stepRef.current!.children,
+          { y: 6, autoAlpha: 0 },
+          { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.04, ease: 'power2.out', clearProps: 'transform' },
+        );
+      });
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(stepRef.current!.children, { autoAlpha: 1, y: 0, clearProps: 'transform' });
+      });
+      return () => mm.revert();
+    },
+    { scope: stepRef },
+  );
+  useEffect(() => {
+    if (!showTerms) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowTerms(false);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [showTerms]);
+  useEffect(() => {
+    if (showTerms) termsCloseRef.current?.focus();
+  }, [showTerms]);
 
   const reviewRows: { k: string; v: string; full?: boolean }[] = [
     { k: 'Monto solicitado', v: `$${fmtCOP(frozen.amount)} COP` },
     { k: 'Cuota estimada', v: `$${fmtCOP(frozen.payment)} ${frozen.unit}` },
-    { k: 'Plazo', v: `${frozen.term} meses (${capFreq(frozen.frequency)})` },
+    { k: 'Plazo', v: `${frozen.term} meses (${capFreq(frozen.frequency as 'daily' | 'weekly' | 'biweekly' | 'monthly')})` },
     { k: 'Nombre completo', v: values.fullName || '—', full: true },
     { k: 'Cédula de ciudadanía', v: values.idNumber || '—' },
     { k: 'Teléfono', v: values.phone || '—' },
@@ -191,24 +290,24 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
   ];
 
   return (
-    <section className="flex-1 flex flex-col gap-5 relative">
+    <section ref={stepRef} className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
       <div>
-        <h2 className="text-xl font-bold text-navy tracking-tight" aria-label="Paso 3: Revisa y confirma tu solicitud">Revisa y confirma tu solicitud</h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-          Verifica que la información sea correcta antes de enviar.
-        </p>
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight dark:text-white" aria-label="Paso 3: ¿Todo bien?">
+          ¿Todo bien? Revisa y envía
+        </h2>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Un último vistazo antes de mandar tu solicitud.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs">
+      <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs dark:bg-white/[0.04] dark:border-white/10">
         {reviewRows.map(({ k, v, full }) => (
           <div key={k} className={cn('flex flex-col gap-1 min-w-0', full && 'col-span-2')}>
-            <span className="text-muted-2 font-medium">{k}</span>
-            <span className="font-semibold text-navy text-xs sm:text-sm break-words">{v}</span>
+            <span className="text-muted-2 font-medium dark:text-white/60">{k}</span>
+            <span className="font-semibold text-navy dark:text-white text-[clamp(0.75rem,2.5vw,0.875rem)] break-words">{v}</span>
           </div>
         ))}
       </div>
 
-      <label className="flex gap-3 items-start text-xs sm:text-sm cursor-pointer min-h-[44px] py-2">
+      <label className="flex gap-3 items-start text-xs sm:text-sm cursor-pointer min-h-[44px] py-2 -m-2 p-2 rounded-lg">
         <input
           type="checkbox"
           name="consent"
@@ -242,24 +341,26 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
         className={cn(consentError ? 'flex' : 'hidden')}
       />
 
-      {/* In-Modal Viewable Terms Drawer */}
+      {/* In-Modal Viewable Terms Drawer — focus trap + Esc + inert behind */}
       {showTerms && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="terms-drawer-title"
-          className="absolute inset-0 z-20 bg-white rounded-2xl p-5 flex flex-col justify-between border border-border shadow-lg animate-terms-in"
-        >
+        <FocusScope.Root trapped loop onMountAutoFocus={(e) => { e.preventDefault(); termsCloseRef.current?.focus(); }}>
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="terms-drawer-title"
+            className="absolute inset-0 z-20 bg-white rounded-2xl p-5 flex flex-col justify-between border border-border shadow-lg animate-terms-in dark:bg-[#1a1a18] dark:border-white/10"
+          >
           <div className="flex items-center justify-between border-b border-border pb-3">
             <div className="flex items-center gap-2 text-navy font-bold text-sm">
               <ShieldCheckIcon size={18} className="text-green-ink" />
               <h3 id="terms-drawer-title">Política de Tratamiento de Datos</h3>
             </div>
             <button
+              ref={termsCloseRef}
               type="button"
               onClick={() => setShowTerms(false)}
               aria-label="Cerrar términos"
-              className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] -mr-2 rounded-xl text-muted-2 hover:bg-muted hover:text-navy transition-colors"
+              className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] -mr-2 rounded-xl text-muted-2 hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring"
             >
               <CloseIcon size={18} />
             </button>
@@ -296,12 +397,13 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
                 setConsentError('');
                 setShowTerms(false);
               }}
-              className="px-4 py-2 min-h-[44px] rounded-xl bg-green text-ink font-bold hover:bg-green-bright border-0 transition-colors"
+              className="px-4 py-2 min-h-[44px] rounded-xl bg-green text-ink font-bold hover:bg-green-bright border-0 transition-colors focus-visible:ring-2 focus-visible:ring-ring"
             >
               Entendido y autorizar
             </button>
           </div>
-        </div>
+          </div>
+        </FocusScope.Root>
       )}
     </section>
   );
