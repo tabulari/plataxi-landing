@@ -34,6 +34,34 @@ describe("dynamic rates config", () => {
     });
   });
 
+  it("maps Core Spanish frequency IDs to landing codes", () => {
+    expect(
+      parseRatesConfig({
+        ...validPayload,
+        offered_frequencies: ['diario', 'semanal', 'quincenal'],
+      })?.offeredFrequencies,
+    ).toEqual(['daily', 'weekly', 'biweekly']);
+  });
+
+  it("drops unknown frequency IDs and falls back to standard when none map", () => {
+    expect(
+      parseRatesConfig({
+        ...validPayload,
+        offered_frequencies: ['diario', 'inexistente'],
+      })?.offeredFrequencies,
+    ).toEqual(['daily']);
+    expect(
+      parseRatesConfig({ ...validPayload, offered_frequencies: ['inexistente'] })
+        ?.offeredFrequencies,
+    ).toEqual(['daily', 'weekly', 'biweekly', 'monthly']);
+    expect(parseRatesConfig(validPayload)?.offeredFrequencies).toEqual([
+      'daily',
+      'weekly',
+      'biweekly',
+      'monthly',
+    ]);
+  });
+
   it("rejects malformed or unsafe config", () => {
     expect(parseRatesConfig({ ...validPayload, monthly_interest_rate: "invalid" })).toBeNull();
     expect(parseRatesConfig({ ...validPayload, max_amount: "50000" })).toBeNull();

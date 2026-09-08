@@ -41,11 +41,25 @@ export function parseRatesConfig(payload: unknown): RuntimeRatesConfig | null {
   }
 
   const KNOWN_FREQUENCIES = new Set(['daily','weekly','biweekly','monthly','bimonthly','quarterly']);
+  // Core habla IDs en español (diario/semanal/quincenal/mensual); la landing usa códigos
+  // en inglés. Sin este mapeo, lo que el admin configura en backoffice jamás llega al
+  // simulador (caía al fallback estándar con mensual incluido).
+  const CORE_TO_LANDING: Record<string, string> = {
+    diario: 'daily',
+    semanal: 'weekly',
+    quincenal: 'biweekly',
+    mensual: 'monthly',
+    bimestral: 'bimonthly',
+    trimestral: 'quarterly',
+  };
   const rawFreqs = record.offered_frequencies;
+  const mappedFrequencies: string[] = Array.isArray(rawFreqs)
+    ? rawFreqs
+        .map((f) => (typeof f === 'string' ? CORE_TO_LANDING[f] : undefined))
+        .filter((f): f is string => typeof f === 'string' && KNOWN_FREQUENCIES.has(f))
+    : [];
   const offeredFrequencies: string[] =
-    Array.isArray(rawFreqs) && rawFreqs.every((f) => typeof f === 'string' && KNOWN_FREQUENCIES.has(f))
-      ? rawFreqs
-      : [...STANDARD_FREQUENCIES];
+    mappedFrequencies.length > 0 ? mappedFrequencies : [...STANDARD_FREQUENCIES];
 
   return {
     monthlyRate,
