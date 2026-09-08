@@ -9,19 +9,25 @@ const input = {
   fullName: "Laura Martínez",
   idNumber: "1.020.304.050",
   phone: "310 123 4567",
+  contactName: "Carlos Martínez",
+  contactPhone: "320 987 6543",
   email: "laura@example.com",
-  employmentType: "Empleado",
+  taxiRole: "Taxi propio" as const,
+  taxiPlate: "ABC 123",
+  taxiCompany: "Radio Taxi Azul",
+  drivingTime: "5",
   income: "$ 2.500.000",
   incomeType: "monthly" as const,
-  bank: "Bancolombia",
+  hasBank: "yes" as const,
+  bankEntity: "Bancolombia",
   consent: true,
   terms: {
     amount: 800000,
     term: 12,
     monthlyRate: 0.026,
-    frequency: "monthly",
+    frequency: "monthly" as const,
   },
-} as const;
+};
 
 const context = {
   applicationEndpoint: "https://core.example.com/api/v1/intake/web-lead",
@@ -31,15 +37,21 @@ const context = {
 };
 
 describe("Core web-lead integration", () => {
-  it("builds the authoritative Core payload and consent evidence", () => {
+  it("builds the authoritative Core payload and consent evidence (IP-163)", () => {
     expect(buildCoreLeadPayload(input, context)).toEqual({
       fullName: input.fullName,
       idNumber: "1020304050",
       phone: "3101234567",
+      contactName: "Carlos Martínez",
+      contactPhone: "3209876543",
       email: input.email,
-      employmentType: "Empleado",
+      taxiRole: "taxi_propio",
+      taxiPlate: "ABC 123",
+      taxiCompany: "Radio Taxi Azul",
+      drivingTime: 5,
       income: "$ 2.500.000",
-      bank: "Bancolombia",
+      hasBank: true,
+      bankEntity: "Bancolombia",
       consent: true,
       clientIp: "203.0.113.7",
       userAgent: "Vitest",
@@ -54,6 +66,31 @@ describe("Core web-lead integration", () => {
     expect(consentTextHash()).toBe(
       "c9155be29ad498ce0c1daa4be8187b71fd8c1120864f57f4171a2e2d4e01ad9f",
     );
+  });
+
+  it("maps 'Conduzco taxi' role to conduzco_taxi", () => {
+    const result = buildCoreLeadPayload({ ...input, taxiRole: "Conduzco taxi", taxiPlate: "" }, context);
+    expect(result.taxiRole).toBe("conduzco_taxi");
+    expect(result.taxiPlate).toBeNull();
+  });
+
+  it("converts daily income to monthly before forwarding", () => {
+    const daily = buildCoreLeadPayload({ ...input, income: "$ 80.000", incomeType: "daily" }, context);
+    // 80000 * 30 = 2400000
+    expect(daily.income).toBe("$ 2.400.000");
+    expect(daily.hasBank).toBe(true);
+  });
+
+  it("maps hasBank 'no' to false and omits bankEntity", () => {
+    const result = buildCoreLeadPayload({ ...input, hasBank: "no", bankEntity: "" }, context);
+    expect(result.hasBank).toBe(false);
+    expect(result.bankEntity).toBeNull();
+  });
+
+  it("omits optional contact fields when empty", () => {
+    const result = buildCoreLeadPayload({ ...input, contactName: "", contactPhone: "" }, context);
+    expect(result.contactName).toBeNull();
+    expect(result.contactPhone).toBeNull();
   });
 
   it("forwards with the server-only key and returns Core's radicado", async () => {
