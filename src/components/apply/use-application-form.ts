@@ -46,8 +46,8 @@ export const capFreq = (f: Simulation['frequency']) =>
   f === 'daily' ? 'Diario'
   : f === 'weekly' ? 'Semanal'
   : f === 'biweekly' ? 'Quincenal'
-  : f === 'bimonthly' ? 'Bimestral'
-  : f === 'quarterly' ? 'Trimestral'
+  : f === 'bimonthly' ? 'Bimestral (est.)'
+  : f === 'quarterly' ? 'Trimestral (est.)'
   : 'Mensual';
 
 export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | null>) {
