@@ -47,54 +47,39 @@ export function consentTextHash(): string {
 }
 
 /**
- * Maps the landing form payload to Core's WebLeadIntakeRequest shape:
- * strips non-digits from idNumber/phone (Core enforces exactly 10 chars on
- * phone), renames the frozen simulator terms (term → termMonths,
- * monthlyRate → monthlyInterestRate), and attaches the server-derived
- * clientIp/userAgent and consent hash.
+ * Maps the landing form payload to Core's WebLeadIntakeRequest shape (IP-163).
+ * Strips non-digits from idNumber/phone, renames simulator terms, converts
+ * daily income to monthly, and maps hasBank "yes"/"no" to boolean.
  */
 export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadContext) {
-  // phone2/accountNumber/incomeType son opcionales en landing y no existen aún en Core — no enviar vacíos
-  const {
-    phone2: _phone2,
-    accountNumber: _acc,
-    bank: _bank,
-    incomeType: _incomeType,
-    ...rest
-  } = input as ApplicationInput & {
-    phone2?: string;
-    accountNumber?: string;
-    bank?: string;
-    incomeType?: string;
-  };
-  void _phone2;
-  void _acc;
-  void _incomeType;
-  const bank = _bank && _bank.trim() ? _bank : 'PENDIENTE';
-  // Mapea roles taxi/plataforma a enum Core (Core solo conoce Empleado/Independiente/Pensionado)
-  const taxiMap: Record<string, string> = {
-    'Taxi propio': 'Independiente',
-    'Conduzco taxi': 'Independiente',
-    'Conductor plataforma (Uber/DiDi)': 'Independiente',
-    'Conductor plataforma': 'Independiente',
-  };
-  const employmentType = taxiMap[input.employmentType] ?? input.employmentType;
-  // Convierte ingreso diario a mensual para Core (Core espera mensual)
+  // Convierte ingreso diario a mensual (Core espera el monto mensual)
   let income = input.income;
   if (input.incomeType === 'daily') {
     const d = parseInt((input.income || '').replace(/\D/g, ''), 10);
     if (Number.isFinite(d) && d > 0) {
-      const monthly = d * 30;
-      income = `$ ${fmtCOP(monthly)}`;
+      income = `$ ${fmtCOP(d * 30)}`;
     }
   }
+
   return {
-    ...rest,
-    bank,
-    employmentType,
+    // Step 1
+    fullName: input.fullName,
+    idNumber: input.idNumber.replace(/\D/g, ''),
+    phone: input.phone.replace(/\D/g, ''),
+    contactName: input.contactName || null,
+    contactPhone: input.contactPhone ? input.contactPhone.replace(/\D/g, '') : null,
+    email: input.email,
+    // Step 2
+    taxiRole: input.taxiRole === 'Taxi propio' ? 'taxi_propio' : 'conduzco_taxi',
+    taxiPlate: input.taxiPlate || null,
+    taxiCompany: input.taxiCompany,
+    drivingTime: parseInt(input.drivingTime, 10),
+    // Step 3
     income,
-    idNumber: input.idNumber.replace(/\D/g, ""),
-    phone: input.phone.replace(/\D/g, ""),
+    hasBank: input.hasBank === 'yes',
+    bankEntity: input.bankEntity || null,
+    // Consent
+    consent: input.consent,
     clientIp: context.clientIp,
     userAgent: context.userAgent,
     consentTextHash: consentTextHash(),
