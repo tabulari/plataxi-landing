@@ -8,10 +8,6 @@ type FieldErrorProps = Omit<React.ComponentProps<'span'>, 'children'> & {
   iconSize?: number;
 };
 
-/**
- * The 5-color palette has no red, so error text sits at #111110 — the same value
- * as body copy. The icon is what carries the state, not the color.
- */
 export function FieldError({
   message,
   reserveSpace = true,
@@ -22,6 +18,8 @@ export function FieldError({
   return (
     <span
       role="alert"
+      aria-live="polite"
+      aria-atomic="true"
       {...rest}
       className={cn(
         'flex items-start gap-1 text-xs font-medium text-destructive',
@@ -31,8 +29,8 @@ export function FieldError({
     >
       {message ? (
         <>
-          <AlertCircleIcon size={iconSize} className="mt-px shrink-0" />
-          {message}
+          <AlertCircleIcon size={iconSize} aria-hidden="true" className="mt-px shrink-0" />
+          <span>{message}</span>
         </>
       ) : null}
     </span>

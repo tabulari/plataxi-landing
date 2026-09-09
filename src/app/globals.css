@@ -37,10 +37,10 @@
     --color-secondary-text-aa: rgb(var(--color-secondary-text-aa-rgb));
 
     /* ===== Feedback (user state, not brand identity) =====
-       The palette has no red and no green, so error and success cannot be told
-       apart by hue. Every feedback message therefore pairs the token with an
-       icon — see FieldError. */
-    --color-feedback-error: var(--color-primary-dark);
+       Error uses a dedicated red (#c0253b, 5.8:1 on white — WCAG AA for small
+       text). Success stays on the brand palette. */
+    --color-feedback-error-rgb: 192 37 59;               /* #c0253b */
+    --color-feedback-error: rgb(var(--color-feedback-error-rgb));
     --color-feedback-error-bg: var(--color-secondary-surface);
     --color-feedback-success: var(--color-primary-brand);
     --color-feedback-success-bg: var(--color-secondary-surface);
@@ -66,7 +66,7 @@
     --muted-foreground: var(--color-secondary-text-aa);
     --accent: var(--color-secondary-surface);
     --accent-foreground: var(--color-primary-dark);
-    --destructive: var(--color-primary-dark);
+    --destructive: var(--color-feedback-error);
     --destructive-foreground: #ffffff;
     --border: var(--color-secondary-border);
     --input: var(--color-secondary-border);
