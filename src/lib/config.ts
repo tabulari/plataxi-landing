@@ -1,3 +1,5 @@
+import { COLOMBIAN_BANKS } from './banks';
+
 /**
  * Plataxi — centralized runtime configuration.
  *
@@ -202,11 +204,8 @@ export const config = {
 
   /** --- Application form options --- */
   application: {
-    /** Comma-separated bank names for the bank dropdown. */
-    banks: readStrList(
-      process.env.NEXT_PUBLIC_APPLICATION_BANKS,
-      ["Bancolombia", "Davivienda", "BBVA", "Banco de Bogotá", "Nequi", "Daviplata"],
-    ),
+    /** Financial institutions registered with Superfinanciera (Colombia). Source: src/data/banks-colombia.csv. */
+    banks: COLOMBIAN_BANKS,
     /** Comma-separated roles for taxi + plataforma (Uber/DiDi) pilot. */
     employmentTypes: readStrList(
       process.env.NEXT_PUBLIC_APPLICATION_EMPLOYMENT_TYPES,
