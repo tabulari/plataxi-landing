@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { COLOMBIAN_BANKS } from '@/lib/banks';
 import { cn } from '@/lib/utils';
+import { ChevronDownIcon } from '../icons';
 import { FieldError } from '../FieldError';
 
 type Props = {
@@ -123,30 +124,39 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
   return (
     <div className={cn('flex flex-col gap-1.5 relative', error && '[&_input]:border-destructive')}>
       <span className="text-sm font-semibold text-foreground">Entidad bancaria</span>
-      <input
-        ref={inputRef}
-        role="combobox"
-        aria-expanded={isOpen}
-        aria-autocomplete="list"
-        aria-haspopup="listbox"
-        aria-controls="bank-listbox"
-        aria-activedescendant={highlighted >= 0 ? `bank-opt-${highlighted}` : undefined}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={error ? 'err-bank' : undefined}
-        name="bank"
-        type="text"
-        autoComplete="off"
-        placeholder="Busca tu banco o entidad"
-        value={displayValue}
-        onChange={handleInputChange}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        onKeyDown={handleKeyDown}
-        className={cn(
-          'h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow,transform] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]',
-          value && !isOpen && 'font-medium',
-        )}
-      />
+      <div className="relative">
+        <input
+          ref={inputRef}
+          role="combobox"
+          aria-expanded={isOpen}
+          aria-autocomplete="list"
+          aria-haspopup="listbox"
+          aria-controls="bank-listbox"
+          aria-activedescendant={highlighted >= 0 ? `bank-opt-${highlighted}` : undefined}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? 'err-bank' : undefined}
+          name="bank"
+          type="text"
+          autoComplete="off"
+          placeholder="Busca tu banco o entidad"
+          value={displayValue}
+          onChange={handleInputChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          className={cn(
+            'h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white pl-3.5 pr-9 text-sm text-foreground outline-none transition-[border-color,box-shadow,transform] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]',
+            value && !isOpen && 'font-medium',
+          )}
+        />
+        <ChevronDownIcon
+          size={16}
+          className={cn(
+            'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-transform duration-150',
+            isOpen && 'rotate-180',
+          )}
+        />
+      </div>
       {isOpen && dropdownRect && typeof document !== 'undefined' && createPortal(
         filtered.length > 0 ? (
           <ul
