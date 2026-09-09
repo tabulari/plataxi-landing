@@ -91,6 +91,7 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
     }
   }
 
+  // Update position when highlighted item changes (scroll into view)
   useEffect(() => {
     if (highlighted >= 0 && listRef.current) {
       const item = listRef.current.children[highlighted] as HTMLElement;
@@ -98,7 +99,26 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
     }
   }, [highlighted]);
 
+  // Re-anchor dropdown on any ancestor scroll while open
+  useEffect(() => {
+    if (!isOpen) return;
+    const onScroll = () => updateDropdownRect();
+    window.addEventListener('scroll', onScroll, true);
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll, true);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, [isOpen]);
+
   const displayValue = isOpen ? query : value;
+
+  const dropdownStyle = dropdownRect
+    ? { position: 'fixed' as const, top: dropdownRect.top + 2, left: dropdownRect.left, width: dropdownRect.width, zIndex: 9999 }
+    : undefined;
+
+  // shadow replaces border so it renders uniformly on all sides without clipping
+  const dropdownClass = 'bg-white rounded-xl shadow-[0_0_0_1px_theme(colors.gray.200),0_4px_16px_-2px_rgba(0,0,0,0.12)] overflow-hidden';
 
   return (
     <div className={cn('flex flex-col gap-1.5 relative', error && '[&_input]:border-destructive')}>
@@ -134,8 +154,8 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
             id="bank-listbox"
             role="listbox"
             aria-label="Entidades bancarias de Colombia"
-            style={{ position: 'fixed', top: dropdownRect.top + 4, left: dropdownRect.left, width: dropdownRect.width, zIndex: 9999 }}
-            className="max-h-52 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg py-1"
+            style={dropdownStyle}
+            className={cn(dropdownClass, 'max-h-52 overflow-y-auto py-1')}
           >
             {filtered.map((bank, i) => (
               <li
@@ -162,8 +182,8 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
           </ul>
         ) : (
           <div
-            style={{ position: 'fixed', top: dropdownRect.top + 4, left: dropdownRect.left, width: dropdownRect.width, zIndex: 9999 }}
-            className="rounded-xl border border-gray-200 bg-white shadow-lg px-3.5 py-3 text-sm text-muted-foreground"
+            style={dropdownStyle}
+            className={cn(dropdownClass, 'px-3.5 py-3 text-sm text-muted-foreground')}
           >
             No se encontraron entidades
           </div>
