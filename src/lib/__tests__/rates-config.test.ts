@@ -92,7 +92,7 @@ describe("dynamic rates config", () => {
       monthlyRate: 0.026,
       amountMin: 20000,
       amountMax: 1000000,
-      termOptions: [1, 2, 3, 4, 5, 6],
+      termOptions: [1, 2, 3],
       offeredFrequencies: ['daily', 'weekly', 'biweekly', 'monthly'],
     };
     const { rates, source } = await getInitialRates("https://core.example.com/api/v1/sessions/rates-config", fallback, fetchMock);
@@ -115,12 +115,12 @@ describe("dynamic rates config", () => {
       monthlyRate: 0.026,
       amountMin: 20000,
       amountMax: 1000000,
-      termOptions: [1, 2, 3, 4, 5, 6],
+      termOptions: [1, 2, 3],
       offeredFrequencies: ['daily', 'weekly', 'biweekly', 'monthly'],
     };
     const { rates, source } = await getInitialRates("https://core.example.com/api/v1/sessions/rates-config", fallback, fetchMock);
     expect(source).toBe("core");
     expect(rates.monthlyRate).toBe(0.026);
-    expect(rates.termOptions).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(rates.termOptions).toEqual([1, 2, 3]);
   });
 });

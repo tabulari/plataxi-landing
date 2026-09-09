@@ -10,7 +10,7 @@ export interface Faq {
 export const FAQS: Faq[] = [
   {
     q: '¿Qué incluye mi cuota? ¿Hay intereses ocultos?',
-    answer: `Sin interés oculto. Tu cuota 1 a 6 meses ya incluye solo dos rubros fijos y claros: administración ($${fmtCOP(config.credit.adminFeeTotal)} total prorrateado por cuota) y fianza ($${fmtCOP(config.credit.guaranteeFeeTotal)} total). Eliges abono diario, semanal, quincenal o mensual y pagas cuota fija sin sorpresas.`,
+    answer: `Sin interés oculto. Tu cuota 1 a 3 meses ya incluye solo dos rubros fijos y claros: administración ($${fmtCOP(config.credit.adminFeeTotal)} total prorrateado por cuota) y fianza ($${fmtCOP(config.credit.guaranteeFeeTotal)} total). Eliges abono diario, semanal, quincenal o mensual y pagas cuota fija sin sorpresas.`,
     icon: 'document',
   },
   {
@@ -34,7 +34,7 @@ export const FAQS: Faq[] = [
   {
     q: '¿Puedo pagar mi crédito antes de tiempo sin penalidades?',
     answer:
-      'Sí. Puedes liquidar de 1 a 6 meses cuando quieras sin penalidad. Pagas solo las cuotas causadas hasta ese día (administración prorrateada incluida) y te liberas de las cuotas restantes.',
+      'Sí. Puedes liquidar de 1 a 3 meses cuando quieras sin penalidad. Pagas solo las cuotas causadas hasta ese día (administración prorrateada incluida) y te liberas de las cuotas restantes.',
     icon: 'refresh',
   },
   {

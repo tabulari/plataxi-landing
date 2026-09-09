@@ -55,31 +55,30 @@ describe("calculatePayment — verification numbers (amount 500.000)", () => {
 });
 
 describe("validateApplication — eligibility gate", () => {
-  it("monto mínimo solo permite 1 mes", () => {
-    // amountMin is now 20000 (set by env/config, Core source of truth)
-    expect(validateApplication(20000, 1, "monthly").ok).toBe(true);
-    expect(validateApplication(20000, 2, "monthly").ok).toBe(false);
-    expect(validateApplication(20000, 6, "monthly").ok).toBe(false);
-    expect(validateApplication(30000, 2, "monthly").ok).toBe(true);
-    expect(calculatePayment(20000, 2, "monthly").valid).toBe(false);
+  it("monto mínimo (100.000) solo permite 1 mes", () => {
+    expect(validateApplication(100000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(100000, 2, "monthly").ok).toBe(false);
+    expect(validateApplication(100000, 3, "monthly").ok).toBe(false);
+    expect(validateApplication(150000, 2, "monthly").ok).toBe(true);
+    expect(calculatePayment(100000, 2, "monthly").valid).toBe(false);
   });
 
-  it("amount > 800.000 && term < 6 → invalid", () => {
-    expect(validateApplication(900000, 3, "monthly").ok).toBe(false);
-    expect(calculatePayment(900000, 3, "monthly").valid).toBe(false);
+  it("amount > 800.000 && term < 3 → invalid", () => {
+    expect(validateApplication(900000, 2, "monthly").ok).toBe(false);
+    expect(calculatePayment(900000, 2, "monthly").valid).toBe(false);
     // boundary: exactly 800.000 is allowed (rule is strict >)
-    expect(validateApplication(800000, 3, "monthly").ok).toBe(true);
-    // boundary: term 6 with high amount is allowed
-    expect(validateApplication(900000, 6, "monthly").ok).toBe(true);
+    expect(validateApplication(800000, 2, "monthly").ok).toBe(true);
+    // boundary: term 3 with high amount is allowed
+    expect(validateApplication(900000, 3, "monthly").ok).toBe(true);
   });
 
   it("carries the guidance message onto the Simulation when invalid", () => {
-    const s = calculatePayment(20000, 2, "monthly");
+    const s = calculatePayment(100000, 2, "monthly");
     expect(s.valid).toBe(false);
     expect(s.message).toContain("1 mes");
-    const s2 = calculatePayment(900000, 3, "monthly");
+    const s2 = calculatePayment(900000, 2, "monthly");
     expect(s2.valid).toBe(false);
-    expect(s2.message).toContain("6 meses");
+    expect(s2.message).toContain("3 meses");
   });
 });
 

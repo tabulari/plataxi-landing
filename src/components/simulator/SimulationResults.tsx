@@ -36,7 +36,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
 
   return (
     <div className="mt-6 pt-6 border-t border-border/80 space-y-3">
-      {/* Result Box — corto plazo 1-6 meses, abono diario/semanal/quincenal/mensual, cuota de administración + fianza (no interés) */}
+      {/* Result Box — corto plazo 1-3 meses, abono diario/semanal/quincenal/mensual, cuota de administración + fianza (no interés) */}
       <div className="rounded-xl bg-gradient-to-br from-green-tint/70 to-secondary-surface/40 border border-green/30 p-4 sm:p-6 shadow-2xs">
         <div className="flex flex-col items-center text-center gap-1">
           <span className="text-xs font-bold uppercase tracking-wider text-green-ink block">Tu cuota estimada</span>

@@ -33,6 +33,7 @@ export function AmountInput({
   inputRef: React.RefObject<HTMLInputElement | null>;
   markInteract: (control: string) => void;
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Allow typing on desktop, keep slider/buttons as primary on coarse pointer
     if (window.matchMedia('(pointer: coarse)').matches) return;
@@ -57,6 +58,7 @@ export function AmountInput({
     setAmount(clampAmount(raw, amountMin, amountMax), false);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleInputBlur = () => {
     setHint('');
     const v = clampRoundAmount(amount || amountMin, amountMin, amountMax, amountStep);
@@ -69,7 +71,7 @@ export function AmountInput({
     setHint('');
     const v = Number(e.target.value);
     setAmount(v, true);
-    setInputText(fmtCOP(clampRoundAmount(v, amountMin, amountMax, amountStep)));
+    setInputText(fmtCOP(clampRoundAmount(v, amountMin, amountMax, amountStepBig)));
   };
 
   const bump = (dir: -1 | 1) => {
@@ -78,7 +80,7 @@ export function AmountInput({
       (amount || amountMin) + dir * amountStepBig,
       amountMin,
       amountMax,
-      amountStep,
+      amountStepBig,
     );
     setAmount(v, true);
     setInputText(fmtCOP(v));
@@ -145,7 +147,7 @@ export function AmountInput({
         />
       </div>
 
-      {/* Range Slider — single slider for amount 50k-1M (plazo 1-6 now 6 chips) */}
+      {/* Range Slider — 100k-1M step 50k, plazo 1-3 */}
       <div className="space-y-2.5">
         <div className="relative w-full h-12 flex items-center">
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-border rounded-full overflow-hidden pointer-events-none" aria-hidden="true">
@@ -155,7 +157,7 @@ export function AmountInput({
             type="range"
             min={amountMin}
             max={amountMax}
-            step={amountStep}
+            step={amountStepBig}
             value={amount}
             aria-label="Selector de monto"
             aria-valuemin={amountMin}

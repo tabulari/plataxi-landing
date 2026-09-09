@@ -156,7 +156,7 @@ export function SimulatorProvider({
           config.simulator.amountStep,
         ),
       );
-      // term 3 is in [1-6], so no jump (was 6→24 before cap, now 6→2 before fix)
+      // term 3 is in [1,2,3], so no jump
       setTerm((current) =>
         safeRates.termOptions.includes(current) ? current : safeRates.termOptions[0],
       );
