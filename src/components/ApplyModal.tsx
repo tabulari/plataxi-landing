@@ -127,21 +127,13 @@ export function ApplyModal() {
         <h2 id="applyTitle" className="sr-only">Solicitud de credito</h2>
         <p className="sr-only" aria-live="polite">{liveMsg}</p>
 
-        <button
-          type="button"
-          aria-label="Cerrar"
-          onClick={closeApply}
-          className="absolute top-2 right-2 z-10 flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-xl text-muted-2 hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-        >
-          <CloseIcon size={22} />
-        </button>
-
         <ModalSidebar frozen={frozen} />
 
         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
           {/* Step header — always visible ─────────────────────────────── */}
           <div className="shrink-0 bg-card border-b border-border">
-            <ol className="flex items-center justify-between sm:justify-start gap-1 sm:gap-3 px-3 sm:px-6 pt-2.5 sm:pt-3.5 pb-2 sm:pb-3" aria-label="Progreso del formulario">
+            <div className="flex items-center gap-1 pr-1">
+              <ol className="flex-1 flex items-center justify-between sm:justify-start gap-0.5 sm:gap-2 px-3 sm:px-5 pt-1.5 sm:pt-2 pb-1 sm:pb-1.5" aria-label="Progreso del formulario">
               {[1, 2, 3, 4].map((i) => {
                 const isClickable = form.submitStatus !== 'success' && i < form.step;
                 const isCurrent = form.submitStatus === 'success' ? i === 4 : i === form.step;
@@ -162,7 +154,7 @@ export function ApplyModal() {
                       aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado)' : ' (incompleto)'}`}
                       onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center gap-1.5 sm:gap-2 min-h-[44px] py-1 px-1 sm:px-2 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green',
+                        'flex items-center gap-1 sm:gap-1.5 min-h-[36px] py-0.5 px-1 sm:px-1.5 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green',
                         stepDot(i),
                         isClickable && !isCurrent && 'hover:bg-muted/60 cursor-pointer',
                         !isClickable && !isCurrent && 'cursor-default opacity-60',
@@ -170,7 +162,7 @@ export function ApplyModal() {
                     >
                       <span
                         className={cn(
-                          'flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-xs font-bold transition-all shrink-0',
+                          'flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full text-[11px] font-bold transition-all shrink-0',
                           form.submitStatus === 'success'
                             ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/60'
                             : isCurrent
@@ -182,7 +174,7 @@ export function ApplyModal() {
                       >
                         {form.submitStatus === 'success' ? '✓' : i}
                       </span>
-                      <span className="font-semibold whitespace-nowrap text-xs sm:text-sm">
+                      <span className="font-semibold whitespace-nowrap text-[11px] sm:text-xs">
                         <span className="sm:hidden">{stepLabel.short}</span>
                         <span className="hidden sm:inline">{stepLabel.long}</span>
                       </span>
@@ -191,13 +183,24 @@ export function ApplyModal() {
                     {i < 4 && (
                       <div
                         aria-hidden="true"
-                        className="w-2 sm:w-5 h-px bg-border mx-0.5 sm:mx-1 shrink"
+                        className="w-2 sm:w-4 h-px bg-border mx-0.5 shrink"
                       />
                     )}
                   </li>
                 );
               })}
-            </ol>
+              </ol>
+
+              {/* Close button — inline with step bar so it never overlaps step labels */}
+              <button
+                type="button"
+                aria-label="Cerrar"
+                onClick={closeApply}
+                className="flex items-center justify-center w-9 h-9 min-w-[36px] min-h-[36px] rounded-lg bg-muted/60 text-muted-foreground hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 shrink-0 mr-1.5"
+              >
+                <CloseIcon size={16} />
+              </button>
+            </div>
 
             {/* Dynamic progress bar — always visible below step labels */}
             <div className="h-1 bg-muted overflow-hidden" aria-hidden="true">
