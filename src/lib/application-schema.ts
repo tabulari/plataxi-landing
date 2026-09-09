@@ -8,7 +8,7 @@ import { z } from "zod";
  * IP-163: expanded to 4-step flow (Tus datos → Tu taxi → Tus ingresos → Revisión).
  */
 
-export const TAXI_ROLES = ["Taxi propio", "Conduzco taxi", "Conductor plataforma (Uber/DiDi)"] as const;
+export const TAXI_ROLES = ["Taxi propio", "Conduzco taxi"] as const;
 export type TaxiRole = (typeof TAXI_ROLES)[number];
 
 const MSG = {
