@@ -122,8 +122,14 @@ export function Simulator() {
         markInteract={markInteract}
       />
 
-      {/* Plazo interno — el selector visible ("Elige el plazo") se retiró por decisión
-          de producto: el sistema determina el plazo (store, auto-snap por monto). */}
+      {/* Plazo automático — visible badge, no solo sr-only */}
+      <div className="flex items-center gap-2 text-xs sm:text-sm">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green/10 border border-green/20 text-navy font-semibold">
+          <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" aria-hidden="true" />
+          Plazo: {term} {term === 1 ? 'mes' : 'meses'} (automático)
+        </span>
+        <span className="text-muted-2 text-xs">según monto</span>
+      </div>
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {snapAnnouncement}
       </div>
@@ -136,6 +142,7 @@ export function Simulator() {
         <ChipRadioGroup
           className="flex flex-wrap gap-2"
           ariaLabelledBy="freqLabel"
+          ariaDescribedBy="freqHint"
           chipClassName="chip-freq"
           hideCheck
           options={frequencies.map((f) => ({
@@ -146,11 +153,11 @@ export function Simulator() {
           value={frequency}
           onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
         />
-        {(frequency === 'bimonthly' || frequency === 'quarterly') && (
-          <p className="text-xs text-muted-foreground mt-1.5">
-            * Cuota estimada. El cargo definitivo se confirmará en la oferta.
-          </p>
-        )}
+        <p id="freqHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]">
+          {frequencies.find((f) => f.value === frequency)?.estimate
+            ? '* Cuota estimada. El cargo definitivo se confirmará en la oferta.'
+            : 'Las opciones con * son estimadas.'}
+        </p>
       </div>
 
       <div aria-live="polite" aria-atomic="true" className="sr-only">

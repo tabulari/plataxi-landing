@@ -34,7 +34,7 @@ const STATIC_RATES: RuntimeRatesConfig = {
   amountMin: config.simulator.amountMin,
   amountMax: config.simulator.amountMax,
   termOptions: config.simulator.termOptions,
-  offeredFrequencies: ['daily', 'weekly', 'biweekly', 'monthly'],
+  offeredFrequencies: config.simulator.offeredFrequencies as unknown as string[],
 };
 
 export const clampAmount = (v: number, min: number, max: number): number =>

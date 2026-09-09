@@ -33,8 +33,9 @@ export function AmountInput({
   inputRef: React.RefObject<HTMLInputElement | null>;
   markInteract: (control: string) => void;
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Allow typing on desktop, keep slider/buttons as primary on coarse pointer
+    if (window.matchMedia('(pointer: coarse)').matches) return;
     markInteract('amount');
     const digits = e.target.value.replace(/\D/g, '');
     if (!digits) {
@@ -56,7 +57,6 @@ export function AmountInput({
     setAmount(clampAmount(raw, amountMin, amountMax), false);
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleInputBlur = () => {
     setHint('');
     const v = clampRoundAmount(amount || amountMin, amountMin, amountMax, amountStep);
@@ -114,12 +114,14 @@ export function AmountInput({
               ref={inputRef}
               data-field-bare
               type="text"
-              inputMode="none"
-              readOnly
+              inputMode="numeric"
               value={inputText}
               aria-label="Monto solicitado"
               aria-describedby={hint ? 'amountHint' : undefined}
-              className="w-full min-w-0 h-12 min-h-[48px] text-xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight cursor-default select-none"
+              onChange={handleInputChange}
+              onBlur={handleInputBlur}
+              onFocus={(e) => e.target.select()}
+              className="w-full min-w-0 h-12 min-h-[48px] text-xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight cursor-text selection:bg-green/30 placeholder:text-muted-foreground"
             />
           </div>
 
@@ -140,7 +142,7 @@ export function AmountInput({
           aria-live="polite"
           message={hint}
           reserveSpace={false}
-          className={cn('mt-1.5 pl-1', hint ? 'flex' : 'sr-only')}
+          className={cn('mt-1.5 pl-1 min-h-[20px]', hint ? 'flex' : 'hidden')}
           aria-hidden={!hint || undefined}
         />
       </div>
