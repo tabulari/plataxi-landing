@@ -112,15 +112,12 @@ export function AmountInput({
               ref={inputRef}
               data-field-bare
               type="text"
-              inputMode="numeric"
+              inputMode="none"
+              readOnly
               value={inputText}
               aria-label="Monto solicitado"
-              aria-invalid={hint ? 'true' : undefined}
               aria-describedby={hint ? 'amountHint' : undefined}
-              onChange={handleInputChange}
-              onFocus={(e) => e.target.select()}
-              onBlur={handleInputBlur}
-              className="w-full min-w-0 h-12 min-h-[48px] text-xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight"
+              className="w-full min-w-0 h-12 min-h-[48px] text-xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight cursor-default select-none"
             />
           </div>
 
