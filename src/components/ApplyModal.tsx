@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApplicationForm, useDraftAutoSave, STEP_TITLES } from './apply/use-application-form';
 import { ModalSidebar } from './apply/ModalSidebar';
-import { Step1, Step2, Step3 } from './apply/FormSteps';
+import { Step1, Step2, Step3, Step4 } from './apply/FormSteps';
 import { ApplicationSuccess, ApplicationError } from './apply/ResultPanels';
 import { useSiteUi } from './site-ui';
 import { useSimulator } from './simulator-store';
@@ -57,7 +57,7 @@ export function ApplyModal() {
 
   useEffect(() => {
     if (mounted && form.submitStatus !== 'success' && form.submitStatus !== 'error')
-      setLiveMsg(`Paso ${form.step} de 3: ${STEP_TITLES[form.step]}`);
+      setLiveMsg(`Paso ${form.step} de 4: ${STEP_TITLES[form.step]}`);
   }, [form.step, mounted, form.submitStatus]);
 
   useEffect(() => {
@@ -139,68 +139,76 @@ export function ApplyModal() {
         <ModalSidebar frozen={frozen} />
 
         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
-          <ol className="shrink-0 flex items-center justify-between sm:justify-start gap-1 sm:gap-3 px-3 sm:px-6 py-2.5 sm:py-3.5 border-b border-border bg-card" aria-label="Progreso del formulario">
-            {[1, 2, 3].map((i) => {
-              const isClickable = form.submitStatus !== 'success' && i < form.step;
-              const isCurrent = form.submitStatus === 'success' ? i === 3 : i === form.step;
-              const isCompleted = form.submitStatus === 'success' || i < form.step;
-              return (
-                <li key={i} className="flex items-center">
-                  <button
-                    type="button"
-                    disabled={!isClickable && !isCurrent}
-                    aria-current={isCurrent ? 'step' : undefined}
-                    aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado)' : ' (incompleto)'}`}
-                    onClick={() => { if (isClickable) form.setStep(i); }}
-                    className={cn(
-                      'flex items-center gap-1.5 sm:gap-2 min-h-[44px] py-1 px-1 sm:px-2 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green',
-                      stepDot(i),
-                      isClickable && !isCurrent && 'hover:bg-muted/60 cursor-pointer',
-                      !isClickable && !isCurrent && 'cursor-default opacity-60',
-                    )}
-                  >
-                    <span
+          {/* Step header — always visible ─────────────────────────────── */}
+          <div className="shrink-0 bg-card border-b border-border">
+            <ol className="flex items-center justify-between sm:justify-start gap-1 sm:gap-3 px-3 sm:px-6 pt-2.5 sm:pt-3.5 pb-2 sm:pb-3" aria-label="Progreso del formulario">
+              {[1, 2, 3, 4].map((i) => {
+                const isClickable = form.submitStatus !== 'success' && i < form.step;
+                const isCurrent = form.submitStatus === 'success' ? i === 4 : i === form.step;
+                const isCompleted = form.submitStatus === 'success' || i < form.step;
+                const stepLabel = i === 1
+                  ? { short: 'Datos', long: 'Tus datos' }
+                  : i === 2
+                  ? { short: 'Taxi', long: 'Tu taxi' }
+                  : i === 3
+                  ? { short: 'Ingresos', long: 'Tus ingresos' }
+                  : { short: 'Revisión', long: 'Revisión' };
+                return (
+                  <li key={i} className="flex items-center">
+                    <button
+                      type="button"
+                      disabled={!isClickable && !isCurrent}
+                      aria-current={isCurrent ? 'step' : undefined}
+                      aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado)' : ' (incompleto)'}`}
+                      onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-xs font-bold transition-all shrink-0',
-                        form.submitStatus === 'success'
-                          ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/60'
-                          : isCurrent
-                          ? 'bg-primary-brand text-primary-dark ring-2 ring-primary-brand/50 shadow-xs'
-                          : isClickable
-                          ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50'
-                          : 'bg-muted text-muted-2 ring-1 ring-inset ring-border',
+                        'flex items-center gap-1.5 sm:gap-2 min-h-[44px] py-1 px-1 sm:px-2 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green',
+                        stepDot(i),
+                        isClickable && !isCurrent && 'hover:bg-muted/60 cursor-pointer',
+                        !isClickable && !isCurrent && 'cursor-default opacity-60',
                       )}
                     >
-                      {form.submitStatus === 'success' ? '✓' : i}
-                    </span>
-                    <span className="font-semibold whitespace-nowrap text-xs sm:text-sm">
-                      {i === 1 ? (
-                        <>
-                          <span className="sm:hidden">Datos</span>
-                          <span className="hidden sm:inline">Tus datos</span>
-                        </>
-                      ) : i === 2 ? (
-                        <>
-                          <span className="sm:hidden">Ingresos</span>
-                          <span className="hidden sm:inline">Tus ingresos</span>
-                        </>
-                      ) : (
-                        'Revisión'
-                      )}
-                    </span>
-                  </button>
+                      <span
+                        className={cn(
+                          'flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-xs font-bold transition-all shrink-0',
+                          form.submitStatus === 'success'
+                            ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/60'
+                            : isCurrent
+                            ? 'bg-primary-brand text-primary-dark ring-2 ring-primary-brand/50 shadow-xs'
+                            : isClickable
+                            ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50'
+                            : 'bg-muted text-muted-2 ring-1 ring-inset ring-border',
+                        )}
+                      >
+                        {form.submitStatus === 'success' ? '✓' : i}
+                      </span>
+                      <span className="font-semibold whitespace-nowrap text-xs sm:text-sm">
+                        <span className="sm:hidden">{stepLabel.short}</span>
+                        <span className="hidden sm:inline">{stepLabel.long}</span>
+                      </span>
+                    </button>
 
-                  {/* Connecting divider between step 1-2 and 2-3 */}
-                  {i < 3 && (
-                    <div
-                      aria-hidden="true"
-                      className="w-2 sm:w-5 h-px bg-border mx-0.5 sm:mx-1 shrink"
-                    />
-                  )}
-                </li>
-              );
-            })}
-          </ol>
+                    {i < 4 && (
+                      <div
+                        aria-hidden="true"
+                        className="w-2 sm:w-5 h-px bg-border mx-0.5 sm:mx-1 shrink"
+                      />
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+
+            {/* Dynamic progress bar — always visible below step labels */}
+            <div className="h-1 bg-muted overflow-hidden" aria-hidden="true">
+              <div
+                className="h-full bg-green transition-[width] duration-500 ease-out"
+                style={{
+                  width: `${(form.submitStatus === 'success' ? 4 : form.step) * 25}%`,
+                }}
+              />
+            </div>
+          </div>
 
           {/* Live announcement region for step transitions and pending network submission */}
           <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
@@ -210,7 +218,7 @@ export function ApplyModal() {
               ? `Solicitud enviada exitosamente. Tu radicado es ${form.radicado}`
               : form.submitStatus === 'error'
               ? 'Ocurrió un error al enviar la solicitud.'
-              : `Paso ${form.step} de 3: ${STEP_TITLES[form.step]}`}
+              : `Paso ${form.step} de 4: ${STEP_TITLES[form.step]}`}
           </div>
 
           <form
@@ -247,8 +255,11 @@ export function ApplyModal() {
                 {form.step === 2 && (
                   <Step2 values={form.values} handlers={handlers} />
                 )}
-{form.step === 3 && (
-                  <Step3
+                {form.step === 3 && (
+                  <Step3 values={form.values} handlers={handlers} />
+                )}
+                {form.step === 4 && (
+                  <Step4
                     values={form.values}
                     consent={form.consent}
                     consentError={form.consentError}
@@ -303,12 +314,12 @@ export function ApplyModal() {
                 <Button
                   variant="default"
                   size="default"
-                  disabled={form.submitStatus === 'pending'}
+                  disabled={form.submitStatus === 'pending' || !form.isStepComplete}
                   onClick={() => form.onNext(frozen)}
                   className="bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40"
                 >
                   {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
-                    : form.step === 3 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
+                    : form.step === 4 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
                     : (<>Continuar <span aria-hidden="true">→</span></>)}
                 </Button>
               </>

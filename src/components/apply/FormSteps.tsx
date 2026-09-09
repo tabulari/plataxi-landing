@@ -5,7 +5,7 @@ import * as FocusScope from '@radix-ui/react-focus-scope';
 import { fmtCOP } from '@/lib/credit';
 import {
   CONSENT_TEXT,
-  EMPLOYMENT_TYPES,
+  TAXI_ROLES,
   type FieldName,
 } from '@/lib/application-schema';
 import { capFreq, type Values } from './use-application-form';
@@ -59,36 +59,70 @@ const selectEl = (name: FieldName, label: string, placeholder: string, options: 
   </label>
 );
 
+/** Reusable pill toggle (same visual style as Diario/Mensual). */
+const toggleGroup = (
+  name: FieldName,
+  label: string,
+  options: { value: string; label: string }[],
+  current: string,
+  handlers: FieldHandlers,
+  error?: string,
+) => (
+  <div className="flex flex-col gap-1.5">
+    <span className="text-sm font-semibold text-foreground">{label}</span>
+    <div className={cn('grid gap-2', `grid-cols-${options.length}`)}>
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          name={name}
+          onClick={() => handlers.onFieldChange(name, opt.value)}
+          aria-pressed={current === opt.value}
+          className={cn(
+            'h-11 rounded-xl border text-sm font-semibold transition-all active:scale-[0.98]',
+            current === opt.value
+              ? 'bg-green border-green text-ink shadow-sm'
+              : 'bg-white border-gray-300 text-foreground hover:border-primary-brand',
+            error && 'border-destructive',
+          )}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+    <FieldError id={`err-${name}`} message={error ?? handlers.errors[name]} />
+  </div>
+);
+
+// ─── Step 1 — Tus datos ─────────────────────────────────────────────────────
+
 export function Step1({ values, handlers }: {
   values: Values;
   applyOrigin: string;
   handlers: FieldHandlers;
   frozen: { amount: number; term: number; payment: number; unit: string };
 }) {
+  const [showContact, setShowContact] = useState(
+    () => !!(values.contactName || values.contactPhone),
+  );
+
   const formatCedula = (val: string) => {
-    const digits = val.replace(/\D/g, '');
-    if (!digits) return '';
-    return fmtCOP(parseInt(digits, 10));
+    const d = val.replace(/\D/g, '');
+    if (!d) return '';
+    return fmtCOP(parseInt(d, 10));
   };
 
   const formatPhone = (val: string) => {
-    const digits = val.replace(/\D/g, '').slice(0, 10);
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return `${digits.slice(0, 3)} ${digits.slice(3)}`;
-    return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6)}`;
+    const d = val.replace(/\D/g, '').slice(0, 10);
+    if (d.length <= 3) return d;
+    if (d.length <= 6) return `${d.slice(0, 3)} ${d.slice(3)}`;
+    return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
   };
 
-  const stepRef = useRef<HTMLElement>(null);
-  const [showPhone2, setShowPhone2] = useState(() => !!values.phone2);
-  // GSAP removido temporalmente — el modal ya anima, este stagger dejaba el step en blanco cuando el modal estaba oculto al montar
-
   return (
-    <section ref={stepRef} className="flex-1 flex flex-col gap-5">
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
-        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '33%' }} />
-      </div>
+    <section className="flex-1 flex flex-col gap-5">
       <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 1 de 3</p>
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 1 de 4</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 1: Datos personales y de contacto">
           Cuéntanos de ti
         </h2>
@@ -131,29 +165,55 @@ export function Step1({ values, handlers }: {
         })}
       </div>
 
-      {!showPhone2 ? (
+      {/* Contacto secundario — toggle (IP-163) */}
+      {!showContact ? (
         <button
           type="button"
-          onClick={() => setShowPhone2(true)}
-          className="self-start text-xs font-semibold text-green-ink hover:text-navy underline underline-offset-2 min-h-[44px] px-2 py-2 -ml-2 -mt-1 active:scale-[0.98] transition-transform focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
+          onClick={() => setShowContact(true)}
+          className="self-start flex items-center gap-1.5 text-sm font-semibold text-green-ink hover:text-green-bright transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
         >
-          + Agregar teléfono secundario
+          <span className="text-lg leading-none">+</span>
+          Agregar teléfono de contacto
         </button>
       ) : (
-        <div className="motion-safe:animate-step-in">
-          {fieldEl('phone2', '¿Otro número donde ubicarte?', handlers, {
-            type: 'tel',
-            inputMode: 'numeric',
-            autoComplete: 'tel',
-            enterKeyHint: 'next',
-            placeholder: 'Ej. 300 765 4321 — opcional',
-            value: values.phone2 || '',
-            onChange: (e) => handlers.onFieldChange('phone2', formatPhone(e.target.value)),
-          })}
+        <div className="flex flex-col gap-3 motion-safe:animate-step-in">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-foreground">Contacto secundario</span>
+            <button
+              type="button"
+              onClick={() => {
+                setShowContact(false);
+                handlers.onFieldChange('contactName', '');
+                handlers.onFieldChange('contactPhone', '');
+              }}
+              aria-label="Quitar contacto secundario"
+              className="text-xs text-muted-2 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            >
+              Quitar
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {fieldEl('contactName', 'Nombre de contacto', handlers, {
+              type: 'text',
+              autoComplete: 'off',
+              enterKeyHint: 'next',
+              placeholder: 'Ej. Carlos Martínez',
+              value: values.contactName,
+            })}
+            {fieldEl('contactPhone', 'Teléfono de contacto', handlers, {
+              type: 'tel',
+              inputMode: 'numeric',
+              autoComplete: 'tel',
+              enterKeyHint: 'next',
+              placeholder: 'Ej. 300 765 4321',
+              value: values.contactPhone,
+              onChange: (e) => handlers.onFieldChange('contactPhone', formatPhone(e.target.value)),
+            })}
+          </div>
         </div>
       )}
 
-        {fieldEl('email', 'Correo', handlers, {
+      {fieldEl('email', 'Correo', handlers, {
         type: 'email',
         autoComplete: 'email',
         spellCheck: false,
@@ -165,62 +225,110 @@ export function Step1({ values, handlers }: {
   );
 }
 
+// ─── Step 2 — Tu taxi ────────────────────────────────────────────────────────
+
 export function Step2({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
+  return (
+    <section className="flex-1 flex flex-col gap-5">
+      <div>
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 4</p>
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tu taxi">
+          Tu taxi
+        </h2>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Cuéntanos sobre tu vehículo y tu experiencia.</p>
+      </div>
+
+      {selectEl('taxiRole', '¿Cuál es tu rol en el taxi?', 'Selecciona tu rol', TAXI_ROLES, handlers, values.taxiRole)}
+
+      {/* Placa — solo visible cuando taxiRole = "Taxi propio" */}
+      {values.taxiRole === 'Taxi propio' && (
+        <div className="motion-safe:animate-step-in">
+          {fieldEl('taxiPlate', 'Placa del taxi', handlers, {
+            type: 'text',
+            autoComplete: 'off',
+            enterKeyHint: 'next',
+            placeholder: 'Ej. ABC 123',
+            value: values.taxiPlate,
+          })}
+        </div>
+      )}
+
+      {fieldEl('taxiCompany', '¿A qué empresa está afiliado el taxi?', handlers, {
+        type: 'text',
+        autoComplete: 'off',
+        enterKeyHint: 'next',
+        placeholder: 'Ej. Radio Taxi Azul',
+        value: values.taxiCompany,
+      })}
+
+      {/* Slider tiempo conduciendo */}
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-semibold text-foreground">
+          ¿Cuánto tiempo lleva conduciendo?{' '}
+          <span className="text-primary-brand font-bold">
+            {values.drivingTime} {values.drivingTime === '1' ? 'año' : 'años'}
+          </span>
+        </span>
+        <input
+          name="drivingTime"
+          type="range"
+          min={1}
+          max={10}
+          step={1}
+          value={values.drivingTime}
+          onChange={(e) => handlers.onFieldChange('drivingTime', e.target.value)}
+          aria-label={`Tiempo conduciendo: ${values.drivingTime} años`}
+          className="w-full h-2 rounded-full accent-green cursor-pointer"
+        />
+        <div className="flex justify-between text-xs text-muted-foreground px-0.5">
+          <span>1 año</span>
+          <span>10 años</span>
+        </div>
+        <FieldError id="err-drivingTime" message={handlers.errors.drivingTime} />
+      </div>
+    </section>
+  );
+}
+
+// ─── Step 3 — Tus ingresos ───────────────────────────────────────────────────
+
+function useBanks() {
+  const [banks, setBanks] = useState<string[]>([]);
+  useEffect(() => {
+    fetch('/api/banks')
+      .then((r) => r.json())
+      .then((data: { banks?: string[] }) => { if (data.banks) setBanks(data.banks); })
+      .catch(() => { /* silently degrade to empty list */ });
+  }, []);
+  return banks;
+}
+
+export function Step3({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
+  const banks = useBanks();
+
   const formatIncome = (val: string) => {
-    const digits = val.replace(/\D/g, '');
-    if (!digits) return '';
-    return fmtCOP(parseInt(digits, 10));
+    const d = val.replace(/\D/g, '');
+    if (!d) return '';
+    return fmtCOP(parseInt(d, 10));
   };
 
-  const stepRef = useRef<HTMLElement>(null);
-
   return (
-    <section ref={stepRef} className="flex-1 flex flex-col gap-5">
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
-        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '66%' }} />
-      </div>
+    <section className="flex-1 flex flex-col gap-5">
       <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 3</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tu taxi y tus ingresos">
-          Tu taxi y tus ingresos
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 4</p>
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: Tus ingresos">
+          Tus ingresos
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">2 datos para validar tu capacidad de pago.</p>
       </div>
 
-      {selectEl('employmentType', '¿Cuál es tu rol en el taxi?', 'Selecciona tu rol', EMPLOYMENT_TYPES, handlers, values.employmentType)}
-
-      <div className="flex flex-col gap-1.5">
-        <span className="text-sm font-semibold text-foreground">¿Cuánto ganas? Elige cómo prefieres contarlo</span>
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => handlers.onFieldChange('incomeType', 'daily')}
-            aria-pressed={values.incomeType === 'daily'}
-            className={cn(
-              'h-11 rounded-xl border text-sm font-semibold transition-all active:scale-[0.98]',
-              values.incomeType === 'daily'
-                ? 'bg-green border-green text-ink shadow-sm'
-                : 'bg-white border-gray-300 text-foreground hover:border-primary-brand',
-            )}
-          >
-            Diario
-          </button>
-          <button
-            type="button"
-            onClick={() => handlers.onFieldChange('incomeType', 'monthly')}
-            aria-pressed={values.incomeType === 'monthly'}
-            className={cn(
-              'h-11 rounded-xl border text-sm font-semibold transition-all active:scale-[0.98]',
-              values.incomeType === 'monthly'
-                ? 'bg-green border-green text-ink shadow-sm'
-                : 'bg-white border-gray-300 text-foreground hover:border-primary-brand',
-            )}
-          >
-            Mensual
-          </button>
-        </div>
-        <FieldError id="err-incomeType" message={handlers.errors.incomeType} />
-      </div>
+      {toggleGroup(
+        'incomeType',
+        '¿Cuánto ganas? Elige cómo prefieres contarlo',
+        [{ value: 'daily', label: 'Diario' }, { value: 'monthly', label: 'Mensual' }],
+        values.incomeType,
+        handlers,
+      )}
 
       {fieldEl('income', values.incomeType === 'daily' ? '¿Cuánto ganas al día?' : '¿Cuánto ganas al mes? (aprox)', handlers, {
         type: 'text',
@@ -231,15 +339,32 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
         onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
       })}
 
-      <div className="flex items-start gap-2 text-xs text-muted-foreground bg-green/5 border border-green/20 rounded-xl px-3.5 py-3">
-        <ShieldCheckIcon size={16} aria-hidden="true" className="text-green-ink shrink-0 mt-0.5" />
-        <p className="leading-relaxed">La cuenta donde te consignamos la defines después, cuando estés aprobado — en tu espacio seguro.</p>
-      </div>
+      {toggleGroup(
+        'hasBank',
+        '¿Cuenta usted con una entidad bancaria o crediticia?',
+        [{ value: 'yes', label: 'Sí' }, { value: 'no', label: 'No' }],
+        values.hasBank,
+        handlers,
+      )}
+
+      {values.hasBank === 'yes' && (
+        <div className="motion-safe:animate-step-in">
+          {selectEl('bankEntity', 'Entidad bancaria', 'Selecciona tu banco', banks, handlers, values.bankEntity)}
+        </div>
+      )}
+
+      {values.hasBank === 'no' && (
+        <div className="flex items-start gap-2 text-xs text-destructive bg-destructive/5 border border-destructive/20 rounded-xl px-3.5 py-3 motion-safe:animate-step-in">
+          <p className="leading-relaxed">Para acceder al crédito necesitas tener una cuenta bancaria o producto crediticio activo.</p>
+        </div>
+      )}
     </section>
   );
 }
 
-export function Step3({ values, consent, consentError, setConsent, setConsentError, frozen }: {
+// ─── Step 4 — Revisión ───────────────────────────────────────────────────────
+
+export function Step4({ values, consent, consentError, setConsent, setConsentError, frozen }: {
   values: Values;
   consent: boolean;
   consentError: string;
@@ -248,7 +373,6 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
   frozen: { amount: number; term: number; payment: number; unit: string; frequency: string; periodRate: number };
 }) {
   const [showTerms, setShowTerms] = useState(false);
-  const stepRef = useRef<HTMLElement>(null);
   const termsCloseRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!showTerms) return;
@@ -262,6 +386,10 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
     if (showTerms) termsCloseRef.current?.focus();
   }, [showTerms]);
 
+  const drivingLabel = values.drivingTime
+    ? `${values.drivingTime} ${values.drivingTime === '1' ? 'año' : 'años'}`
+    : '—';
+
   const reviewRows: { k: string; v: string; full?: boolean }[] = [
     { k: 'Monto solicitado', v: `$${fmtCOP(frozen.amount)} COP` },
     { k: 'Cuota estimada', v: `$${fmtCOP(frozen.payment)} ${frozen.unit}` },
@@ -269,20 +397,20 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
     { k: 'Nombre completo', v: values.fullName || '—', full: true },
     { k: 'Cédula de ciudadanía', v: values.idNumber || '—' },
     { k: 'Teléfono', v: values.phone || '—' },
-    ...(values.phone2 ? [{ k: 'Teléfono secundario', v: values.phone2 }] : []),
+    ...(values.contactName ? [{ k: 'Contacto secundario', v: `${values.contactName}${values.contactPhone ? ` · ${values.contactPhone}` : ''}` }] : []),
     { k: 'Correo electrónico', v: values.email || '—', full: true },
-    { k: 'Actividad laboral', v: values.employmentType || '—' },
-    { k: 'Cuenta de desembolso', v: values.bank ? `${values.bank}${values.accountNumber ? ` - ${values.accountNumber}` : ''}` : 'Se define tras aprobación', full: !values.bank ? true : undefined },
+    { k: 'Rol en el taxi', v: values.taxiRole || '—' },
+    ...(values.taxiPlate ? [{ k: 'Placa', v: values.taxiPlate }] : []),
+    { k: 'Empresa afiliada', v: values.taxiCompany || '—' },
+    { k: 'Tiempo conduciendo', v: drivingLabel },
+    { k: 'Entidad bancaria', v: values.bankEntity || 'Se define tras aprobación', full: !values.bankEntity ? true : undefined },
   ];
 
   return (
-    <section ref={stepRef} className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
-        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '100%' }} />
-      </div>
+    <section className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
       <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: ¿Todo bien?">
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 4 de 4</p>
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 4: ¿Todo bien?">
           ¿Todo bien? Revisa y envía
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">Un último vistazo antes de mandar tu solicitud.</p>
@@ -331,7 +459,6 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
         className={cn(consentError ? 'flex' : 'hidden')}
       />
 
-      {/* In-Modal Viewable Terms Drawer — focus trap + Esc + inert behind */}
       {showTerms && (
         <FocusScope.Root trapped loop onMountAutoFocus={(e) => { e.preventDefault(); termsCloseRef.current?.focus(); }}>
           <div
@@ -340,58 +467,58 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
             aria-labelledby="terms-drawer-title"
             className="absolute inset-0 z-20 bg-white rounded-2xl p-5 flex flex-col justify-between border border-border shadow-lg animate-terms-in dark:bg-[#1a1a18] dark:border-white/10"
           >
-          <div className="flex items-center justify-between border-b border-border pb-3">
-            <div className="flex items-center gap-2 text-navy font-bold text-sm">
-              <ShieldCheckIcon size={18} className="text-green-ink" />
-              <h3 id="terms-drawer-title">Política de Tratamiento de Datos</h3>
+            <div className="flex items-center justify-between border-b border-border pb-3">
+              <div className="flex items-center gap-2 text-navy font-bold text-sm">
+                <ShieldCheckIcon size={18} className="text-green-ink" />
+                <h3 id="terms-drawer-title">Política de Tratamiento de Datos</h3>
+              </div>
+              <button
+                ref={termsCloseRef}
+                type="button"
+                onClick={() => setShowTerms(false)}
+                aria-label="Cerrar términos"
+                className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] -mr-2 rounded-xl text-muted-2 hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <CloseIcon size={18} />
+              </button>
             </div>
-            <button
-              ref={termsCloseRef}
-              type="button"
-              onClick={() => setShowTerms(false)}
-              aria-label="Cerrar términos"
-              className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] -mr-2 rounded-xl text-muted-2 hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <CloseIcon size={18} />
-            </button>
-          </div>
 
-          <div className="flex-1 overflow-y-auto py-3 space-y-2.5 text-xs text-muted-foreground leading-relaxed pr-1 overscroll-contain">
-            <p>
-              <strong className="text-navy font-semibold">1. Marco Legal:</strong> Plataxi trata sus datos personales de acuerdo con la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 y demás normas que la modifiquen o complementen.
-            </p>
-            <p>
-              <strong className="text-navy font-semibold">2. Finalidad del Tratamiento:</strong> Los datos recolectados se utilizarán exclusivamente para: (i) validar su identidad, (ii) evaluar el perfil crediticio y capacidad de pago, (iii) gestionar el desembolso a la cuenta indicada, y (iv) prevenir el fraude y suplantación de identidad.
-            </p>
-            <p>
-              <strong className="text-navy font-semibold">3. Seguridad y Confidencialidad:</strong> Toda la información viaja cifrada con estándares bancarios (TLS 1.3 / AES-256) y no es compartida con terceros no autorizados.
-            </p>
-            <p>
-              <strong className="text-navy font-semibold">4. Derechos del Titular:</strong> Usted tiene derecho a conocer, actualizar, rectificar y solicitar la supresión de sus datos personales a través de nuestros canales oficiales de atención.
-            </p>
-          </div>
+            <div className="flex-1 overflow-y-auto py-3 space-y-2.5 text-xs text-muted-foreground leading-relaxed pr-1 overscroll-contain">
+              <p>
+                <strong className="text-navy font-semibold">1. Marco Legal:</strong> Plataxi trata sus datos personales de acuerdo con la Ley Estatutaria 1581 de 2012, el Decreto 1377 de 2013 y demás normas que la modifiquen o complementen.
+              </p>
+              <p>
+                <strong className="text-navy font-semibold">2. Finalidad del Tratamiento:</strong> Los datos recolectados se utilizarán exclusivamente para: (i) validar su identidad, (ii) evaluar el perfil crediticio y capacidad de pago, (iii) gestionar el desembolso a la cuenta indicada, y (iv) prevenir el fraude y suplantación de identidad.
+              </p>
+              <p>
+                <strong className="text-navy font-semibold">3. Seguridad y Confidencialidad:</strong> Toda la información viaja cifrada con estándares bancarios (TLS 1.3 / AES-256) y no es compartida con terceros no autorizados.
+              </p>
+              <p>
+                <strong className="text-navy font-semibold">4. Derechos del Titular:</strong> Usted tiene derecho a conocer, actualizar, rectificar y solicitar la supresión de sus datos personales a través de nuestros canales oficiales de atención.
+              </p>
+            </div>
 
-          <div className="pt-3 border-t border-border flex items-center justify-between gap-3">
-            <a
-              href="/legal/privacidad"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[11px] text-muted-2 hover:text-navy underline"
-            >
-              Ver documento completo ↗
-            </a>
-            <button
-              type="button"
-              onClick={() => {
-                setConsent(true);
-                setConsentError('');
-                setShowTerms(false);
-              }}
-              className="px-4 py-2 min-h-[44px] rounded-xl bg-green text-ink font-bold hover:bg-green-bright border-0 transition-colors focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              Entendido y autorizar
-            </button>
-          </div>
+            <div className="pt-3 border-t border-border flex items-center justify-between gap-3">
+              <a
+                href="/legal/privacidad"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] text-muted-2 hover:text-navy underline"
+              >
+                Ver documento completo ↗
+              </a>
+              <button
+                type="button"
+                onClick={() => {
+                  setConsent(true);
+                  setConsentError('');
+                  setShowTerms(false);
+                }}
+                className="px-4 py-2 min-h-[44px] rounded-xl bg-green text-ink font-bold hover:bg-green-bright border-0 transition-colors focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                Entendido y autorizar
+              </button>
+            </div>
           </div>
         </FocusScope.Root>
       )}
