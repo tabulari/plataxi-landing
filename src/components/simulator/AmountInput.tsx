@@ -33,6 +33,7 @@ export function AmountInput({
   inputRef: React.RefObject<HTMLInputElement | null>;
   markInteract: (control: string) => void;
 }) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     markInteract('amount');
     const digits = e.target.value.replace(/\D/g, '');
@@ -55,6 +56,7 @@ export function AmountInput({
     setAmount(clampAmount(raw, amountMin, amountMax), false);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleInputBlur = () => {
     setHint('');
     const v = clampRoundAmount(amount || amountMin, amountMin, amountMax, amountStep);

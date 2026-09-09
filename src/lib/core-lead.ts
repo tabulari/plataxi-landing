@@ -69,8 +69,9 @@ export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadC
     contactName: input.contactName || null,
     contactPhone: input.contactPhone ? input.contactPhone.replace(/\D/g, '') : null,
     email: input.email,
-    // Step 2
-    taxiRole: input.taxiRole === 'Taxi propio' ? 'taxi_propio' : 'conduzco_taxi',
+    // Step 2 — plataforma Uber/DiDi mapea a conduzco_taxi hasta que Core soporte "plataforma"
+    taxiRole:
+      input.taxiRole === 'Taxi propio' ? 'taxi_propio' : 'conduzco_taxi',
     taxiPlate: input.taxiPlate || null,
     taxiCompany: input.taxiCompany,
     drivingTime: input.drivingTime === 'lt1' ? 0 : input.drivingTime === '1to3' ? 2 : 6,
