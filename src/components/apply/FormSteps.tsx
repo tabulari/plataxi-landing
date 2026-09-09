@@ -20,11 +20,13 @@ type FieldHandlers = {
   errors: Partial<Record<FieldName, string>>;
 };
 
-const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => {
-  const { className, ...rest } = props;
+const Req = () => <span aria-hidden="true" className="text-destructive ml-0.5">*</span>;
+
+const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props: React.InputHTMLAttributes<HTMLInputElement> & { required?: boolean } = {}) => {
+  const { className, required, ...rest } = props;
   return (
     <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_input]:border-destructive')}>
-      <span className="text-sm font-semibold text-foreground">{label}</span>
+      <span className="text-sm font-semibold text-foreground">{label}{required && <Req />}</span>
       <input
         name={name}
         onChange={(e) => handlers.onFieldChange(name, e.target.value)}
@@ -42,9 +44,9 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
   );
 };
 
-const selectEl = (name: FieldName, label: string, placeholder: string, options: readonly string[], handlers: FieldHandlers, value: string) => (
+const selectEl = (name: FieldName, label: string, placeholder: string, options: readonly string[], handlers: FieldHandlers, value: string, required = false) => (
   <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_select]:border-destructive')}>
-    <span className="text-sm font-semibold text-foreground">{label}</span>
+    <span className="text-sm font-semibold text-foreground">{label}{required && <Req />}</span>
     <select
       name={name}
       value={value}
@@ -68,9 +70,10 @@ const toggleGroup = (
   current: string,
   handlers: FieldHandlers,
   error?: string,
+  required = false,
 ) => (
   <div className="flex flex-col gap-1.5">
-    <span className="text-sm font-semibold text-foreground">{label}</span>
+    <span className="text-sm font-semibold text-foreground">{label}{required && <Req />}</span>
     <div className={cn('grid gap-2', `grid-cols-${options.length}`)}>
       {options.map((opt) => (
         <button
@@ -131,6 +134,7 @@ export function Step1({ values, handlers }: {
           <ShieldCheckIcon size={14} aria-hidden="true" className="text-green-ink shrink-0" />
           Tus datos van cifrados. Solo los usamos para tu crédito.
         </p>
+        <p className="text-xs text-muted-foreground mt-2"><span className="text-destructive">*</span> Campos requeridos</p>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -141,6 +145,7 @@ export function Step1({ values, handlers }: {
           placeholder: 'Ej. Laura Martínez',
           value: values.fullName,
           className: 'h-[52px] text-[15px] font-medium',
+          required: true,
         })}
       </div>
 
@@ -154,6 +159,7 @@ export function Step1({ values, handlers }: {
           placeholder: 'Ej. 1.024.567.890',
           value: values.idNumber,
           onChange: (e) => handlers.onFieldChange('idNumber', formatCedula(e.target.value)),
+          required: true,
         })}
         {fieldEl('phone', 'Tu número principal', handlers, {
           type: 'tel',
@@ -163,6 +169,7 @@ export function Step1({ values, handlers }: {
           placeholder: 'Ej. 300 123 4567',
           value: values.phone,
           onChange: (e) => handlers.onFieldChange('phone', formatPhone(e.target.value)),
+          required: true,
         })}
       </div>
 
@@ -221,6 +228,7 @@ export function Step1({ values, handlers }: {
         enterKeyHint: 'next',
         placeholder: 'tucorreo@ejemplo.com',
         value: values.email,
+        required: true,
       })}
     </section>
   );
@@ -237,9 +245,10 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
           Tu taxi
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">Cuéntanos sobre tu vehículo y tu experiencia.</p>
+        <p className="text-xs text-muted-foreground mt-2"><span className="text-destructive">*</span> Campos requeridos</p>
       </div>
 
-      {selectEl('taxiRole', '¿Cuál es tu rol en el taxi?', 'Selecciona tu rol', TAXI_ROLES, handlers, values.taxiRole)}
+      {selectEl('taxiRole', '¿Cuál es tu rol en el taxi?', 'Selecciona tu rol', TAXI_ROLES, handlers, values.taxiRole, true)}
 
       {/* Placa — solo visible cuando taxiRole = "Taxi propio" */}
       {values.taxiRole === 'Taxi propio' && (
@@ -250,6 +259,7 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
             enterKeyHint: 'next',
             placeholder: 'Ej. ABC 123',
             value: values.taxiPlate,
+            required: true,
           })}
         </div>
       )}
@@ -260,30 +270,35 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
         enterKeyHint: 'next',
         placeholder: 'Ej. Radio Taxi Azul',
         value: values.taxiCompany,
+        required: true,
       })}
 
-      {/* Slider tiempo conduciendo */}
+      {/* Badges tiempo conduciendo */}
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-semibold text-foreground">
-          ¿Cuánto tiempo lleva conduciendo?{' '}
-          <span className="text-primary-brand font-bold">
-            {values.drivingTime} {values.drivingTime === '1' ? 'año' : 'años'}
-          </span>
-        </span>
-        <input
-          name="drivingTime"
-          type="range"
-          min={1}
-          max={10}
-          step={1}
-          value={values.drivingTime}
-          onChange={(e) => handlers.onFieldChange('drivingTime', e.target.value)}
-          aria-label={`Tiempo conduciendo: ${values.drivingTime} años`}
-          className="w-full h-2 rounded-full accent-green cursor-pointer"
-        />
-        <div className="flex justify-between text-xs text-muted-foreground px-0.5">
-          <span>1 año</span>
-          <span>10 años</span>
+        <span className="text-sm font-semibold text-foreground">¿Cuánto tiempo lleva conduciendo?<Req /></span>
+        <div className="flex gap-2 flex-wrap" role="group" aria-label="Tiempo conduciendo">
+          {([
+            { value: 'lt1',  label: 'Menos de 1 año' },
+            { value: '1to3', label: '1 a 3 años' },
+            { value: 'gt5',  label: 'Más de 5 años' },
+          ] as const).map(({ value, label }) => {
+            const selected = values.drivingTime === value;
+            return (
+              <button
+                key={value}
+                type="button"
+                onClick={() => handlers.onFieldChange('drivingTime', value)}
+                aria-pressed={selected}
+                className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
+                  selected
+                    ? 'bg-primary-brand text-primary-dark border-primary-brand'
+                    : 'bg-transparent text-foreground border-border hover:border-primary-brand/60'
+                }`}
+              >
+                {label}
+              </button>
+            );
+          })}
         </div>
         <FieldError id="err-drivingTime" message={handlers.errors.drivingTime} />
       </div>
@@ -309,6 +324,7 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
           Tus ingresos
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">2 datos para validar tu capacidad de pago.</p>
+        <p className="text-xs text-muted-foreground mt-2"><span className="text-destructive">*</span> Campos requeridos</p>
       </div>
 
       {toggleGroup(
@@ -317,6 +333,8 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
         [{ value: 'daily', label: 'Diario' }, { value: 'monthly', label: 'Mensual' }],
         values.incomeType,
         handlers,
+        undefined,
+        true,
       )}
 
       {fieldEl('income', values.incomeType === 'daily' ? '¿Cuánto ganas al día?' : '¿Cuánto ganas al mes? (aprox)', handlers, {
@@ -326,6 +344,7 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
         placeholder: values.incomeType === 'daily' ? 'Ej. 80.000' : 'Ej. 2.500.000',
         value: values.income,
         onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
+        required: true,
       })}
 
       {toggleGroup(
@@ -334,6 +353,8 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
         [{ value: 'yes', label: 'Sí' }, { value: 'no', label: 'No' }],
         values.hasBank,
         handlers,
+        undefined,
+        true,
       )}
 
       {values.hasBank === 'yes' && (
@@ -380,8 +401,9 @@ export function Step4({ values, consent, consentError, setConsent, setConsentErr
     if (showTerms) termsCloseRef.current?.focus();
   }, [showTerms]);
 
-  const drivingLabel = values.drivingTime
-    ? `${values.drivingTime} ${values.drivingTime === '1' ? 'año' : 'años'}`
+  const drivingLabel = values.drivingTime === 'lt1' ? 'Menos de 1 año'
+    : values.drivingTime === '1to3' ? '1 a 3 años'
+    : values.drivingTime === 'gt5' ? 'Más de 5 años'
     : '—';
 
   const reviewRows: { k: string; v: string; full?: boolean }[] = [

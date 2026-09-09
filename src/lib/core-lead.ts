@@ -73,7 +73,7 @@ export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadC
     taxiRole: input.taxiRole === 'Taxi propio' ? 'taxi_propio' : 'conduzco_taxi',
     taxiPlate: input.taxiPlate || null,
     taxiCompany: input.taxiCompany,
-    drivingTime: parseInt(input.drivingTime, 10),
+    drivingTime: input.drivingTime === 'lt1' ? 0 : input.drivingTime === '1to3' ? 2 : 6,
     // Step 3
     income,
     hasBank: input.hasBank === 'yes',
