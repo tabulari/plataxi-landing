@@ -11,6 +11,13 @@ import { z } from "zod";
 export const TAXI_ROLES = ["Taxi propio", "Conduzco taxi"] as const;
 export type TaxiRole = (typeof TAXI_ROLES)[number];
 
+export const DRIVING_TIME_OPTIONS = [
+  { value: '1-3', label: '1 a 3 años' },
+  { value: '3-5', label: '3 a 5 años' },
+  { value: '5+',  label: 'Mayor a 5 años' },
+] as const;
+export type DrivingTimeValue = (typeof DRIVING_TIME_OPTIONS)[number]['value'];
+
 const MSG = {
   fullName: "¿Cómo te llamas? Nombre y apellido.",
   idNumber: "Revisa tu cédula. 7 a 10 dígitos.",
@@ -59,10 +66,10 @@ export const fieldSchemas = {
     .refine((v) => (TAXI_ROLES as readonly string[]).includes(v), MSG.taxiRole),
   taxiPlate: z.string(), // conditional — validated cross-field in validateStep
   taxiCompany: z.string().refine((v) => v.trim().length >= 2, MSG.taxiCompany),
-  drivingTime: z.string().refine((v) => {
-    const n = parseInt(v, 10);
-    return Number.isFinite(n) && n >= 1 && n <= 10;
-  }, MSG.drivingTime),
+  drivingTime: z.string().refine(
+    (v) => DRIVING_TIME_OPTIONS.some((o) => o.value === v),
+    MSG.drivingTime,
+  ),
 
   // Step 3 — Tus ingresos
   income: z.string().refine((v) => digits(v).length >= 5, MSG.income),

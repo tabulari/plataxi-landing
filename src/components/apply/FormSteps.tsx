@@ -5,6 +5,7 @@ import * as FocusScope from '@radix-ui/react-focus-scope';
 import { fmtCOP } from '@/lib/credit';
 import {
   CONSENT_TEXT,
+  DRIVING_TIME_OPTIONS,
   TAXI_ROLES,
   type FieldName,
 } from '@/lib/application-schema';
@@ -19,11 +20,13 @@ type FieldHandlers = {
   errors: Partial<Record<FieldName, string>>;
 };
 
-const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props: React.InputHTMLAttributes<HTMLInputElement> = {}) => {
-  const { className, ...rest } = props;
+const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props: React.InputHTMLAttributes<HTMLInputElement> & { required?: boolean } = {}) => {
+  const { className, required, ...rest } = props;
   return (
     <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_input]:border-destructive')}>
-      <span className="text-sm font-semibold text-foreground">{label}</span>
+      <span className="text-sm font-semibold text-foreground">
+        {label}{required && <span className="text-destructive ml-0.5" aria-hidden="true">*</span>}
+      </span>
       <input
         name={name}
         onChange={(e) => handlers.onFieldChange(name, e.target.value)}
@@ -41,9 +44,11 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
   );
 };
 
-const selectEl = (name: FieldName, label: string, placeholder: string, options: readonly string[], handlers: FieldHandlers, value: string) => (
+const selectEl = (name: FieldName, label: string, placeholder: string, options: readonly string[], handlers: FieldHandlers, value: string, required?: boolean) => (
   <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_select]:border-destructive')}>
-    <span className="text-sm font-semibold text-foreground">{label}</span>
+    <span className="text-sm font-semibold text-foreground">
+      {label}{required && <span className="text-destructive ml-0.5" aria-hidden="true">*</span>}
+    </span>
     <select
       name={name}
       value={value}
@@ -67,9 +72,12 @@ const toggleGroup = (
   current: string,
   handlers: FieldHandlers,
   error?: string,
+  required?: boolean,
 ) => (
   <div className="flex flex-col gap-1.5">
-    <span className="text-sm font-semibold text-foreground">{label}</span>
+    <span className="text-sm font-semibold text-foreground">
+      {label}{required && <span className="text-destructive ml-0.5" aria-hidden="true">*</span>}
+    </span>
     <div className={cn('grid gap-2', `grid-cols-${options.length}`)}>
       {options.map((opt) => (
         <button
@@ -139,6 +147,7 @@ export function Step1({ values, handlers }: {
           placeholder: 'Ej. Laura Martínez',
           value: values.fullName,
           className: 'h-[52px] text-[15px] font-medium',
+          required: true,
         })}
       </div>
 
@@ -152,6 +161,7 @@ export function Step1({ values, handlers }: {
           placeholder: 'Ej. 1.024.567.890',
           value: values.idNumber,
           onChange: (e) => handlers.onFieldChange('idNumber', formatCedula(e.target.value)),
+          required: true,
         })}
         {fieldEl('phone', 'Tu número principal', handlers, {
           type: 'tel',
@@ -161,6 +171,7 @@ export function Step1({ values, handlers }: {
           placeholder: 'Ej. 300 123 4567',
           value: values.phone,
           onChange: (e) => handlers.onFieldChange('phone', formatPhone(e.target.value)),
+          required: true,
         })}
       </div>
 
@@ -191,6 +202,7 @@ export function Step1({ values, handlers }: {
         enterKeyHint: 'next',
         placeholder: 'tucorreo@ejemplo.com',
         value: values.email,
+        required: true,
       })}
     </section>
   );
@@ -212,7 +224,7 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">Cuéntanos sobre tu vehículo y tu experiencia.</p>
       </div>
 
-      {selectEl('taxiRole', '¿Cuál es tu rol en el taxi?', 'Selecciona tu rol', TAXI_ROLES, handlers, values.taxiRole)}
+      {selectEl('taxiRole', '¿Cuál es tu rol en el taxi?', 'Selecciona tu rol', TAXI_ROLES, handlers, values.taxiRole, true)}
 
       {/* Placa — solo visible cuando taxiRole = "Taxi propio" */}
       {values.taxiRole === 'Taxi propio' && (
@@ -223,6 +235,7 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
             enterKeyHint: 'next',
             placeholder: 'Ej. ABC 123',
             value: values.taxiPlate,
+            required: true,
           })}
         </div>
       )}
@@ -233,33 +246,18 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
         enterKeyHint: 'next',
         placeholder: 'Ej. Radio Taxi Azul',
         value: values.taxiCompany,
+        required: true,
       })}
 
-      {/* Slider tiempo conduciendo */}
-      <div className="flex flex-col gap-2">
-        <span className="text-sm font-semibold text-foreground">
-          ¿Cuánto tiempo lleva conduciendo?{' '}
-          <span className="text-primary-brand font-bold">
-            {values.drivingTime} {values.drivingTime === '1' ? 'año' : 'años'}
-          </span>
-        </span>
-        <input
-          name="drivingTime"
-          type="range"
-          min={1}
-          max={10}
-          step={1}
-          value={values.drivingTime}
-          onChange={(e) => handlers.onFieldChange('drivingTime', e.target.value)}
-          aria-label={`Tiempo conduciendo: ${values.drivingTime} años`}
-          className="w-full h-2 rounded-full accent-green cursor-pointer"
-        />
-        <div className="flex justify-between text-xs text-muted-foreground px-0.5">
-          <span>1 año</span>
-          <span>10 años</span>
-        </div>
-        <FieldError id="err-drivingTime" message={handlers.errors.drivingTime} />
-      </div>
+      {toggleGroup(
+        'drivingTime',
+        '¿Cuánto tiempo lleva conduciendo?',
+        DRIVING_TIME_OPTIONS.map((o) => ({ value: o.value, label: o.label })),
+        values.drivingTime,
+        handlers,
+        undefined,
+        true,
+      )}
     </section>
   );
 }
@@ -305,6 +303,8 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
         [{ value: 'daily', label: 'Diario' }, { value: 'monthly', label: 'Mensual' }],
         values.incomeType,
         handlers,
+        undefined,
+        true,
       )}
 
       {fieldEl('income', values.incomeType === 'daily' ? '¿Cuánto ganas al día?' : '¿Cuánto ganas al mes? (aprox)', handlers, {
@@ -314,6 +314,7 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
         placeholder: values.incomeType === 'daily' ? 'Ej. 80.000' : 'Ej. 2.500.000',
         value: values.income,
         onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
+        required: true,
       })}
 
       {toggleGroup(
@@ -322,6 +323,8 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
         [{ value: 'yes', label: 'Sí' }, { value: 'no', label: 'No' }],
         values.hasBank,
         handlers,
+        undefined,
+        true,
       )}
 
       {values.hasBank === 'yes' && (
@@ -363,9 +366,7 @@ export function Step4({ values, consent, consentError, setConsent, setConsentErr
     if (showTerms) termsCloseRef.current?.focus();
   }, [showTerms]);
 
-  const drivingLabel = values.drivingTime
-    ? `${values.drivingTime} ${values.drivingTime === '1' ? 'año' : 'años'}`
-    : '—';
+  const drivingLabel = DRIVING_TIME_OPTIONS.find((o) => o.value === values.drivingTime)?.label ?? '—';
 
   const reviewRows: { k: string; v: string; full?: boolean }[] = [
     { k: 'Monto solicitado', v: `$${fmtCOP(frozen.amount)} COP` },

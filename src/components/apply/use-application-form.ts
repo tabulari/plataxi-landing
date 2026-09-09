@@ -41,7 +41,7 @@ export const STEP_TITLES: Record<number, string> = {
 
 export const emptyValues: Values = {
   fullName: '', idNumber: '', phone: '', contactName: '', contactPhone: '', email: '',
-  taxiRole: '', taxiPlate: '', taxiCompany: '', drivingTime: '5',
+  taxiRole: '', taxiPlate: '', taxiCompany: '', drivingTime: '',
   income: '', incomeType: 'monthly', hasBank: '', bankEntity: '',
 };
 

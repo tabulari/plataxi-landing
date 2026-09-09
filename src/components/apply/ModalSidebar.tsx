@@ -20,7 +20,7 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
   return (
     <aside
       aria-label="Resumen de simulación"
-      className="dot-grid w-[240px] bg-surface-dark border-r border-white/10 text-white p-6 flex flex-col shrink-0 max-[760px]:w-full max-[760px]:border-r-0 max-[760px]:border-b max-[760px]:flex-row max-[760px]:items-center max-[760px]:justify-between max-[760px]:p-3.5 max-[760px]:pr-14 tabular-nums"
+      className="dot-grid w-[196px] bg-surface-dark border-r border-white/10 text-white p-4 flex flex-col shrink-0 max-[760px]:w-full max-[760px]:border-r-0 max-[760px]:border-b max-[760px]:flex-row max-[760px]:items-center max-[760px]:justify-between max-[760px]:p-3.5 max-[760px]:pr-14 tabular-nums"
     >
       {/* Mobile Compact Header (<760px) */}
       <div className="hidden max-[760px]:flex items-center justify-between w-full gap-3 text-left">
