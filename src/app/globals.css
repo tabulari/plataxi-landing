@@ -525,6 +525,62 @@ a:focus-visible {
 }
 .flash { animation: flash 0.28s ease-out; }
 
+/* ===== footer texture & animations ===== */
+.footer-texture {
+  background-color: #161615;
+  background-image:
+    /* Vignette: dark edges, subtle center lift like metallic carbon reference */
+    radial-gradient(ellipse 90% 90% at 50% 50%, rgba(40, 40, 38, 0.25) 0%, rgba(0, 0, 0, 0.82) 100%),
+    /* Honeycomb row A: dark hole + lighter metallic rim */
+    radial-gradient(circle, #0d0d0c 3.5px, #2e2e2c 4px, #222221 5px, transparent 5px),
+    /* Honeycomb row B: offset half-cell for hex arrangement */
+    radial-gradient(circle, #0d0d0c 3.5px, #2e2e2c 4px, #222221 5px, transparent 5px);
+  background-size: 100% 100%, 11px 19px, 11px 19px;
+  background-position: 0 0, 0 0, 5.5px 9.5px;
+  background-repeat: no-repeat, repeat, repeat;
+}
+
+.footer-cursor-glow {
+  background: radial-gradient(
+    560px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(246, 196, 8, 0.10) 0%,
+    rgba(246, 196, 8, 0.03) 45%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+footer:hover .footer-cursor-glow,
+section:hover .footer-cursor-glow {
+  opacity: 1;
+}
+
+@keyframes footer-hex-drift {
+  from { background-position: 0 0, 0 0, 5.5px 9.5px; }
+  to   { background-position: 0 0, 11px 19px, 16.5px 28.5px; }
+}
+
+.footer-grid-drift {
+  animation: footer-hex-drift 28s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-grid-drift { animation: none; }
+}
+
+@keyframes footer-col-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.footer-col-in {
+  animation: footer-col-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.footer-col-in-1 { animation-delay: 0ms; }
+.footer-col-in-2 { animation-delay: 80ms; }
+.footer-col-in-3 { animation-delay: 160ms; }
+
 /* ===== reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
@@ -537,4 +593,6 @@ a:focus-visible {
   .animate-pulse { animation: none !important; }
   .btn-spinner { animation: none !important; }
   .flash { animation: none !important; }
+  .footer-grid-drift { animation: none !important; }
+  .footer-col-in { animation: none !important; opacity: 1 !important; transform: none !important; }
 }

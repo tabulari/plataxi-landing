@@ -56,13 +56,19 @@ export function CtaBanner() {
       ref={containerRef}
       id="cta"
       aria-labelledby="cta-heading"
-      className="dot-grid bg-primary-dark text-white py-16 lg:py-24 relative z-10 -mt-2 overflow-hidden"
+      onMouseMove={(e) => {
+        const r = e.currentTarget.getBoundingClientRect();
+        e.currentTarget.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+        e.currentTarget.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+      }}
+      className="footer-texture footer-grid-drift bg-primary-dark text-white py-16 lg:py-24 relative z-10 -mt-2 overflow-hidden"
     >
+      <div aria-hidden="true" className="footer-cursor-glow pointer-events-none absolute inset-0" />
       <div className="mx-auto max-w-container px-6 relative pb-6 lg:pb-10">
         <div
           ref={panelRef}
           data-cta="panel"
-          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 rounded-3xl bg-white/[0.05] ring-1 ring-white/12 p-6 sm:p-10 lg:p-16 backdrop-blur-xl shadow-lg overflow-hidden"
+          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 p-6 sm:p-10 lg:p-16 rounded-3xl bg-white/[0.04] ring-1 ring-primary-brand/20 shadow-[0_0_80px_-10px_rgba(246,196,8,0.22),0_0_30px_-5px_rgba(246,196,8,0.12)]"
         >
           {/* Left Column: Pure, Saturated Value Anchor */}
           <div className="flex-1 min-w-0 relative space-y-5 text-left">
@@ -88,7 +94,7 @@ export function CtaBanner() {
           {/* Right Column: VARIANT B — Titanium Light Capsule */}
           <div
             data-cta="action-block"
-            className="flex flex-col justify-center items-stretch gap-3 w-full sm:w-[310px] lg:shrink-0 lg:border-l lg:border-white/10 lg:pl-10 relative"
+            className="flex flex-col justify-center items-stretch gap-3 w-full sm:w-[310px] lg:shrink-0 lg:pl-10 relative"
           >
             {/* Primary: Brilliant Pure White Titanium Capsule with Double Rim */}
             <ApplyButton
