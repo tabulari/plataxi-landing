@@ -14,6 +14,7 @@ const TEXT = "--color-secondary-text-rgb";
 const TEXT_AA = "--color-secondary-text-aa-rgb";
 const LINE = "--color-secondary-border-rgb";
 const WHITE = "--color-white-rgb";
+const ERROR = "--color-feedback-error-rgb";
 
 const config: Config = {
   content: ["./src/**/*.{ts,tsx,mdx}"],
@@ -32,9 +33,8 @@ const config: Config = {
         "secondary-text": tint(TEXT),
         "secondary-border": tint(LINE),
 
-        // Feedback colors (user states only, not brand identity). The palette has
-        // no red and no green, so these carry an icon — see FieldError.
-        "feedback-error": { DEFAULT: tint(DARK), bg: tint(SURFACE) },
+        // Feedback colors (user states only, not brand identity).
+        "feedback-error": { DEFAULT: tint(ERROR), bg: tint(SURFACE) },
         "feedback-success": { DEFAULT: tint(BRAND), bg: tint(SURFACE) },
 
         // ShadCN semantic tokens
@@ -46,7 +46,7 @@ const config: Config = {
         secondary: { DEFAULT: tint(BRAND), foreground: tint(DARK) },
         muted: { DEFAULT: tint(SURFACE), foreground: tint(TEXT_AA) },
         accent: { DEFAULT: tint(SURFACE), foreground: tint(DARK) },
-        destructive: { DEFAULT: tint(DARK), foreground: tint(WHITE) },
+        destructive: { DEFAULT: tint(ERROR), foreground: tint(WHITE) },
         border: tint(LINE),
         input: tint(LINE),
         ring: tint(DARK),

@@ -65,3 +65,13 @@ The following skills are installed in `.agents/skills/` and must be leveraged ac
 1. **Accessibility First**: Semantic HTML elements (`<button>`, `<main>`, `<nav>`, `<a>`) take precedence over generic `<div>` with handlers. All interactive elements must have visible focus rings and proper ARIA labels.
 2. **Performance & Motion**: Use GSAP or CSS transforms for animations; avoid triggering layout reflows (`width`, `height`, `top`). Respect `prefers-reduced-motion`.
 3. **Mobile Responsive**: Plataxi users predominantly access the loan simulator on mobile devices. Design mobile-first and test responsive scaling across breakpoints.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
