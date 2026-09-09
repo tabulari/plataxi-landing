@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { fmtCOP, validateApplication, type Frequency } from '@/lib/credit';
+import { fmtCOP, validateApplication, isTermDisabled, type Frequency } from '@/lib/credit';
 import { config } from '@/lib/config';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
@@ -31,10 +31,12 @@ export function Simulator() {
     amountStep,
     amountStepBig,
     term,
+    termOptions,
     offeredFrequencies,
     frequency,
     sim,
     setAmount,
+    setTerm,
     setFrequency,
   } = useSimulator();
 
@@ -44,6 +46,27 @@ export function Simulator() {
   );
   const isMinAmount = amount <= amountMin;
   const isHighAmount = amount > config.credit.highAmountThreshold;
+  const terms = useMemo(
+    () =>
+      termOptions.map((value) => {
+        const disabled = isTermDisabled(amount, value);
+        let reason: string | undefined;
+        if (disabled) {
+          reason =
+            value === 1
+              ? `Para montos superiores a $${fmtCOP(config.credit.highAmountThreshold)} el plazo mínimo es ${config.credit.highAmountMinTerm} meses`
+              : `Para $${fmtCOP(amountMin)} solo 1 mes`;
+          if (isMinAmount) reason = `Para $${fmtCOP(amountMin)} solo 1 mes`;
+        }
+        return {
+          value,
+          label: `${value} ${value === 1 ? 'mes' : 'meses'}`,
+          disabled,
+          title: reason,
+        };
+      }),
+    [termOptions, amount, amountMin, isMinAmount, isHighAmount],
+  );
 
   // 5. Validación instantánea (amount vivo) para que chips/hint y CTA/mensaje estén sincronizados
   // sim usa settledAmount (150ms debounce) solo para la cuota; validación no debe laggear
@@ -122,13 +145,30 @@ export function Simulator() {
         markInteract={markInteract}
       />
 
-      {/* Plazo automático — visible badge, no solo sr-only */}
-      <div className="flex items-center gap-2 text-xs sm:text-sm">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-green/10 border border-green/20 text-navy font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-green animate-pulse" aria-hidden="true" />
-          Plazo: {term} {term === 1 ? 'mes' : 'meses'} (automático)
-        </span>
-        <span className="text-muted-2 text-xs">según monto</span>
+      {/* Plazo — chips 1-3 con reglas claras */}
+      <div>
+        <p className="text-sm font-semibold text-foreground mb-1.5" id="plazoLabel">
+          Elige el plazo
+        </p>
+        <ChipRadioGroup
+          className="flex flex-wrap gap-2"
+          ariaLabelledBy="plazoLabel"
+          ariaDescribedBy="plazoHint"
+          hideCheck
+          options={terms}
+          value={term}
+          onChange={(v) => {
+            markInteract('term');
+            setTerm(v);
+          }}
+        />
+        <p id="plazoHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]" aria-live="polite">
+          {isMinAmount
+            ? `Para $${fmtCOP(amountMin)} solo 1 mes`
+            : isHighAmount
+              ? `Para montos superiores a $${fmtCOP(config.credit.highAmountThreshold)} el plazo mínimo es ${config.credit.highAmountMinTerm} meses`
+              : '\u00A0'}
+        </p>
       </div>
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {snapAnnouncement}
