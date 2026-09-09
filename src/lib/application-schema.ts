@@ -59,10 +59,7 @@ export const fieldSchemas = {
     .refine((v) => (TAXI_ROLES as readonly string[]).includes(v), MSG.taxiRole),
   taxiPlate: z.string(), // conditional — validated cross-field in validateStep
   taxiCompany: z.string().refine((v) => v.trim().length >= 2, MSG.taxiCompany),
-  drivingTime: z.string().refine((v) => {
-    const n = parseInt(v, 10);
-    return Number.isFinite(n) && n >= 1 && n <= 10;
-  }, MSG.drivingTime),
+  drivingTime: z.enum(['lt1', '1to3', 'gt5'], { message: MSG.drivingTime }),
 
   // Step 3 — Tus ingresos
   income: z.string().refine((v) => digits(v).length >= 5, MSG.income),

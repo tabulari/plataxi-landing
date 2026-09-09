@@ -42,7 +42,7 @@ export const STEP_TITLES: Record<number, string> = {
 
 export const emptyValues: Values = {
   fullName: '', idNumber: '', phone: '', contactName: '', contactPhone: '', email: '',
-  taxiRole: '', taxiPlate: '', taxiCompany: '', drivingTime: '5',
+  taxiRole: '', taxiPlate: '', taxiCompany: '', drivingTime: '',
   income: '', incomeType: 'monthly', hasBank: '', bankEntity: '',
 };
 
@@ -273,7 +273,8 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     if (step === 2) {
       const base =
         (TAXI_ROLES as readonly string[]).includes(values.taxiRole) &&
-        values.taxiCompany.trim().length >= 2;
+        values.taxiCompany.trim().length >= 2 &&
+        ['lt1', '1to3', 'gt5'].includes(values.drivingTime);
       const plate = values.taxiRole !== 'Taxi propio' || values.taxiPlate.trim().length > 0;
       return base && plate;
     }
