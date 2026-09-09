@@ -49,13 +49,6 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
     if (!v) onChange('');
   }
 
-  function updateDropdownRect() {
-    if (inputRef.current) {
-      const r = inputRef.current.getBoundingClientRect();
-      setDropdownRect({ top: r.bottom, left: r.left, width: r.width });
-    }
-  }
-
   function handleFocus() {
     updateDropdownRect();
     setQuery('');
