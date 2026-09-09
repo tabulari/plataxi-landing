@@ -108,7 +108,7 @@ export function Benefits() {
         {/* Section panoramic image preserved — inDrive 2:1 aspect ratio with rounded-3xl */}
         <div className="relative w-full aspect-[3/2] sm:aspect-[2/1] rounded-3xl overflow-hidden mb-8 lg:mb-10 shadow-xs border border-border/40">
           <Image
-            src="/hero-conductor.webp"
+            src="/hero-conductor.jpeg"
             alt="Conductor de taxi colombiano consultando su celular junto a su vehículo"
             fill
             sizes="(min-width: 1120px) 1072px, 100vw"
