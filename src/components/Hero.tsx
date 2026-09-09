@@ -7,10 +7,10 @@ export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative w-full min-h-[calc(100dvh-68px)] sm:min-h-[650px] lg:min-h-[720px] max-h-[800px] overflow-hidden flex items-center bg-primary-dark"
+      className="relative w-full min-h-[500px] sm:min-h-[650px] lg:min-h-[800px] overflow-hidden flex items-center bg-primary-dark"
     >
       <Image
-        src="/taxista.webp"
+        src="/hero-updated.jpeg"
         alt="Taxista colombiano con Plataxi"
         fill
         priority
@@ -27,7 +27,7 @@ export function Hero() {
 
       <div className="relative z-10 w-full mx-auto max-w-container px-6 py-10 sm:py-12 lg:py-16">
         <HeroAnim>
-          <div className="max-w-2xl space-y-5">
+          <div className="max-w-2xl space-y-5 text-center sm:text-left">
             <HeroActiveNotice />
 
             {/* Headline — white pill on yellow taxi for contrast, weight reduced so h1 doesn't dominate h2 */}
@@ -42,12 +42,12 @@ export function Hero() {
               </mark>
             </h1>
 
-            <p data-hero-anim className="text-sm sm:text-base text-white leading-relaxed max-w-md">
+            <p data-hero-anim className="text-sm sm:text-base text-white leading-relaxed max-w-md mx-auto sm:mx-0">
               Solo con tu cédula y tu celular. Elige el monto que necesitas hoy y págalo a tu ritmo con cuota fija diaria.
             </p>
 
             {/* Single focused CTA — inDrive: 48px mobile / 64px desktop, 20-26px radius, yellow on dark */}
-            <div data-hero-anim data-slot="hero-ctas" className="pt-1">
+            <div data-hero-anim data-slot="hero-ctas" className="pt-1 flex justify-center sm:justify-start">
               <ScrollButton
                 variant="default"
                 size="lg"
