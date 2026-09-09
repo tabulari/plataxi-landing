@@ -1,10 +1,11 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { fmtCOP, type Simulation } from '@/lib/credit';
 import {
   CONSENT_MESSAGE,
   STEP_FIELDS,
+  TAXI_ROLES,
   validateField,
   type FieldName,
 } from '@/lib/application-schema';
@@ -260,6 +261,33 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     resetForm();
   }, [resetForm]);
 
+  const isStepComplete = useMemo((): boolean => {
+    if (step === 1) {
+      return (
+        validateField('fullName', values.fullName) === '' &&
+        validateField('idNumber', values.idNumber) === '' &&
+        validateField('phone', values.phone) === '' &&
+        validateField('email', values.email) === ''
+      );
+    }
+    if (step === 2) {
+      const base =
+        (TAXI_ROLES as readonly string[]).includes(values.taxiRole) &&
+        values.taxiCompany.trim().length >= 2;
+      const plate = values.taxiRole !== 'Taxi propio' || values.taxiPlate.trim().length > 0;
+      return base && plate;
+    }
+    if (step === 3) {
+      return (
+        validateField('income', values.income) === '' &&
+        values.hasBank === 'yes' &&
+        values.bankEntity.trim().length > 0
+      );
+    }
+    if (step === 4) return consent;
+    return true;
+  }, [step, values, consent]);
+
   return {
     step, setStep,
     values, onFieldChange, onFieldBlur,
@@ -268,6 +296,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     submitStatus, submitErrorCode, radicado, workspaceUrl, submittedAt,
     onNext, submit,
     restoreDraft, resetForm, startNewApplication,
+    isStepComplete,
   };
 }
 

@@ -102,6 +102,10 @@ export function Step1({ values, handlers }: {
   handlers: FieldHandlers;
   frozen: { amount: number; term: number; payment: number; unit: string };
 }) {
+  const [showContact, setShowContact] = useState(
+    () => !!(values.contactName || values.contactPhone),
+  );
+
   const formatCedula = (val: string) => {
     const d = val.replace(/\D/g, '');
     if (!d) return '';
@@ -117,9 +121,6 @@ export function Step1({ values, handlers }: {
 
   return (
     <section className="flex-1 flex flex-col gap-5">
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
-        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '25%' }} />
-      </div>
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 1 de 4</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 1: Datos personales y de contacto">
@@ -164,25 +165,53 @@ export function Step1({ values, handlers }: {
         })}
       </div>
 
-      {/* Contacto secundario — 2 columnas (IP-163) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {fieldEl('contactName', 'Nombre de contacto', handlers, {
-          type: 'text',
-          autoComplete: 'off',
-          enterKeyHint: 'next',
-          placeholder: 'Ej. Carlos Martínez',
-          value: values.contactName,
-        })}
-        {fieldEl('contactPhone', 'Teléfono de contacto', handlers, {
-          type: 'tel',
-          inputMode: 'numeric',
-          autoComplete: 'tel',
-          enterKeyHint: 'next',
-          placeholder: 'Ej. 300 765 4321',
-          value: values.contactPhone,
-          onChange: (e) => handlers.onFieldChange('contactPhone', formatPhone(e.target.value)),
-        })}
-      </div>
+      {/* Contacto secundario — toggle (IP-163) */}
+      {!showContact ? (
+        <button
+          type="button"
+          onClick={() => setShowContact(true)}
+          className="self-start flex items-center gap-1.5 text-sm font-semibold text-green-ink hover:text-green-bright transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
+        >
+          <span className="text-lg leading-none">+</span>
+          Agregar teléfono de contacto
+        </button>
+      ) : (
+        <div className="flex flex-col gap-3 motion-safe:animate-step-in">
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-semibold text-foreground">Contacto secundario</span>
+            <button
+              type="button"
+              onClick={() => {
+                setShowContact(false);
+                handlers.onFieldChange('contactName', '');
+                handlers.onFieldChange('contactPhone', '');
+              }}
+              aria-label="Quitar contacto secundario"
+              className="text-xs text-muted-2 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+            >
+              Quitar
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {fieldEl('contactName', 'Nombre de contacto', handlers, {
+              type: 'text',
+              autoComplete: 'off',
+              enterKeyHint: 'next',
+              placeholder: 'Ej. Carlos Martínez',
+              value: values.contactName,
+            })}
+            {fieldEl('contactPhone', 'Teléfono de contacto', handlers, {
+              type: 'tel',
+              inputMode: 'numeric',
+              autoComplete: 'tel',
+              enterKeyHint: 'next',
+              placeholder: 'Ej. 300 765 4321',
+              value: values.contactPhone,
+              onChange: (e) => handlers.onFieldChange('contactPhone', formatPhone(e.target.value)),
+            })}
+          </div>
+        </div>
+      )}
 
       {fieldEl('email', 'Correo', handlers, {
         type: 'email',
@@ -201,9 +230,6 @@ export function Step1({ values, handlers }: {
 export function Step2({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
   return (
     <section className="flex-1 flex flex-col gap-5">
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
-        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '50%' }} />
-      </div>
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 4</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tu taxi">
@@ -288,9 +314,6 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
 
   return (
     <section className="flex-1 flex flex-col gap-5">
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
-        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '75%' }} />
-      </div>
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 4</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: Tus ingresos">
@@ -385,9 +408,6 @@ export function Step4({ values, consent, consentError, setConsent, setConsentErr
 
   return (
     <section className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
-      <div className="h-1 bg-muted rounded-full overflow-hidden -mx-1">
-        <div className="h-full bg-green transition-all duration-500 ease-out" style={{ width: '100%' }} />
-      </div>
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 4 de 4</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 4: ¿Todo bien?">
