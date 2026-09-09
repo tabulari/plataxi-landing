@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { COLOMBIAN_BANKS } from '@/lib/banks';
 import { cn } from '@/lib/utils';
 import { FieldError } from '../FieldError';
@@ -16,6 +17,7 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [highlighted, setHighlighted] = useState(-1);
+  const [dropdownRect, setDropdownRect] = useState<{ top: number; left: number; width: number } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
@@ -24,6 +26,13 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
         b.toLowerCase().includes(query.toLowerCase()),
       )
     : (COLOMBIAN_BANKS as readonly string[]);
+
+  function updateDropdownRect() {
+    if (inputRef.current) {
+      const r = inputRef.current.getBoundingClientRect();
+      setDropdownRect({ top: r.bottom, left: r.left, width: r.width });
+    }
+  }
 
   function select(bank: string) {
     onChange(bank);
@@ -41,6 +50,7 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
   }
 
   function handleFocus() {
+    updateDropdownRect();
     setQuery('');
     setIsOpen(true);
     setHighlighted(-1);
@@ -57,6 +67,7 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
     if (!isOpen) {
       if (e.key === 'ArrowDown' || e.key === 'Enter') {
         e.preventDefault();
+        updateDropdownRect();
         setIsOpen(true);
         setHighlighted(0);
       }
@@ -116,42 +127,48 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
           value && !isOpen && 'font-medium',
         )}
       />
-      {isOpen && filtered.length > 0 && (
-        <ul
-          ref={listRef}
-          id="bank-listbox"
-          role="listbox"
-          aria-label="Entidades bancarias de Colombia"
-          className="absolute top-full left-0 right-0 z-50 mt-1 max-h-52 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg py-1"
-        >
-          {filtered.map((bank, i) => (
-            <li
-              key={bank}
-              id={`bank-opt-${i}`}
-              role="option"
-              aria-selected={bank === value}
-              onMouseDown={(e) => {
-                e.preventDefault();
-                select(bank);
-              }}
-              className={cn(
-                'px-3.5 py-2.5 text-sm cursor-pointer leading-snug transition-colors',
-                i === highlighted
-                  ? 'bg-primary-brand/20 text-navy font-medium'
-                  : bank === value
-                  ? 'bg-muted text-navy font-medium'
-                  : 'text-foreground hover:bg-muted',
-              )}
-            >
-              {bank}
-            </li>
-          ))}
-        </ul>
-      )}
-      {isOpen && filtered.length === 0 && (
-        <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-gray-200 bg-white shadow-lg px-3.5 py-3 text-sm text-muted-foreground">
-          No se encontraron entidades
-        </div>
+      {isOpen && dropdownRect && typeof document !== 'undefined' && createPortal(
+        filtered.length > 0 ? (
+          <ul
+            ref={listRef}
+            id="bank-listbox"
+            role="listbox"
+            aria-label="Entidades bancarias de Colombia"
+            style={{ position: 'fixed', top: dropdownRect.top + 4, left: dropdownRect.left, width: dropdownRect.width, zIndex: 9999 }}
+            className="max-h-52 overflow-y-auto rounded-xl border border-gray-200 bg-white shadow-lg py-1"
+          >
+            {filtered.map((bank, i) => (
+              <li
+                key={bank}
+                id={`bank-opt-${i}`}
+                role="option"
+                aria-selected={bank === value}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  select(bank);
+                }}
+                className={cn(
+                  'px-3.5 py-2.5 text-sm cursor-pointer leading-snug transition-colors',
+                  i === highlighted
+                    ? 'bg-primary-brand/20 text-navy font-medium'
+                    : bank === value
+                    ? 'bg-muted text-navy font-medium'
+                    : 'text-foreground hover:bg-muted',
+                )}
+              >
+                {bank}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div
+            style={{ position: 'fixed', top: dropdownRect.top + 4, left: dropdownRect.left, width: dropdownRect.width, zIndex: 9999 }}
+            className="rounded-xl border border-gray-200 bg-white shadow-lg px-3.5 py-3 text-sm text-muted-foreground"
+          >
+            No se encontraron entidades
+          </div>
+        ),
+        document.body,
       )}
       <FieldError id="err-bank" message={error} />
     </div>

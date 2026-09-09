@@ -9,6 +9,7 @@ import {
   type FieldName,
 } from '@/lib/application-schema';
 import { capFreq, type Values } from './use-application-form';
+import { BankCombobox } from './BankCombobox';
 import { cn } from '@/lib/utils';
 import { CloseIcon, ShieldCheckIcon } from '../icons';
 import { FieldError } from '../FieldError';
@@ -292,19 +293,7 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
 
 // ─── Step 3 — Tus ingresos ───────────────────────────────────────────────────
 
-function useBanks() {
-  const [banks, setBanks] = useState<string[]>([]);
-  useEffect(() => {
-    fetch('/api/banks')
-      .then((r) => r.json())
-      .then((data: { banks?: string[] }) => { if (data.banks) setBanks(data.banks); })
-      .catch(() => { /* silently degrade to empty list */ });
-  }, []);
-  return banks;
-}
-
 export function Step3({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
-  const banks = useBanks();
 
   const formatIncome = (val: string) => {
     const d = val.replace(/\D/g, '');
@@ -349,7 +338,12 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
 
       {values.hasBank === 'yes' && (
         <div className="motion-safe:animate-step-in">
-          {selectEl('bankEntity', 'Entidad bancaria', 'Selecciona tu banco', banks, handlers, values.bankEntity)}
+          <BankCombobox
+            value={values.bankEntity ?? ''}
+            onChange={(v) => handlers.onFieldChange('bankEntity', v)}
+            onBlur={() => handlers.onFieldBlur('bankEntity', values.bankEntity ?? '')}
+            error={handlers.errors.bankEntity}
+          />
         </div>
       )}
 
