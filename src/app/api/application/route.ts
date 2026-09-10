@@ -105,14 +105,21 @@ export async function POST(request: NextRequest) {
     const upstreamDetail = error instanceof CoreLeadError ? error.detail : undefined;
     // Server-side diagnosis only: the upstream `detail` (FastAPI's 422 field list,
     // or a plain error body) is logged here but NEVER forwarded to the browser.
-    // `error.message`/`error.cause` capture the underlying network failure
-    // (ECONNREFUSED, ENOTFOUND, fetch failed, ...) when Core is unreachable.
-    console.error("Core web-lead forwarding failed", {
-      upstreamStatus,
-      upstreamDetail,
-      errorMessage: error instanceof Error ? error.message : String(error),
-      errorCause: error instanceof Error ? (error.cause as unknown) : undefined,
-    });
+    // JSON.stringify expands the nested `detail` list so the exact field/loc/msg
+    // is readable in the dev console (console.error collapses nested objects).
+    console.error(
+      "Core web-lead forwarding failed",
+      JSON.stringify(
+        {
+          upstreamStatus,
+          upstreamDetail,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorCause: error instanceof Error ? (error.cause as unknown) : undefined,
+        },
+        null,
+        2,
+      ),
+    );
     // A Core 429 — its own independent rate limit (5/min), lower than the
     // landing's 10/min — is NOT a backend outage. Surface it as rate_limited
     // with the retry hint so the user sees honest copy instead of a misleading
