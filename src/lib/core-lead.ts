@@ -25,6 +25,11 @@ export class CoreLeadError extends Error {
     readonly status?: number,
     /** Seconds the caller should wait before retrying (Core's 429 response). */
     readonly retryAfterSeconds?: number,
+    /**
+     * Raw upstream error body (e.g. FastAPI's `detail` list on a 422). Kept for
+     * server-side diagnosis only — never forwarded to the browser.
+     */
+    readonly detail?: unknown,
   ) {
     super(message);
   }
@@ -110,12 +115,24 @@ export async function forwardApplicationToCore(
 
   if (!response.ok) {
     let retryAfterSeconds: number | undefined;
+    let detail: unknown;
     try {
-      retryAfterSeconds = extractCoreRetryAfter(await response.text());
+      const bodyText = await response.text();
+      retryAfterSeconds = extractCoreRetryAfter(bodyText);
+      try {
+        detail = JSON.parse(bodyText);
+      } catch {
+        detail = bodyText || undefined;
+      }
     } catch {
       /* body unreadable — fall through with status only */
     }
-    throw new CoreLeadError("Core rejected the web lead", response.status, retryAfterSeconds);
+    throw new CoreLeadError(
+      "Core rejected the web lead",
+      response.status,
+      retryAfterSeconds,
+      detail,
+    );
   }
 
   const payload: unknown = await response.json();
