@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { COLOMBIAN_BANKS } from '@/lib/banks';
+import { BANK_OPTIONS, displayBankName, type BankOption } from '@/lib/banks';
 import { cn } from '@/lib/utils';
 import { ChevronDownIcon } from '../icons';
 import { FieldError } from '../FieldError';
@@ -23,10 +23,11 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
   const listRef = useRef<HTMLUListElement>(null);
 
   const filtered = query
-    ? (COLOMBIAN_BANKS as readonly string[]).filter((b) =>
-        b.toLowerCase().includes(query.toLowerCase()),
+    ? BANK_OPTIONS.filter((b) =>
+        b.display.toLowerCase().includes(query.toLowerCase()) ||
+        b.legal.toLowerCase().includes(query.toLowerCase()),
       )
-    : (COLOMBIAN_BANKS as readonly string[]);
+    : BANK_OPTIONS;
 
   function updateDropdownRect() {
     if (inputRef.current) {
@@ -35,8 +36,8 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
     }
   }
 
-  function select(bank: string) {
-    onChange(bank);
+  function select(bank: BankOption) {
+    onChange(bank.legal);
     setQuery('');
     setIsOpen(false);
     setHighlighted(-1);
@@ -112,7 +113,7 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
     };
   }, [isOpen]);
 
-  const displayValue = isOpen ? query : value;
+  const displayValue = isOpen ? query : displayBankName(value);
 
   const dropdownStyle = dropdownRect
     ? { position: 'fixed' as const, top: dropdownRect.top + 2, left: dropdownRect.left, width: dropdownRect.width, zIndex: 9999 }
@@ -169,10 +170,10 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
           >
             {filtered.map((bank, i) => (
               <li
-                key={bank}
+                key={bank.legal}
                 id={`bank-opt-${i}`}
                 role="option"
-                aria-selected={bank === value}
+                aria-selected={bank.legal === value}
                 onMouseDown={(e) => {
                   e.preventDefault();
                   select(bank);
@@ -181,12 +182,12 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
                   'px-3.5 py-2.5 text-sm cursor-pointer leading-snug transition-colors',
                   i === highlighted
                     ? 'bg-primary-brand/20 text-navy font-medium'
-                    : bank === value
+                    : bank.legal === value
                     ? 'bg-muted text-navy font-medium'
                     : 'text-foreground hover:bg-muted',
                 )}
               >
-                {bank}
+                {bank.display}
               </li>
             ))}
           </ul>
