@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Fragment } from 'react';
 import { createPortal } from 'react-dom';
-import { BANK_OPTIONS, displayBankName, type BankOption } from '@/lib/banks';
+import { FEATURED_BANK_OPTIONS, OTHER_BANK_OPTIONS, displayBankName, type BankOption } from '@/lib/banks';
 import { cn } from '@/lib/utils';
 import { ChevronDownIcon } from '../icons';
 import { FieldError } from '../FieldError';
@@ -22,12 +22,14 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const filtered = query
-    ? BANK_OPTIONS.filter((b) =>
-        b.display.toLowerCase().includes(query.toLowerCase()) ||
-        b.legal.toLowerCase().includes(query.toLowerCase()),
-      )
-    : BANK_OPTIONS;
+  const matches = (b: BankOption) =>
+    b.display.toLowerCase().includes(query.toLowerCase()) ||
+    b.legal.toLowerCase().includes(query.toLowerCase());
+
+  const featured = query ? FEATURED_BANK_OPTIONS.filter(matches) : FEATURED_BANK_OPTIONS;
+  const others = query ? OTHER_BANK_OPTIONS.filter(matches) : OTHER_BANK_OPTIONS;
+  const filtered = [...featured, ...others];
+  const showOthersHeader = others.length > 0;
 
   function updateDropdownRect() {
     if (inputRef.current) {
@@ -95,9 +97,8 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
 
   // Update position when highlighted item changes (scroll into view)
   useEffect(() => {
-    if (highlighted >= 0 && listRef.current) {
-      const item = listRef.current.children[highlighted] as HTMLElement;
-      item?.scrollIntoView({ block: 'nearest' });
+    if (highlighted >= 0) {
+      document.getElementById(`bank-opt-${highlighted}`)?.scrollIntoView({ block: 'nearest' });
     }
   }, [highlighted]);
 
@@ -169,26 +170,37 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
             className={cn(dropdownClass, 'max-h-52 overflow-y-auto py-1')}
           >
             {filtered.map((bank, i) => (
-              <li
-                key={bank.legal}
-                id={`bank-opt-${i}`}
-                role="option"
-                aria-selected={bank.legal === value}
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  select(bank);
-                }}
-                className={cn(
-                  'px-3.5 py-2.5 text-sm cursor-pointer leading-snug transition-colors',
-                  i === highlighted
-                    ? 'bg-primary-brand/20 text-navy font-medium'
-                    : bank.legal === value
-                    ? 'bg-muted text-navy font-medium'
-                    : 'text-foreground hover:bg-muted',
+              <Fragment key={bank.legal}>
+                {i === featured.length && showOthersHeader && (
+                  <li
+                    key="bank-group-otros"
+                    role="presentation"
+                    aria-hidden="true"
+                    className="px-3.5 pt-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground"
+                  >
+                    Otras entidades
+                  </li>
                 )}
-              >
-                {bank.display}
-              </li>
+                <li
+                  id={`bank-opt-${i}`}
+                  role="option"
+                  aria-selected={bank.legal === value}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    select(bank);
+                  }}
+                  className={cn(
+                    'px-3.5 py-2.5 text-sm cursor-pointer leading-snug transition-colors',
+                    i === highlighted
+                      ? 'bg-primary-brand/20 text-navy font-medium'
+                      : bank.legal === value
+                      ? 'bg-muted text-navy font-medium'
+                      : 'text-foreground hover:bg-muted',
+                  )}
+                >
+                  {bank.display}
+                </li>
+              </Fragment>
             ))}
           </ul>
         ) : (
