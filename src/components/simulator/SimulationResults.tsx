@@ -43,10 +43,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
           <div
             ref={paymentRef}
             className="font-extrabold text-navy leading-none tabular-nums text-3xl sm:text-4xl lg:text-[42px] tracking-tight"
-          >
-            <span>${fmtCOP(sim.payment)}</span>{' '}
-            <span className="text-sm sm:text-base font-semibold text-muted-2">{sim.unit}</span>
-          </div>
+          ><span>${fmtCOP(sim.payment)}</span><span className="text-sm sm:text-base font-semibold text-muted-2">{sim.unit}</span></div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-md pt-1.5">
             Cuota final fija con todo incluido. Cero cobros por adelantado ni sorpresas.{" "}
             <a
