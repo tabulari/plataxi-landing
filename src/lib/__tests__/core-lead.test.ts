@@ -74,6 +74,18 @@ describe("Core web-lead integration", () => {
     expect(result.taxiPlate).toBeNull();
   });
 
+  it("maps each driving-time range to its representative years", () => {
+    const cases = [
+      { drivingTime: "lt1" as const, expected: 0 },
+      { drivingTime: "1to3" as const, expected: 2 },
+      { drivingTime: "3to5" as const, expected: 4 },
+      { drivingTime: "gt5" as const, expected: 6 },
+    ];
+    for (const { drivingTime, expected } of cases) {
+      expect(buildCoreLeadPayload({ ...input, drivingTime }, context).drivingTime).toBe(expected);
+    }
+  });
+
   it("converts daily income to monthly before forwarding", () => {
     const daily = buildCoreLeadPayload({ ...input, income: "$ 80.000", incomeType: "daily" }, context);
     // 80000 * 30 = 2400000

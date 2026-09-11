@@ -9,6 +9,7 @@ import {
   type FieldName,
 } from '@/lib/application-schema';
 import { capFreq, type Values } from './use-application-form';
+import { displayBankName } from '@/lib/banks';
 import { BankCombobox } from './BankCombobox';
 import { cn } from '@/lib/utils';
 import { CloseIcon, ShieldCheckIcon } from '../icons';
@@ -275,12 +276,13 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
 
       {/* Badges tiempo conduciendo */}
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-semibold text-foreground">¿Cuánto tiempo lleva conduciendo?<Req /></span>
-        <div className="flex gap-2 flex-wrap" role="group" aria-label="Tiempo conduciendo">
+        <span className="text-sm font-semibold text-foreground">¿Cuántos años llevas conduciendo taxi?<Req /></span>
+        <div className="flex gap-2 flex-wrap" role="group" aria-label="Años conduciendo taxi">
           {([
-            { value: 'lt1',  label: 'Menos de 1 año' },
-            { value: '1to3', label: '1 a 3 años' },
-            { value: 'gt5',  label: 'Más de 5 años' },
+            { value: 'lt1',  label: 'Menor a 1' },
+            { value: '1to3', label: '1 a 3' },
+            { value: '3to5', label: '3 a 5' },
+            { value: 'gt5',  label: 'Mayor a 5' },
           ] as const).map(({ value, label }) => {
             const selected = values.drivingTime === value;
             return (
@@ -401,9 +403,10 @@ export function Step4({ values, consent, consentError, setConsent, setConsentErr
     if (showTerms) termsCloseRef.current?.focus();
   }, [showTerms]);
 
-  const drivingLabel = values.drivingTime === 'lt1' ? 'Menos de 1 año'
-    : values.drivingTime === '1to3' ? '1 a 3 años'
-    : values.drivingTime === 'gt5' ? 'Más de 5 años'
+  const drivingLabel = values.drivingTime === 'lt1' ? 'Menor a 1'
+    : values.drivingTime === '1to3' ? '1 a 3'
+    : values.drivingTime === '3to5' ? '3 a 5'
+    : values.drivingTime === 'gt5' ? 'Mayor a 5'
     : '—';
 
   const reviewRows: { k: string; v: string; full?: boolean }[] = [
@@ -418,8 +421,8 @@ export function Step4({ values, consent, consentError, setConsent, setConsentErr
     { k: 'Rol en el taxi', v: values.taxiRole || '—' },
     ...(values.taxiPlate ? [{ k: 'Placa', v: values.taxiPlate }] : []),
     { k: 'Empresa afiliada', v: values.taxiCompany || '—' },
-    { k: 'Tiempo conduciendo', v: drivingLabel },
-    { k: 'Entidad bancaria', v: values.bankEntity || 'Se define tras aprobación', full: !values.bankEntity ? true : undefined },
+    { k: 'Años conduciendo', v: drivingLabel },
+    { k: 'Entidad bancaria', v: values.bankEntity ? displayBankName(values.bankEntity) : 'Se define tras aprobación', full: !values.bankEntity ? true : undefined },
   ];
 
   return (

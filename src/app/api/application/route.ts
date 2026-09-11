@@ -102,7 +102,24 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     const upstreamStatus = error instanceof CoreLeadError ? error.status : undefined;
-    console.error("Core web-lead forwarding failed", { upstreamStatus });
+    const upstreamDetail = error instanceof CoreLeadError ? error.detail : undefined;
+    // Server-side diagnosis only: the upstream `detail` (FastAPI's 422 field list,
+    // or a plain error body) is logged here but NEVER forwarded to the browser.
+    // JSON.stringify expands the nested `detail` list so the exact field/loc/msg
+    // is readable in the dev console (console.error collapses nested objects).
+    console.error(
+      "Core web-lead forwarding failed",
+      JSON.stringify(
+        {
+          upstreamStatus,
+          upstreamDetail,
+          errorMessage: error instanceof Error ? error.message : String(error),
+          errorCause: error instanceof Error ? (error.cause as unknown) : undefined,
+        },
+        null,
+        2,
+      ),
+    );
     // A Core 429 — its own independent rate limit (5/min), lower than the
     // landing's 10/min — is NOT a backend outage. Surface it as rate_limited
     // with the retry hint so the user sees honest copy instead of a misleading
@@ -118,6 +135,37 @@ export async function POST(request: NextRequest) {
             retryAfterSeconds,
           },
           { status: 429, headers: retryAfterSeconds ? { "Retry-After": String(retryAfterSeconds) } : {} },
+        ),
+      );
+    }
+    // A Core 409 with code "national_id_already_registered" means the cédula is
+    // already in an active pipeline. Surface its own code so the client shows
+    // the specific message instead of a misleading generic backend error.
+    if (upstreamStatus === 409) {
+      let code = "backend";
+      let message = "No pudimos registrar la solicitud. Intenta nuevamente.";
+      const body =
+        error instanceof CoreLeadError ? error.detail : undefined;
+      if (
+        typeof body === "object" &&
+        body !== null &&
+        "detail" in body &&
+        typeof (body as { detail?: unknown }).detail === "object" &&
+        (body as { detail?: { code?: unknown } }).detail !== null
+      ) {
+        const detailCode = (body as { detail?: { code?: unknown } }).detail?.code;
+        if (detailCode === "national_id_already_registered") {
+          code = "national_id_already_registered";
+          const detailError = (body as { detail?: { error?: unknown } }).detail?.error;
+          if (typeof detailError === "string" && detailError) {
+            message = detailError;
+          }
+        }
+      }
+      return applySecurityHeaders(
+        NextResponse.json(
+          { error: message, code },
+          { status: 409 },
         ),
       );
     }

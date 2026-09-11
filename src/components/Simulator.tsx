@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { fmtCOP, validateApplication, isTermDisabled, type Frequency } from '@/lib/credit';
+import { fmtCOP, validateApplication, type Frequency } from '@/lib/credit';
 import { config } from '@/lib/config';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
@@ -31,12 +31,10 @@ export function Simulator() {
     amountStep,
     amountStepBig,
     term,
-    termOptions,
     offeredFrequencies,
     frequency,
     sim,
     setAmount,
-    setTerm,
     setFrequency,
   } = useSimulator();
 
@@ -46,29 +44,8 @@ export function Simulator() {
   );
   const isMinAmount = amount <= amountMin;
   const isHighAmount = amount > config.credit.highAmountThreshold;
-  const terms = useMemo(
-    () =>
-      termOptions.map((value) => {
-        const disabled = isTermDisabled(amount, value);
-        let reason: string | undefined;
-        if (disabled) {
-          reason =
-            value === 1
-              ? `Para montos superiores a $${fmtCOP(config.credit.highAmountThreshold)} el plazo mínimo es ${config.credit.highAmountMinTerm} meses`
-              : `Para $${fmtCOP(amountMin)} solo 1 mes`;
-          if (isMinAmount) reason = `Para $${fmtCOP(amountMin)} solo 1 mes`;
-        }
-        return {
-          value,
-          label: `${value} ${value === 1 ? 'mes' : 'meses'}`,
-          disabled,
-          title: reason,
-        };
-      }),
-    [termOptions, amount, amountMin, isMinAmount, isHighAmount],
-  );
 
-  // 5. Validación instantánea (amount vivo) para que chips/hint y CTA/mensaje estén sincronizados
+  // 5. Validación instantánea (amount vivo) para que hint y CTA/mensaje estén sincronizados
   // sim usa settledAmount (150ms debounce) solo para la cuota; validación no debe laggear
   const liveValidity = useMemo(
     () => validateApplication(amount, term, frequency),
@@ -145,31 +122,7 @@ export function Simulator() {
         markInteract={markInteract}
       />
 
-      {/* Plazo — chips 1-3 con reglas claras */}
-      <div>
-        <p className="text-sm font-semibold text-foreground mb-1.5" id="plazoLabel">
-          Elige el plazo
-        </p>
-        <ChipRadioGroup
-          className="flex flex-wrap gap-2"
-          ariaLabelledBy="plazoLabel"
-          ariaDescribedBy="plazoHint"
-          hideCheck
-          options={terms}
-          value={term}
-          onChange={(v) => {
-            markInteract('term');
-            setTerm(v);
-          }}
-        />
-        <p id="plazoHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]" aria-live="polite">
-          {isMinAmount
-            ? `Para $${fmtCOP(amountMin)} solo 1 mes`
-            : isHighAmount
-              ? `Para montos superiores a $${fmtCOP(config.credit.highAmountThreshold)} el plazo mínimo es ${config.credit.highAmountMinTerm} meses`
-              : '\u00A0'}
-        </p>
-      </div>
+      {/* Plazo interno (sin selector visible): lo determina el sistema según el monto */}
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {snapAnnouncement}
       </div>
