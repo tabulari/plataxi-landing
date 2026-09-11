@@ -19,6 +19,11 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
   const paymentRef = useRef<HTMLDivElement>(null);
   const prevPayment = useRef(sim.payment);
 
+  const displayPayment =
+    sim.payment >= 10000
+      ? Math.round(sim.payment / 1000) * 1000
+      : Math.round(sim.payment / 100) * 100;
+
   useEffect(() => {
     const changed = sim.payment !== prevPayment.current;
     prevPayment.current = sim.payment;
@@ -38,15 +43,12 @@ export function SimulationResults({ sim }: { sim: SimData; frequency: Frequency 
     <div className="mt-6 pt-6 border-t border-border/80 space-y-3">
       {/* Result Box — corto plazo 1-3 meses, abono diario/semanal/quincenal/mensual, cuota de administración + fianza (no interés) */}
       <div className="rounded-xl bg-gradient-to-br from-green-tint/70 to-secondary-surface/40 border border-green/30 p-4 sm:p-6 shadow-2xs">
-        <div className="flex flex-col items-center text-center gap-2">
+        <div className="flex flex-col items-center text-center gap-1.5">
           <span className="text-xs font-bold uppercase tracking-wider text-green-ink block">Tu cuota estimada</span>
           <div
             ref={paymentRef}
-            className="font-extrabold text-navy leading-none tabular-nums text-3xl sm:text-4xl lg:text-[42px] tracking-tight flex items-baseline justify-center"
-          >
-            <span>${fmtCOP(sim.payment)}</span>
-            <span className="text-sm sm:text-base font-semibold text-muted-2 ml-1.5">{sim.unit}</span>
-          </div>
+            className="font-extrabold text-navy leading-none tabular-nums text-3xl sm:text-4xl lg:text-[42px] tracking-tight"
+          ><span>${fmtCOP(displayPayment)}</span><span className="text-sm sm:text-base font-semibold text-muted-2">{sim.unit}</span></div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-md pt-1">
             Cuota final fija con todo incluido. Cero cobros por adelantado ni sorpresas.{" "}
             <a
