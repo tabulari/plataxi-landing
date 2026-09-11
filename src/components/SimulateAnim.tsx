@@ -27,7 +27,7 @@ export function SimulateAnim({ children }: { children: React.ReactNode }) {
   }, { scope: containerRef });
 
   return (
-    <section ref={containerRef} id="simula" tabIndex={-1} aria-labelledby="simula-heading" className="mt-16 md:mt-32 scroll-mt-[96px]">
+    <section ref={containerRef} id="simula" tabIndex={-1} aria-labelledby="simula-heading" className="mt-8 sm:mt-12 lg:mt-14 scroll-mt-[96px]">
       {children}
     </section>
   );
