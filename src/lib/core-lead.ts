@@ -66,24 +66,31 @@ export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadC
     }
   }
 
+  const cleanContactPhone = input.contactPhone ? input.contactPhone.replace(/\D/g, '') : '';
+  const contactPhone = cleanContactPhone.length > 0 ? cleanContactPhone : null;
+  const contactName = input.contactName?.trim() || null;
+  const taxiPlate = input.taxiRole === 'Taxi propio' && input.taxiPlate?.trim() ? input.taxiPlate.trim() : null;
+  const hasBank = input.hasBank === 'yes';
+  const bankEntity = hasBank && input.bankEntity?.trim() ? input.bankEntity.trim() : null;
+
   return {
     // Step 1
-    fullName: input.fullName,
+    fullName: input.fullName.trim(),
     idNumber: input.idNumber.replace(/\D/g, ''),
     phone: input.phone.replace(/\D/g, ''),
-    contactName: input.contactName || null,
-    contactPhone: input.contactPhone ? input.contactPhone.replace(/\D/g, '') : null,
-    email: input.email,
+    contactName,
+    contactPhone,
+    email: input.email.trim(),
     // Step 2 — plataforma Uber/DiDi mapea a conduzco_taxi hasta que Core soporte "plataforma"
     taxiRole:
       input.taxiRole === 'Taxi propio' ? 'taxi_propio' : 'conduzco_taxi',
-    taxiPlate: input.taxiPlate || null,
-    taxiCompany: input.taxiCompany,
+    taxiPlate,
+    taxiCompany: input.taxiCompany.trim(),
     drivingTime: input.drivingTime === 'lt1' ? 0 : input.drivingTime === '1to3' ? 2 : input.drivingTime === '3to5' ? 4 : 6,
     // Step 3
     income,
-    hasBank: input.hasBank === 'yes',
-    bankEntity: input.bankEntity || null,
+    hasBank,
+    bankEntity,
     // Consent
     consent: input.consent,
     clientIp: context.clientIp,
@@ -93,7 +100,7 @@ export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadC
       amount: input.terms.amount,
       termMonths: input.terms.term,
       monthlyInterestRate: input.terms.monthlyRate,
-      frequency: input.terms.frequency,
+      paymentModality: input.terms.frequency,
     },
   };
 }

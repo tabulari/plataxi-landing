@@ -60,7 +60,7 @@ describe("Core web-lead integration", () => {
         amount: 800000,
         termMonths: 12,
         monthlyInterestRate: 0.026,
-        frequency: "monthly",
+        paymentModality: "monthly",
       },
     });
     expect(consentTextHash()).toBe(
@@ -99,8 +99,8 @@ describe("Core web-lead integration", () => {
     expect(result.bankEntity).toBeNull();
   });
 
-  it("omits optional contact fields when empty", () => {
-    const result = buildCoreLeadPayload({ ...input, contactName: "", contactPhone: "" }, context);
+  it("omits optional contact fields when empty or only whitespace", () => {
+    const result = buildCoreLeadPayload({ ...input, contactName: "  ", contactPhone: "   " }, context);
     expect(result.contactName).toBeNull();
     expect(result.contactPhone).toBeNull();
   });
