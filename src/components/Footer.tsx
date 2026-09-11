@@ -1,12 +1,47 @@
 'use client';
 
+import { useRef } from 'react';
 import Link from 'next/link';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import { config } from '@/lib/config';
 import { PlataxiWordmark } from './icons';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 const HEADER_OFFSET = 80;
 
 export function Footer() {
+  const footerRef = useRef<HTMLElement>(null);
+
+  useGSAP(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !footerRef.current) return;
+
+    const cols = footerRef.current.querySelectorAll('[data-footer-col]');
+    if (!cols.length) return;
+
+    gsap.fromTo(
+      cols,
+      { y: 20, autoAlpha: 0 },
+      {
+        y: 0,
+        autoAlpha: 1,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: footerRef.current,
+          start: 'top 85%',
+          once: true,
+        },
+      },
+    );
+  }, { scope: footerRef });
+
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     const el = e.currentTarget;
     const r = el.getBoundingClientRect();
@@ -26,13 +61,13 @@ export function Footer() {
   };
 
   return (
-    <footer onMouseMove={handleMouseMove} className="relative bg-primary-dark text-white overflow-hidden footer-texture footer-grid-drift">
+    <footer ref={footerRef} onMouseMove={handleMouseMove} className="relative bg-primary-dark text-white overflow-hidden footer-texture footer-grid-drift">
       {/* Cursor spotlight — purely visual, no pointer events */}
       <div aria-hidden="true" className="footer-cursor-glow pointer-events-none absolute inset-0" />
 
       <div className="mx-auto max-w-container px-6 pt-12 pb-10 lg:pt-16 lg:pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
         {/* Brand & Social */}
-        <div className="sm:col-span-2 flex flex-col justify-between space-y-5 footer-col-in footer-col-in-1">
+        <div data-footer-col className="sm:col-span-2 flex flex-col justify-between space-y-5">
           <div className="space-y-3">
             <a
               href="#top"
@@ -87,7 +122,7 @@ export function Footer() {
         </div>
 
         {/* Column 2: Plataforma */}
-        <nav aria-label="Plataforma" className="flex flex-col footer-col-in footer-col-in-2">
+        <nav data-footer-col aria-label="Plataforma" className="flex flex-col">
           <h3 className="text-xs font-bold uppercase tracking-wider text-primary-brand/70 mb-2">Plataforma</h3>
           <Link href="/legal/terminos" className="text-sm text-white/70 hover:text-primary-brand transition-colors flex items-center min-h-[44px]">
             Términos y condiciones
@@ -101,7 +136,7 @@ export function Footer() {
         </nav>
 
         {/* Column 3: Soporte */}
-        <nav aria-label="Soporte" className="flex flex-col footer-col-in footer-col-in-3">
+        <nav data-footer-col aria-label="Soporte" className="flex flex-col">
           <h3 className="text-xs font-bold uppercase tracking-wider text-primary-brand/70 mb-2">Soporte</h3>
           <a
             href="#preguntas"

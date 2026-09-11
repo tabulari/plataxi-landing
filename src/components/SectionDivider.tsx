@@ -2,7 +2,12 @@
 
 import { useRef, useId } from 'react';
 import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
+
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface SectionDividerProps {
   from?: string;
@@ -66,9 +71,6 @@ export function SectionDivider({
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduceMotion) return;
 
-    let lastY = window.scrollY;
-    let lastTime = performance.now();
-    let inView = false;
     let resetTimer: ReturnType<typeof setTimeout> | null = null;
 
     // High-performance quickTo setters for 120 FPS continuous tracking without GC pressure
@@ -93,98 +95,79 @@ export function SectionDivider({
       ? gsap.quickTo(glowEdgeRef.current, 'y', { duration: 0.22, ease: 'power2.out' })
       : null;
 
-    // IntersectionObserver guarantees we only compute physics when the divider is in viewport
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        inView = entry.isIntersecting;
-      },
-      { threshold: 0, rootMargin: '120px 0px 120px 0px' }
-    );
-    observer.observe(containerRef.current);
+    const trigger = ScrollTrigger.create({
+      trigger: containerRef.current,
+      start: 'top bottom',
+      end: 'bottom top',
+      onUpdate: (self) => {
+        // Normalised velocity from ScrollTrigger (pixels/second -> normalised units)
+        const velocity = (self.getVelocity() || 0) / 1000;
+        const clampedVelocity = Math.max(-1.8, Math.min(1.8, velocity));
 
-    const onScroll = () => {
-      if (!inView) {
-        lastY = window.scrollY;
-        lastTime = performance.now();
-        return;
-      }
+        // Viscoelastic deformation factors
+        const targetScaleY = 1 + clampedVelocity * 0.25;
+        const targetTranslateY = clampedVelocity * 5;
+        const secondaryScaleY = 1 + clampedVelocity * 0.18;
+        const secondaryTranslateY = clampedVelocity * 3.5;
 
-      const now = performance.now();
-      const dt = Math.max(10, now - lastTime);
-      const dy = window.scrollY - lastY;
-      lastY = window.scrollY;
-      lastTime = now;
-
-      // Normalised velocity: positive = scrolling down, negative = scrolling up
-      const velocity = dy / dt;
-      const clampedVelocity = Math.max(-1.8, Math.min(1.8, velocity));
-
-      // Viscoelastic deformation factors
-      const targetScaleY = 1 + clampedVelocity * 0.25;
-      const targetTranslateY = clampedVelocity * 5;
-      const secondaryScaleY = 1 + clampedVelocity * 0.18;
-      const secondaryTranslateY = clampedVelocity * 3.5;
-
-      // Real-time kinematic tracking (smooth, zero-allocation)
-      if (quickPrimaryScaleY && quickPrimaryY) {
-        quickPrimaryScaleY(targetScaleY);
-        quickPrimaryY(targetTranslateY);
-      }
-      if (quickSecondaryScaleY && quickSecondaryY) {
-        quickSecondaryScaleY(secondaryScaleY);
-        quickSecondaryY(secondaryTranslateY);
-      }
-      if (quickGlowScaleY && quickGlowY) {
-        quickGlowScaleY(targetScaleY);
-        quickGlowY(targetTranslateY);
-      }
-
-      // Dynamic glint shift along the crest
-      if (gradientRef.current) {
-        const shift = clampedVelocity * 12;
-        gradientRef.current.setAttribute('x1', `${20 - shift}%`);
-        gradientRef.current.setAttribute('x2', `${80 - shift}%`);
-      }
-
-      // Clear any pending spring return while active scrolling is happening
-      if (resetTimer) clearTimeout(resetTimer);
-
-      // Spring return to perfect equilibrium with Emil's signature damped bounce
-      resetTimer = setTimeout(() => {
-        const elementsToSpring = [primaryPathRef.current, glowEdgeRef.current].filter(Boolean);
-        if (elementsToSpring.length) {
-          gsap.to(elementsToSpring, {
-            scaleY: 1,
-            y: 0,
-            duration: 0.85,
-            ease: 'elastic.out(1.15, 0.42)',
-            overwrite: 'auto',
-          });
+        // Real-time kinematic tracking (smooth, zero-allocation)
+        if (quickPrimaryScaleY && quickPrimaryY) {
+          quickPrimaryScaleY(targetScaleY);
+          quickPrimaryY(targetTranslateY);
         }
-        if (secondaryPathRef.current) {
-          gsap.to(secondaryPathRef.current, {
-            scaleY: 1,
-            y: 0,
-            duration: 0.95,
-            ease: 'elastic.out(1.1, 0.45)',
-            overwrite: 'auto',
-          });
+        if (quickSecondaryScaleY && quickSecondaryY) {
+          quickSecondaryScaleY(secondaryScaleY);
+          quickSecondaryY(secondaryTranslateY);
         }
+        if (quickGlowScaleY && quickGlowY) {
+          quickGlowScaleY(targetScaleY);
+          quickGlowY(targetTranslateY);
+        }
+
+        // Dynamic glint shift along the crest
         if (gradientRef.current) {
-          gsap.to(gradientRef.current, {
-            attr: { x1: '20%', x2: '80%' },
-            duration: 0.7,
-            ease: 'power3.out',
-          });
+          const shift = clampedVelocity * 12;
+          gradientRef.current.setAttribute('x1', `${20 - shift}%`);
+          gradientRef.current.setAttribute('x2', `${80 - shift}%`);
         }
-      }, 90);
-    };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+        // Clear any pending spring return while active scrolling is happening
+        if (resetTimer) clearTimeout(resetTimer);
+
+        // Spring return to perfect equilibrium with Emil's signature damped bounce
+        resetTimer = setTimeout(() => {
+          const elementsToSpring = [primaryPathRef.current, glowEdgeRef.current].filter(Boolean);
+          if (elementsToSpring.length) {
+            gsap.to(elementsToSpring, {
+              scaleY: 1,
+              y: 0,
+              duration: 0.85,
+              ease: 'elastic.out(1.15, 0.42)',
+              overwrite: 'auto',
+            });
+          }
+          if (secondaryPathRef.current) {
+            gsap.to(secondaryPathRef.current, {
+              scaleY: 1,
+              y: 0,
+              duration: 0.95,
+              ease: 'elastic.out(1.1, 0.45)',
+              overwrite: 'auto',
+            });
+          }
+          if (gradientRef.current) {
+            gsap.to(gradientRef.current, {
+              attr: { x1: '20%', x2: '80%' },
+              duration: 0.7,
+              ease: 'power3.out',
+            });
+          }
+        }, 90);
+      },
+    });
 
     return () => {
-      window.removeEventListener('scroll', onScroll);
-      observer.disconnect();
+      trigger.kill();
       if (resetTimer) clearTimeout(resetTimer);
     };
   }, { scope: containerRef });
