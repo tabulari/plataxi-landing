@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative w-full min-h-[500px] sm:min-h-[650px] lg:min-h-[800px] overflow-hidden flex items-center bg-primary-dark"
+      className="relative w-full min-h-[100dvh] overflow-hidden flex items-center bg-primary-dark"
     >
       <Image
         src="/hero-updated.jpeg"

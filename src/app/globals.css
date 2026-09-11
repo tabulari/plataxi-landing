@@ -568,18 +568,6 @@ section:hover .footer-cursor-glow {
   .footer-grid-drift { animation: none; }
 }
 
-@keyframes footer-col-in {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.footer-col-in {
-  animation: footer-col-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-.footer-col-in-1 { animation-delay: 0ms; }
-.footer-col-in-2 { animation-delay: 80ms; }
-.footer-col-in-3 { animation-delay: 160ms; }
-
 /* ===== reduced motion ===== */
 @media (prefers-reduced-motion: reduce) {
   * { scroll-behavior: auto !important; }
@@ -593,5 +581,5 @@ section:hover .footer-cursor-glow {
   .btn-spinner { animation: none !important; }
   .flash { animation: none !important; }
   .footer-grid-drift { animation: none !important; }
-  .footer-col-in { animation: none !important; opacity: 1 !important; transform: none !important; }
+  [data-footer-col] { opacity: 1 !important; transform: none !important; visibility: visible !important; }
 }
