@@ -274,7 +274,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
       const base =
         (TAXI_ROLES as readonly string[]).includes(values.taxiRole) &&
         values.taxiCompany.trim().length >= 2 &&
-        ['lt1', '1to3', 'gt5'].includes(values.drivingTime);
+        ['lt1', '1to3', '3to5', 'gt5'].includes(values.drivingTime);
       const plate = values.taxiRole !== 'Taxi propio' || values.taxiPlate.trim().length > 0;
       return base && plate;
     }
