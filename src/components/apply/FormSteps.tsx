@@ -9,6 +9,7 @@ import {
   type FieldName,
 } from '@/lib/application-schema';
 import { capFreq, type Values } from './use-application-form';
+import { displayBankName } from '@/lib/banks';
 import { BankCombobox } from './BankCombobox';
 import { cn } from '@/lib/utils';
 import { CloseIcon, ShieldCheckIcon } from '../icons';
@@ -421,7 +422,7 @@ export function Step4({ values, consent, consentError, setConsent, setConsentErr
     ...(values.taxiPlate ? [{ k: 'Placa', v: values.taxiPlate }] : []),
     { k: 'Empresa afiliada', v: values.taxiCompany || '—' },
     { k: 'Años conduciendo', v: drivingLabel },
-    { k: 'Entidad bancaria', v: values.bankEntity || 'Se define tras aprobación', full: !values.bankEntity ? true : undefined },
+    { k: 'Entidad bancaria', v: values.bankEntity ? displayBankName(values.bankEntity) : 'Se define tras aprobación', full: !values.bankEntity ? true : undefined },
   ];
 
   return (
