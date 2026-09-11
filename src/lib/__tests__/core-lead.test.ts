@@ -52,6 +52,8 @@ describe("Core web-lead integration", () => {
       income: "$ 2.500.000",
       hasBank: true,
       bankEntity: "Bancolombia",
+      employmentType: "Independiente",
+      bank: "Bancolombia",
       consent: true,
       clientIp: "203.0.113.7",
       userAgent: "Vitest",

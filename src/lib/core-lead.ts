@@ -91,6 +91,12 @@ export function buildCoreLeadPayload(input: ApplicationInput, context: CoreLeadC
     income,
     hasBank,
     bankEntity,
+
+    // Legacy fallback: Core instances deployed before IP-163 (such as staging VPS at commit befd68e)
+    // still require employment_type and bank. Newer Core instances ignore them via Pydantic extra="ignore".
+    employmentType: "Independiente" as const,
+    bank: (hasBank && input.bankEntity?.trim()) ? input.bankEntity.trim() : "Bancolombia",
+
     // Consent
     consent: input.consent,
     clientIp: context.clientIp,
