@@ -22,6 +22,7 @@ import {
 export type SubmitStatus = 'idle' | 'pending' | 'success' | 'error';
 export type SubmitErrorCode =
   | 'rate_limited'
+  | 'national_id_already_registered'
   | 'backend'
   | 'connection'
   | null;

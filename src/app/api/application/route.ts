@@ -138,6 +138,37 @@ export async function POST(request: NextRequest) {
         ),
       );
     }
+    // A Core 409 with code "national_id_already_registered" means the cédula is
+    // already in an active pipeline. Surface its own code so the client shows
+    // the specific message instead of a misleading generic backend error.
+    if (upstreamStatus === 409) {
+      let code = "backend";
+      let message = "No pudimos registrar la solicitud. Intenta nuevamente.";
+      const body =
+        error instanceof CoreLeadError ? error.detail : undefined;
+      if (
+        typeof body === "object" &&
+        body !== null &&
+        "detail" in body &&
+        typeof (body as { detail?: unknown }).detail === "object" &&
+        (body as { detail?: { code?: unknown } }).detail !== null
+      ) {
+        const detailCode = (body as { detail?: { code?: unknown } }).detail?.code;
+        if (detailCode === "national_id_already_registered") {
+          code = "national_id_already_registered";
+          const detailError = (body as { detail?: { error?: unknown } }).detail?.error;
+          if (typeof detailError === "string" && detailError) {
+            message = detailError;
+          }
+        }
+      }
+      return applySecurityHeaders(
+        NextResponse.json(
+          { error: message, code },
+          { status: 409 },
+        ),
+      );
+    }
     // Otherwise it's an upstream (Core) failure — which the user should NOT be
     // told is their connection. The client reads `code` for accurate copy.
     return applySecurityHeaders(

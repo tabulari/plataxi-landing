@@ -80,6 +80,10 @@ const ERROR_COPY: Record<string, SubmitErrorCopy> = {
     title: 'Son demasiadas solicitudes por ahora',
     body: 'Espera unos segundos y vuelve a intentar. Tus datos siguen guardados.',
   },
+  national_id_already_registered: {
+    title: 'Esa cédula ya está registrada',
+    body: 'Ya existe una solicitud con este documento. Si crees que es un error, contáctanos.',
+  },
   backend: {
     title: 'Nuestro sistema está tardando más de lo normal',
     body: 'No fue un problema de tu conexión. Tus datos siguen guardados — puedes reintentar el envío en unos momentos.',
