@@ -7,7 +7,7 @@ export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative w-full min-h-[100dvh] overflow-hidden flex items-center bg-primary-dark"
+      className="relative w-full min-h-[500px] sm:min-h-[560px] md:min-h-[600px] lg:h-[72vh] lg:min-h-[600px] lg:max-h-[680px] xl:max-h-[720px] overflow-hidden flex items-center bg-primary-dark"
     >
       <Image
         src="/hero-updated.jpeg"
@@ -16,7 +16,7 @@ export function Hero() {
         priority
         sizes="100vw"
         className="object-cover"
-        style={{ objectPosition: '75% center' }}
+        style={{ objectPosition: '75% 38%' }}
       />
 
       {/* Scrim: calibrated for WCAG AA compliance (4.5:1 paragraph, 3:1 h1) over bright taxi highlights */}
@@ -25,7 +25,7 @@ export function Hero() {
         className="absolute inset-0 bg-black/60 lg:bg-transparent lg:bg-gradient-to-r lg:from-black/85 lg:via-black/65 lg:to-black/20"
       />
 
-      <div className="relative z-10 w-full mx-auto max-w-container px-6 py-10 sm:py-12 lg:py-16">
+      <div className="relative z-10 w-full mx-auto max-w-container px-6 pt-20 pb-12 sm:pt-24 sm:pb-14 lg:pt-14 lg:pb-10 -translate-y-2 sm:-translate-y-3 lg:-translate-y-6">
         <HeroAnim>
           <div className="max-w-2xl space-y-5 text-center sm:text-left">
             <HeroActiveNotice />
