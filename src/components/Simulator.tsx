@@ -141,7 +141,7 @@ export function Simulator() {
       {/* Plazo — chips 1-3 con reglas de disponibilidad según monto */}
       <div>
         <p className="text-sm font-semibold text-foreground mb-1.5" id="plazoLabel">
-          Elige el plazo
+          Plazos
         </p>
         <ChipRadioGroup
           className="flex flex-wrap gap-2"
