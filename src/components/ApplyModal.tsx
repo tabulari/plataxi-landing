@@ -153,9 +153,9 @@ export function ApplyModal() {
                       aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado — clic para volver)' : ' (incompleto)'}`}
                       onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center gap-1 sm:gap-1.5 min-h-[36px] py-0.5 px-1 sm:px-2 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
+                        'flex items-center gap-1 sm:gap-1.5 min-h-[34px] py-0.5 px-1.5 sm:px-2 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
                         stepDot(i),
-                        isClickable && !isCurrent && 'hover:bg-amber-50/90 cursor-pointer hover:shadow-xs group',
+                        isClickable && !isCurrent && 'bg-amber-100/80 border border-amber-300/90 hover:bg-amber-200/90 text-navy cursor-pointer shadow-2xs active:scale-95 group',
                         !isClickable && !isCurrent && 'cursor-default opacity-60',
                       )}
                     >
@@ -173,7 +173,10 @@ export function ApplyModal() {
                       >
                         {form.submitStatus === 'success' || isClickable ? '✓' : i}
                       </span>
-                      <span className={cn('whitespace-nowrap text-[11px] sm:text-xs', isCurrent ? 'font-bold text-navy' : isClickable ? 'font-bold text-navy group-hover:underline' : 'font-medium')}>
+                      <span className={cn('whitespace-nowrap text-[11px] sm:text-xs flex items-center gap-0.5', isCurrent ? 'font-bold text-navy' : isClickable ? 'font-bold text-navy group-hover:underline' : 'font-medium')}>
+                        {isClickable && !isCurrent && (
+                          <span aria-hidden="true" className="font-bold text-amber-900 leading-none">←</span>
+                        )}
                         <span className="sm:hidden">{stepLabel.short}</span>
                         <span className="hidden sm:inline">{stepLabel.long}</span>
                       </span>
