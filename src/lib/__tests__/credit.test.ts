@@ -55,30 +55,48 @@ describe("calculatePayment — verification numbers (amount 500.000)", () => {
 });
 
 describe("validateApplication — eligibility gate", () => {
-  it("monto mínimo (100.000) solo permite 1 mes", () => {
+  it("montos de 100.000 y 150.000 solo permiten 1 mes", () => {
     expect(validateApplication(100000, 1, "monthly").ok).toBe(true);
     expect(validateApplication(100000, 2, "monthly").ok).toBe(false);
     expect(validateApplication(100000, 3, "monthly").ok).toBe(false);
-    expect(validateApplication(150000, 2, "monthly").ok).toBe(true);
-    expect(calculatePayment(100000, 2, "monthly").valid).toBe(false);
+
+    expect(validateApplication(150000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(150000, 2, "monthly").ok).toBe(false);
+    expect(validateApplication(150000, 3, "monthly").ok).toBe(false);
   });
 
-  it("amount > 800.000 && term < 3 → invalid", () => {
-    expect(validateApplication(900000, 2, "monthly").ok).toBe(false);
-    expect(calculatePayment(900000, 2, "monthly").valid).toBe(false);
-    // boundary: exactly 800.000 is allowed (rule is strict >)
-    expect(validateApplication(800000, 2, "monthly").ok).toBe(true);
-    // boundary: term 3 with high amount is allowed
+  it("monto 200.000 y 250.000 permiten 1 y 2 meses (3 meses inválido)", () => {
+    expect(validateApplication(200000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(200000, 2, "monthly").ok).toBe(true);
+    expect(validateApplication(200000, 3, "monthly").ok).toBe(false);
+
+    expect(validateApplication(250000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(250000, 2, "monthly").ok).toBe(true);
+    expect(validateApplication(250000, 3, "monthly").ok).toBe(false);
+  });
+
+  it("montos de 300.000 en adelante permiten 1, 2 y 3 meses", () => {
+    expect(validateApplication(300000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(300000, 2, "monthly").ok).toBe(true);
+    expect(validateApplication(300000, 3, "monthly").ok).toBe(true);
+
+    expect(validateApplication(500000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(500000, 2, "monthly").ok).toBe(true);
+    expect(validateApplication(500000, 3, "monthly").ok).toBe(true);
+
+    expect(validateApplication(900000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(900000, 2, "monthly").ok).toBe(true);
     expect(validateApplication(900000, 3, "monthly").ok).toBe(true);
   });
 
-  it("carries the guidance message onto the Simulation when invalid", () => {
-    const s = calculatePayment(100000, 2, "monthly");
-    expect(s.valid).toBe(false);
-    expect(s.message).toContain("1 mes");
-    const s2 = calculatePayment(900000, 2, "monthly");
+  it("carries guidance message onto the Simulation when invalid", () => {
+    const s1 = calculatePayment(100000, 2, "monthly");
+    expect(s1.valid).toBe(false);
+    expect(s1.message).toContain("1 mes");
+
+    const s2 = calculatePayment(200000, 3, "monthly");
     expect(s2.valid).toBe(false);
-    expect(s2.message).toContain("3 meses");
+    expect(s2.message).toContain("2 meses");
   });
 });
 

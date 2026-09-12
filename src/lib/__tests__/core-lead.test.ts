@@ -101,6 +101,21 @@ describe("Core web-lead integration", () => {
     expect(result.bankEntity).toBeNull();
   });
 
+  it("uses default fallback values when taxi fields are omitted (ADR-0002)", () => {
+    const inputWithoutTaxi = {
+      ...input,
+      taxiRole: undefined,
+      taxiPlate: undefined,
+      taxiCompany: undefined,
+      drivingTime: undefined,
+    };
+    const result = buildCoreLeadPayload(inputWithoutTaxi as unknown as import("../application-schema").ApplicationInput, context);
+    expect(result.taxiRole).toBe("conduzco_taxi");
+    expect(result.taxiPlate).toBeNull();
+    expect(result.taxiCompany).toBe("Pendiente en oferta");
+    expect(result.drivingTime).toBe(0);
+  });
+
   it("omits optional contact fields when empty or only whitespace", () => {
     const result = buildCoreLeadPayload({ ...input, contactName: "  ", contactPhone: "   " }, context);
     expect(result.contactName).toBeNull();

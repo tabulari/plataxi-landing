@@ -66,12 +66,12 @@ export function AmountInput({
     setInputText(fmtCOP(v));
   };
 
-  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSliderChange = (e: React.FormEvent<HTMLInputElement>) => {
     markInteract('slider');
     setHint('');
-    const v = Number(e.target.value);
+    const v = Number(e.currentTarget.value);
     setAmount(v, true);
-    setInputText(fmtCOP(clampRoundAmount(v, amountMin, amountMax, amountStepBig)));
+    setInputText(fmtCOP(v));
   };
 
   const bump = (dir: -1 | 1) => {
@@ -151,7 +151,7 @@ export function AmountInput({
       <div className="space-y-2.5">
         <div className="relative w-full h-12 flex items-center">
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-border rounded-full overflow-hidden pointer-events-none" aria-hidden="true">
-            <div className="h-full bg-green rounded-full transition-[width] duration-150 ease-out" style={{ width: `${pct}%` }} />
+            <div className="h-full bg-green rounded-full transition-[width] duration-75 ease-out" style={{ width: `${pct}%` }} />
           </div>
           <input
             type="range"
@@ -165,7 +165,8 @@ export function AmountInput({
             aria-valuenow={amount}
             aria-valuetext={`$${fmtCOP(amount)}`}
             onChange={handleSliderChange}
-            className="relative w-full h-12 min-h-[48px] appearance-none bg-transparent cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2 rounded-full [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[2.5px] [&::-webkit-slider-thumb]:border-green [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-webkit-slider-thumb]:cursor-pointer motion-safe:[&::-webkit-slider-thumb]:hover:scale-110 motion-safe:[&::-webkit-slider-thumb]:active:scale-125 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-track]:h-2 [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-[2.5px] [&::-moz-range-thumb]:border-green [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-moz-range-thumb]:cursor-pointer motion-safe:[&::-moz-range-thumb]:hover:scale-110 motion-safe:[&::-moz-range-thumb]:active:scale-125 [&::-moz-range-thumb]:transition-transform"
+            onInput={handleSliderChange}
+            className="relative w-full h-12 min-h-[48px] appearance-none bg-transparent cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2 rounded-full touch-pan-y [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[2.5px] [&::-webkit-slider-thumb]:border-green [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-webkit-slider-thumb]:cursor-pointer motion-safe:[&::-webkit-slider-thumb]:hover:scale-110 motion-safe:[&::-webkit-slider-thumb]:active:scale-125 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-track]:h-2 [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-[2.5px] [&::-moz-range-thumb]:border-green [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-moz-range-thumb]:cursor-pointer motion-safe:[&::-moz-range-thumb]:hover:scale-110 motion-safe:[&::-moz-range-thumb]:active:scale-125 [&::-moz-range-thumb]:transition-transform"
           />
         </div>
         <div className="flex justify-between text-xs text-muted-2 tabular-nums px-1">

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApplicationForm, useDraftAutoSave, STEP_TITLES } from './apply/use-application-form';
 import { ModalSidebar } from './apply/ModalSidebar';
-import { Step1, Step2, Step3, Step4 } from './apply/FormSteps';
+import { Step1, Step2, Step3 } from './apply/FormSteps';
 import { ApplicationSuccess, ApplicationError } from './apply/ResultPanels';
 import { useSiteUi } from './site-ui';
 import { useSimulator } from './simulator-store';
@@ -25,11 +25,16 @@ export function ApplyModal() {
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const formScrollRef = useRef<HTMLFormElement>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
 
   const form = useApplicationForm(modalRef);
 
   useDraftAutoSave(mounted, form.values, form.consent, form.step, form.submitStatus);
+
+  useEffect(() => {
+    formScrollRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+  }, [form.step]);
 
   useEffect(() => {
     if (applyOpen) {
@@ -57,7 +62,7 @@ export function ApplyModal() {
 
   useEffect(() => {
     if (mounted && form.submitStatus !== 'success' && form.submitStatus !== 'error')
-      setLiveMsg(`Paso ${form.step} de 4: ${STEP_TITLES[form.step]}`);
+      setLiveMsg(`Paso ${form.step} de 3: ${STEP_TITLES[form.step]}`);
   }, [form.step, mounted, form.submitStatus]);
 
   useEffect(() => {
@@ -133,16 +138,14 @@ export function ApplyModal() {
           {/* Step header — always visible ─────────────────────────────── */}
           <div className="shrink-0 bg-card border-b border-border">
             <div className="flex items-center gap-1 pr-1">
-              <ol className="flex-1 flex items-center justify-between sm:justify-start gap-0.5 sm:gap-2 px-3 sm:px-5 pt-1.5 sm:pt-2 pb-1 sm:pb-1.5" aria-label="Progreso del formulario">
-              {[1, 2, 3, 4].map((i) => {
+              <ol className="flex-1 flex items-center justify-between sm:justify-start gap-0.5 sm:gap-2 px-2 sm:px-5 pt-1.5 sm:pt-2 pb-1 sm:pb-1.5" aria-label="Progreso del formulario">
+              {[1, 2, 3].map((i) => {
                 const isClickable = form.submitStatus !== 'success' && i < form.step;
-                const isCurrent = form.submitStatus === 'success' ? i === 4 : i === form.step;
+                const isCurrent = form.submitStatus === 'success' ? i === 3 : i === form.step;
                 const isCompleted = form.submitStatus === 'success' || i < form.step;
                 const stepLabel = i === 1
                   ? { short: 'Datos', long: 'Tus datos' }
                   : i === 2
-                  ? { short: 'Taxi', long: 'Tu taxi' }
-                  : i === 3
                   ? { short: 'Ingresos', long: 'Tus ingresos' }
                   : { short: 'Revisión', long: 'Revisión' };
                 return (
@@ -150,40 +153,47 @@ export function ApplyModal() {
                     <button
                       type="button"
                       disabled={!isClickable && !isCurrent}
+                      title={isClickable ? `Volver al paso ${i}: ${stepLabel.long}` : undefined}
                       aria-current={isCurrent ? 'step' : undefined}
-                      aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado)' : ' (incompleto)'}`}
+                      aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado — clic para volver)' : ' (incompleto)'}`}
                       onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center gap-1 sm:gap-1.5 min-h-[36px] py-0.5 px-1 sm:px-1.5 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green',
+                        'flex items-center gap-1 sm:gap-1.5 min-h-[30px] sm:min-h-[36px] py-0.5 px-1.5 sm:py-1 sm:px-2.5 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
                         stepDot(i),
-                        isClickable && !isCurrent && 'hover:bg-muted/60 cursor-pointer',
+                        isClickable && !isCurrent && 'bg-amber-100/80 border border-amber-300/90 hover:bg-amber-200/90 text-navy cursor-pointer shadow-2xs active:scale-95 group',
                         !isClickable && !isCurrent && 'cursor-default opacity-60',
                       )}
                     >
                       <span
                         className={cn(
-                          'flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full text-[11px] font-bold transition-all shrink-0',
+                          'flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 p-0.5',
                           form.submitStatus === 'success'
-                            ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/60'
+                            ? 'bg-amber-400 text-navy font-black ring-2 ring-amber-400/80 shadow-xs'
                             : isCurrent
-                            ? 'bg-primary-brand text-primary-dark ring-2 ring-primary-brand/50 shadow-xs'
+                            ? 'bg-amber-400 text-navy font-black ring-2 ring-amber-400 shadow-sm scale-105'
                             : isClickable
-                            ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50'
+                            ? 'bg-amber-400 text-navy font-bold ring-2 ring-amber-400/80 shadow-xs group-hover:scale-105 group-hover:bg-amber-300'
                             : 'bg-muted text-muted-2 ring-1 ring-inset ring-border',
                         )}
                       >
-                        {form.submitStatus === 'success' ? '✓' : i}
+                        {form.submitStatus === 'success' || isClickable ? '✓' : i}
                       </span>
-                      <span className="font-semibold whitespace-nowrap text-[11px] sm:text-xs">
+                      <span className={cn('whitespace-nowrap text-[10px] sm:text-xs flex items-center gap-0.5', isCurrent ? 'font-bold text-navy' : isClickable ? 'font-bold text-navy group-hover:underline' : 'font-medium')}>
+                        {isClickable && !isCurrent && (
+                          <span aria-hidden="true" className="font-bold text-amber-900 leading-none">←</span>
+                        )}
                         <span className="sm:hidden">{stepLabel.short}</span>
                         <span className="hidden sm:inline">{stepLabel.long}</span>
                       </span>
                     </button>
 
-                    {i < 4 && (
+                    {i < 3 && (
                       <div
                         aria-hidden="true"
-                        className="w-2 sm:w-4 h-px bg-border mx-0.5 shrink"
+                        className={cn(
+                          'w-1.5 sm:w-4 mx-0.5 shrink transition-colors',
+                          i < form.step ? 'h-[2px] bg-amber-400' : 'h-px bg-border',
+                        )}
                       />
                     )}
                   </li>
@@ -196,7 +206,7 @@ export function ApplyModal() {
                 type="button"
                 aria-label="Cerrar"
                 onClick={closeApply}
-                className="flex items-center justify-center w-9 h-9 min-w-[36px] min-h-[36px] rounded-lg bg-muted/60 text-muted-foreground hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 shrink-0 mr-1.5"
+                className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] rounded-lg bg-muted/60 text-muted-foreground hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 shrink-0 mr-1"
               >
                 <CloseIcon size={16} />
               </button>
@@ -205,9 +215,9 @@ export function ApplyModal() {
             {/* Dynamic progress bar — always visible below step labels */}
             <div className="h-1 bg-muted overflow-hidden" aria-hidden="true">
               <div
-                className="h-full bg-green transition-[width] duration-500 ease-out"
+                className="h-full bg-amber-400 transition-[width] duration-500 ease-out"
                 style={{
-                  width: `${(form.submitStatus === 'success' ? 4 : form.step) * 25}%`,
+                  width: `${(form.submitStatus === 'success' ? 3 : form.step) * (100 / 3)}%`,
                 }}
               />
             </div>
@@ -221,10 +231,11 @@ export function ApplyModal() {
               ? `Solicitud enviada exitosamente. Tu radicado es ${form.radicado}`
               : form.submitStatus === 'error'
               ? 'Ocurrió un error al enviar la solicitud.'
-              : `Paso ${form.step} de 4: ${STEP_TITLES[form.step]}`}
+              : `Paso ${form.step} de 3: ${STEP_TITLES[form.step]}`}
           </div>
 
           <form
+            ref={formScrollRef}
             noValidate
             className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 py-5 flex flex-col gap-4"
             onSubmit={(e) => {
@@ -259,10 +270,7 @@ export function ApplyModal() {
                   <Step2 values={form.values} handlers={handlers} />
                 )}
                 {form.step === 3 && (
-                  <Step3 values={form.values} handlers={handlers} />
-                )}
-                {form.step === 4 && (
-                  <Step4
+                  <Step3
                     values={form.values}
                     consent={form.consent}
                     consentError={form.consentError}
@@ -302,30 +310,17 @@ export function ApplyModal() {
             ) : form.submitStatus === 'error' ? (
               <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={() => form.submit(frozen)}>Reintentar envío <span aria-hidden="true">→</span></Button>
             ) : (
-              <>
-                <Button
-                  variant="ghost"
-                  size="default"
-                  className={cn(form.step === 1 && 'invisible pointer-events-none')}
-                  aria-hidden={form.step === 1}
-                  tabIndex={form.step === 1 ? -1 : 0}
-                  disabled={form.submitStatus === 'pending'}
-                  onClick={() => form.setStep((s) => Math.max(1, s - 1))}
-                >
-                  ← Atrás
-                </Button>
-                <Button
-                  variant="default"
-                  size="default"
-                  disabled={form.submitStatus === 'pending' || !form.isStepComplete}
-                  onClick={() => form.onNext(frozen)}
-                  className="bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40"
-                >
-                  {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
-                    : form.step === 4 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
-                    : (<>Continuar <span aria-hidden="true">→</span></>)}
-                </Button>
-              </>
+              <Button
+                variant="default"
+                size="block"
+                disabled={form.submitStatus === 'pending' || !form.isStepComplete}
+                onClick={() => form.onNext(frozen)}
+                className="w-full bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40 min-h-[46px] text-sm sm:text-base font-bold shadow-xs hover:shadow-md transition-all active:scale-[0.98]"
+              >
+                {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
+                  : form.step === 3 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
+                  : (<>Continuar <span aria-hidden="true">→</span></>)}
+              </Button>
             )}
           </div>
         </div>

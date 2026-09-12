@@ -1,8 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { fmtCOP, validateApplication, type Frequency } from '@/lib/credit';
-import { config } from '@/lib/config';
+import { fmtCOP, validateApplication, isTermDisabled, type Frequency } from '@/lib/credit';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
 import { ApplyButton } from './ApplyButton';
@@ -31,10 +30,12 @@ export function Simulator() {
     amountStep,
     amountStepBig,
     term,
+    termOptions,
     offeredFrequencies,
     frequency,
     sim,
     setAmount,
+    setTerm,
     setFrequency,
   } = useSimulator();
 
@@ -42,8 +43,17 @@ export function Simulator() {
     () => ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)),
     [offeredFrequencies],
   );
-  const isMinAmount = amount <= amountMin;
-  const isHighAmount = amount > config.credit.highAmountThreshold;
+
+  const terms = useMemo(
+    () =>
+      termOptions
+        .filter((value) => !isTermDisabled(amount, value))
+        .map((value) => ({
+          value,
+          label: `${value} ${value === 1 ? 'mes' : 'meses'}`,
+        })),
+    [termOptions, amount],
+  );
 
   // 5. Validación instantánea (amount vivo) para que hint y CTA/mensaje estén sincronizados
   // sim usa settledAmount (150ms debounce) solo para la cuota; validación no debe laggear
@@ -59,22 +69,18 @@ export function Simulator() {
   const [snapAnnouncement, setSnapAnnouncement] = useState('');
   const activeSubmission = useActiveSubmission();
 
-  // 9. Anuncio accesible cuando el plazo interno hace auto-snap (el selector visible
-  // se retiró — el plazo lo determina el sistema; este anuncio solo alimenta lectores).
+  // Anuncio accesible cuando el plazo hace auto-snap por cambio de monto
   const prevTermRef = useRef(term);
   useEffect(() => {
-    if (prevTermRef.current !== term && (isMinAmount || isHighAmount)) {
-      const msg =
-        term === 1
-          ? `Plazo ajustado a 1 mes para $${fmtCOP(amountMin)}`
-          : `Plazo ajustado a ${term} meses para montos superiores a $${fmtCOP(config.credit.highAmountThreshold)}`;
+    if (prevTermRef.current !== term) {
+      const msg = `Plazo ajustado a ${term} ${term === 1 ? 'mes' : 'meses'}`;
       setSnapAnnouncement(msg);
       const t = setTimeout(() => setSnapAnnouncement(''), 3000);
       prevTermRef.current = term;
       return () => clearTimeout(t);
     }
     prevTermRef.current = term;
-  }, [term, isMinAmount, isHighAmount, amountMin]);
+  }, [term]);
 
   // 1. Sync inputText cuando amount cambia externamente (clamp de rates, auto-snap de plazo)
   // No pisa mientras el usuario está tipeando (input enfocado)
@@ -122,15 +128,40 @@ export function Simulator() {
         markInteract={markInteract}
       />
 
-      {/* Plazo interno (sin selector visible): lo determina el sistema según el monto */}
+      {/* Plazo — chips 1-3 con reglas de disponibilidad según monto */}
+      <div>
+        <p className="text-sm font-semibold text-foreground mb-1.5" id="plazoLabel">
+          Plazos
+        </p>
+        <ChipRadioGroup
+          className="flex flex-wrap gap-2"
+          ariaLabelledBy="plazoLabel"
+          ariaDescribedBy="plazoHint"
+          hideCheck
+          options={terms}
+          value={term}
+          onChange={(v) => {
+            markInteract('term');
+            setTerm(v);
+          }}
+        />
+        <p id="plazoHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]" aria-live="polite">
+          {amount <= 150000
+            ? 'Para montos de hasta $150.000 el plazo disponible es de 1 mes'
+            : amount < 300000
+              ? 'Para montos inferiores a $300.000 el plazo máximo es de 2 meses'
+              : '\u00A0'}
+        </p>
+      </div>
+
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {snapAnnouncement}
       </div>
 
-      {/* Payment Frequency Selector */}
+      {/* Payment Frequency / Forma de pago Selector */}
       <div>
         <p className="text-sm font-semibold text-foreground mb-1.5" id="freqLabel">
-          Frecuencia de pago
+          Forma de pago
         </p>
         <ChipRadioGroup
           className="flex flex-wrap gap-2"
