@@ -5,7 +5,6 @@ import * as FocusScope from '@radix-ui/react-focus-scope';
 import { fmtCOP } from '@/lib/credit';
 import {
   CONSENT_TEXT,
-  TAXI_ROLES,
   type FieldName,
 } from '@/lib/application-schema';
 import { capFreq, type Values } from './use-application-form';
@@ -44,24 +43,6 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
     </label>
   );
 };
-
-const selectEl = (name: FieldName, label: string, placeholder: string, options: readonly string[], handlers: FieldHandlers, value: string, required = false) => (
-  <label className={cn('flex flex-col gap-1.5', handlers.errors[name] && '[&_select]:border-destructive')}>
-    <span className="text-sm font-semibold text-foreground">{label}{required && <Req />}</span>
-    <select
-      name={name}
-      value={value}
-      onChange={(e) => { handlers.onFieldChange(name, e.target.value); }}
-      aria-invalid={handlers.errors[name] ? true : undefined}
-      aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
-      className="h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow,transform] cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98] focus:border-primary-brand"
-    >
-      <option value="">{placeholder}</option>
-      {options.map((o) => <option key={o}>{o}</option>)}
-    </select>
-    <FieldError id={`err-${name}`} message={handlers.errors[name]} />
-  </label>
-);
 
 /** Reusable pill toggle (same visual style as Diario/Mensual). */
 const toggleGroup = (
@@ -127,7 +108,7 @@ export function Step1({ values, handlers }: {
   return (
     <section className="flex-1 flex flex-col gap-5">
       <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 1 de 4</p>
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 1 de 3</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 1: Datos personales y de contacto">
           Cuéntanos de ti
         </h2>
@@ -235,82 +216,9 @@ export function Step1({ values, handlers }: {
   );
 }
 
-// ─── Step 2 — Tu taxi ────────────────────────────────────────────────────────
+// ─── Step 2 — Tus ingresos ───────────────────────────────────────────────────
 
 export function Step2({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
-  return (
-    <section className="flex-1 flex flex-col gap-5">
-      <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 4</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tu taxi">
-          Tu taxi
-        </h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Cuéntanos sobre tu vehículo y tu experiencia.</p>
-        <p className="text-xs text-muted-foreground mt-2"><span className="text-destructive">*</span> Campos requeridos</p>
-      </div>
-
-      {selectEl('taxiRole', '¿Cuál es tu rol en el taxi?', 'Selecciona tu rol', TAXI_ROLES, handlers, values.taxiRole, true)}
-
-      {/* Placa — solo visible cuando taxiRole = "Taxi propio" */}
-      {values.taxiRole === 'Taxi propio' && (
-        <div className="motion-safe:animate-step-in">
-          {fieldEl('taxiPlate', 'Placa del taxi', handlers, {
-            type: 'text',
-            autoComplete: 'off',
-            enterKeyHint: 'next',
-            placeholder: 'Ej. ABC 123',
-            value: values.taxiPlate,
-            required: true,
-          })}
-        </div>
-      )}
-
-      {fieldEl('taxiCompany', '¿A qué empresa está afiliado el taxi?', handlers, {
-        type: 'text',
-        autoComplete: 'off',
-        enterKeyHint: 'next',
-        placeholder: 'Ej. Radio Taxi Azul',
-        value: values.taxiCompany,
-        required: true,
-      })}
-
-      {/* Badges tiempo conduciendo */}
-      <div className="flex flex-col gap-2">
-        <span className="text-sm font-semibold text-foreground">¿Cuántos años llevas conduciendo taxi?<Req /></span>
-        <div className="flex gap-2 flex-wrap" role="group" aria-label="Años conduciendo taxi">
-          {([
-            { value: 'lt1',  label: 'Menor a 1' },
-            { value: '1to3', label: '1 a 3' },
-            { value: '3to5', label: '3 a 5' },
-            { value: 'gt5',  label: 'Mayor a 5' },
-          ] as const).map(({ value, label }) => {
-            const selected = values.drivingTime === value;
-            return (
-              <button
-                key={value}
-                type="button"
-                onClick={() => handlers.onFieldChange('drivingTime', value)}
-                aria-pressed={selected}
-                className={`px-4 py-2 rounded-full text-sm font-medium border transition-all ${
-                  selected
-                    ? 'bg-primary-brand text-primary-dark border-primary-brand'
-                    : 'bg-transparent text-foreground border-border hover:border-primary-brand/60'
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
-        <FieldError id="err-drivingTime" message={handlers.errors.drivingTime} />
-      </div>
-    </section>
-  );
-}
-
-// ─── Step 3 — Tus ingresos ───────────────────────────────────────────────────
-
-export function Step3({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
 
   const formatIncome = (val: string) => {
     const d = val.replace(/\D/g, '');
@@ -321,8 +229,8 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
   return (
     <section className="flex-1 flex flex-col gap-5">
       <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 4</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: Tus ingresos">
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 3</p>
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tus ingresos">
           Tus ingresos
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">2 datos para validar tu capacidad de pago.</p>
@@ -379,9 +287,9 @@ export function Step3({ values, handlers }: { values: Values; handlers: FieldHan
   );
 }
 
-// ─── Step 4 — Revisión ───────────────────────────────────────────────────────
+// ─── Step 3 — Revisión ───────────────────────────────────────────────────────
 
-export function Step4({ values, consent, consentError, setConsent, setConsentError, frozen }: {
+export function Step3({ values, consent, consentError, setConsent, setConsentError, frozen }: {
   values: Values;
   consent: boolean;
   consentError: string;
@@ -403,33 +311,24 @@ export function Step4({ values, consent, consentError, setConsent, setConsentErr
     if (showTerms) termsCloseRef.current?.focus();
   }, [showTerms]);
 
-  const drivingLabel = values.drivingTime === 'lt1' ? 'Menor a 1'
-    : values.drivingTime === '1to3' ? '1 a 3'
-    : values.drivingTime === '3to5' ? '3 a 5'
-    : values.drivingTime === 'gt5' ? 'Mayor a 5'
-    : '—';
-
   const reviewRows: { k: string; v: string; full?: boolean }[] = [
     { k: 'Monto solicitado', v: `$${fmtCOP(frozen.amount)} COP` },
     { k: 'Cuota estimada', v: `$${fmtCOP(frozen.payment)} ${frozen.unit}` },
-    { k: 'Plazo', v: `${frozen.term} meses (${capFreq(frozen.frequency as 'daily' | 'weekly' | 'biweekly' | 'monthly')})` },
+    { k: 'Plazo', v: `${frozen.term} ${frozen.term === 1 ? 'mes' : 'meses'}` },
+    { k: 'Forma de pago', v: capFreq(frozen.frequency as 'daily' | 'weekly' | 'biweekly' | 'monthly') },
     { k: 'Nombre completo', v: values.fullName || '—', full: true },
     { k: 'Cédula de ciudadanía', v: values.idNumber || '—' },
     { k: 'Teléfono', v: values.phone || '—' },
     ...(values.contactName ? [{ k: 'Contacto secundario', v: `${values.contactName}${values.contactPhone ? ` · ${values.contactPhone}` : ''}` }] : []),
     { k: 'Correo electrónico', v: values.email || '—', full: true },
-    { k: 'Rol en el taxi', v: values.taxiRole || '—' },
-    ...(values.taxiPlate ? [{ k: 'Placa', v: values.taxiPlate }] : []),
-    { k: 'Empresa afiliada', v: values.taxiCompany || '—' },
-    { k: 'Años conduciendo', v: drivingLabel },
     { k: 'Entidad bancaria', v: values.bankEntity ? displayBankName(values.bankEntity) : 'Se define tras aprobación', full: !values.bankEntity ? true : undefined },
   ];
 
   return (
     <section className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
       <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 4 de 4</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 4: ¿Todo bien?">
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: ¿Todo bien?">
           ¿Todo bien? Revisa y envía
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">Un último vistazo antes de mandar tu solicitud.</p>

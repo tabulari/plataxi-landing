@@ -41,10 +41,13 @@ export interface Validity {
 /**
  * Single source of truth para qué plazos están deshabilitados según el monto.
  * Usado tanto por validateApplication (bloqueo CTA) como por Simulator (chips disabled).
+ * - Hasta $150.000 (ej: 100k, 150k): solo 1 mes habilitado.
+ * - De $200.000 a menos de $300.000: 1 y 2 meses habilitados.
+ * - A partir de $300.000: 1, 2 y 3 meses habilitados.
  */
 export function isTermDisabled(amount: number, termMonths: number): boolean {
-  if (amount <= config.simulator.amountMin && termMonths !== 1) return true;
-  if (amount > config.credit.highAmountThreshold && termMonths < config.credit.highAmountMinTerm) return true;
+  if (amount <= 150000 && termMonths > 1) return true;
+  if (amount < 300000 && termMonths > 2) return true;
   return false;
 }
 
@@ -55,8 +58,6 @@ export function getDisabledTerms(amount: number, termOptions: number[]): number[
 /**
  * Eligibility / constraint rules. Returns { ok, message } — message is shown to
  * the user and the apply CTA is disabled while ok === false.
- *
- * Thresholds default to config (env-driven, interim until real rate engine).
  */
 export function validateApplication(
   amount: number,
@@ -66,16 +67,21 @@ export function validateApplication(
 ): Validity {
   if (!isTermDisabled(amount, termMonths)) return { ok: true, message: "" };
 
-  const { highAmountThreshold, highAmountMinTerm } = config.credit;
-  if (amount <= config.simulator.amountMin) {
+  if (amount <= 150000) {
     return {
       ok: false,
-      message: `Para el monto mínimo de $${fmtCOP(config.simulator.amountMin)} el plazo disponible es de 1 mes.`,
+      message: `Para montos de hasta $${fmtCOP(150000)} el plazo disponible es de 1 mes.`,
+    };
+  }
+  if (amount < 300000) {
+    return {
+      ok: false,
+      message: `Para montos inferiores a $${fmtCOP(300000)} el plazo máximo es de 2 meses.`,
     };
   }
   return {
     ok: false,
-    message: `Para montos superiores a $${fmtCOP(highAmountThreshold)} el plazo mínimo es de ${highAmountMinTerm} meses.`,
+    message: "La combinación de monto y plazo seleccionada no está disponible.",
   };
 }
 

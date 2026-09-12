@@ -5,7 +5,6 @@ import { fmtCOP, type Simulation } from '@/lib/credit';
 import {
   CONSENT_MESSAGE,
   STEP_FIELDS,
-  TAXI_ROLES,
   validateField,
   type FieldName,
 } from '@/lib/application-schema';
@@ -36,9 +35,8 @@ export const FIELDS: FieldName[] = [
 
 export const STEP_TITLES: Record<number, string> = {
   1: 'Tus datos',
-  2: 'Tu taxi',
-  3: 'Tus ingresos',
-  4: 'Revisión',
+  2: 'Tus ingresos',
+  3: 'Revisión',
 };
 
 export const emptyValues: Values = {
@@ -105,19 +103,9 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
         if (msg && !firstBad) firstBad = f;
       }
 
-      // Step 2 conditional: taxiPlate required when taxiRole = "Taxi propio"
-      if (n === 2 && values.taxiRole === 'Taxi propio') {
-        if (!values.taxiPlate?.trim()) {
-          next.taxiPlate = 'Ingresa la placa del taxi.';
-          if (!firstBad) firstBad = 'taxiPlate';
-        } else {
-          next.taxiPlate = '';
-        }
-      }
-
-      // Step 3 conditional: bankEntity required when hasBank = "yes"
+      // Step 2 conditional: bankEntity required when hasBank = "yes"
       // hasBank = "no" always blocks (user cannot continue without a bank)
-      if (n === 3) {
+      if (n === 2) {
         if (values.hasBank === 'no') {
           next.hasBank = 'Necesitas una entidad bancaria para continuar.';
           if (!firstBad) firstBad = 'hasBank';
@@ -134,8 +122,8 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
       }
       return true;
     }
-    // Step 4 = consent validation
-    if (n === 4) {
+    // Step 3 = consent validation
+    if (n === 3) {
       if (!consent) {
         setConsentError(CONSENT_MESSAGE);
         modalRef.current?.querySelector<HTMLInputElement>('input[name="consent"]')?.focus();
@@ -204,7 +192,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
   const onNext = useCallback((frozen: Simulation | null) => {
     if (!validateStep(step)) return;
     track('apply_step_complete', { step });
-    if (step === 4) submit(frozen);
+    if (step === 3) submit(frozen);
     else setStep((s) => s + 1);
   }, [step, validateStep, submit]);
 
@@ -216,7 +204,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
       setSubmittedAt(submitted.submittedAt ?? null);
       setValues((prev) => ({ ...prev, ...(submitted.values as Values) }));
       setConsent(true);
-      setStep(4);
+      setStep(3);
       setSubmitStatus('success');
       setSubmitErrorCode(null);
       if (onRestoredSubmission && submitted.terms) {
@@ -232,7 +220,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     for (const f of FIELDS) if (draft[f]) restored[f] = draft[f] as string;
     setValues(restored);
     setConsent(!!draft.consent);
-    setStep(draft.step && draft.step >= 1 && draft.step <= 4 ? draft.step : 1);
+    setStep(draft.step && draft.step >= 1 && draft.step <= 3 ? draft.step : 1);
     setErrors({});
     setConsentError('');
     setSubmitStatus('idle');
@@ -272,21 +260,13 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
       );
     }
     if (step === 2) {
-      const base =
-        (TAXI_ROLES as readonly string[]).includes(values.taxiRole) &&
-        values.taxiCompany.trim().length >= 2 &&
-        ['lt1', '1to3', '3to5', 'gt5'].includes(values.drivingTime);
-      const plate = values.taxiRole !== 'Taxi propio' || values.taxiPlate.trim().length > 0;
-      return base && plate;
-    }
-    if (step === 3) {
       return (
         validateField('income', values.income) === '' &&
         values.hasBank === 'yes' &&
         values.bankEntity.trim().length > 0
       );
     }
-    if (step === 4) return consent;
+    if (step === 3) return consent;
     return true;
   }, [step, values, consent]);
 

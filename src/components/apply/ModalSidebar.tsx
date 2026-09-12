@@ -48,7 +48,7 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
           ['Plazo', `${frozen.term} meses`],
           ['Nº pagos', String(Math.round(frozen.nPeriods))],
           ['Tasa/período', `${fmtPct(frozen.periodRate, 2)}%`],
-          ['Frecuencia', capFreq(frozen.frequency)],
+          ['Forma de pago', capFreq(frozen.frequency)],
         ].map(([k, v]) => (
           <li key={k} className="flex justify-between gap-2">
             <span className="text-white/60">{k}</span><b>{v}</b>

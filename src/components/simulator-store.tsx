@@ -95,9 +95,8 @@ export function SimulatorProvider({
   const [term, setTerm] = useState(() => {
     const d = config.simulator.defaultTerm;
     const a = config.simulator.defaultAmount;
-    if (a <= rates.amountMin && d !== 1) return 1;
-    if (a > config.credit.highAmountThreshold && d < config.credit.highAmountMinTerm)
-      return config.credit.highAmountMinTerm;
+    if (a <= 150000 && d > 1) return 1;
+    if (a < 300000 && d > 2) return 2;
     return rates.termOptions.includes(d) ? d : rates.termOptions[0];
   });
   const [frequency, setFrequency] = useState<Frequency>(() => {
@@ -114,16 +113,14 @@ export function SimulatorProvider({
     }
   }, [rates.offeredFrequencies, frequency]);
 
-  // Auto-corrige el plazo cuando el monto entra en rangos con plazo único
+  // Auto-corrige el plazo cuando el monto entra en rangos con plazos restringidos
   useEffect(() => {
-    if (amount <= rates.amountMin && term !== 1) {
+    if (amount <= 150000 && term > 1) {
       setTerm(1);
-      return;
+    } else if (amount < 300000 && term > 2) {
+      setTerm(2);
     }
-    if (amount > config.credit.highAmountThreshold && term < config.credit.highAmountMinTerm) {
-      setTerm(config.credit.highAmountMinTerm);
-    }
-  }, [amount, rates.amountMin, term]);
+  }, [amount, term]);
 
   const setAmount = useCallback(
     (value: number, round = true) => {

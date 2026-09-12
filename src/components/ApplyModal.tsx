@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApplicationForm, useDraftAutoSave, STEP_TITLES } from './apply/use-application-form';
 import { ModalSidebar } from './apply/ModalSidebar';
-import { Step1, Step2, Step3, Step4 } from './apply/FormSteps';
+import { Step1, Step2, Step3 } from './apply/FormSteps';
 import { ApplicationSuccess, ApplicationError } from './apply/ResultPanels';
 import { useSiteUi } from './site-ui';
 import { useSimulator } from './simulator-store';
@@ -134,15 +134,13 @@ export function ApplyModal() {
           <div className="shrink-0 bg-card border-b border-border">
             <div className="flex items-center gap-1 pr-1">
               <ol className="flex-1 flex items-center justify-between sm:justify-start gap-0.5 sm:gap-2 px-3 sm:px-5 pt-1.5 sm:pt-2 pb-1 sm:pb-1.5" aria-label="Progreso del formulario">
-              {[1, 2, 3, 4].map((i) => {
+              {[1, 2, 3].map((i) => {
                 const isClickable = form.submitStatus !== 'success' && i < form.step;
-                const isCurrent = form.submitStatus === 'success' ? i === 4 : i === form.step;
+                const isCurrent = form.submitStatus === 'success' ? i === 3 : i === form.step;
                 const isCompleted = form.submitStatus === 'success' || i < form.step;
                 const stepLabel = i === 1
                   ? { short: 'Datos', long: 'Tus datos' }
                   : i === 2
-                  ? { short: 'Taxi', long: 'Tu taxi' }
-                  : i === 3
                   ? { short: 'Ingresos', long: 'Tus ingresos' }
                   : { short: 'Revisión', long: 'Revisión' };
                 return (
@@ -180,7 +178,7 @@ export function ApplyModal() {
                       </span>
                     </button>
 
-                    {i < 4 && (
+                    {i < 3 && (
                       <div
                         aria-hidden="true"
                         className="w-2 sm:w-4 h-px bg-border mx-0.5 shrink"
@@ -207,7 +205,7 @@ export function ApplyModal() {
               <div
                 className="h-full bg-green transition-[width] duration-500 ease-out"
                 style={{
-                  width: `${(form.submitStatus === 'success' ? 4 : form.step) * 25}%`,
+                  width: `${(form.submitStatus === 'success' ? 3 : form.step) * (100 / 3)}%`,
                 }}
               />
             </div>
@@ -259,10 +257,7 @@ export function ApplyModal() {
                   <Step2 values={form.values} handlers={handlers} />
                 )}
                 {form.step === 3 && (
-                  <Step3 values={form.values} handlers={handlers} />
-                )}
-                {form.step === 4 && (
-                  <Step4
+                  <Step3
                     values={form.values}
                     consent={form.consent}
                     consentError={form.consentError}
@@ -322,7 +317,7 @@ export function ApplyModal() {
                   className="bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40"
                 >
                   {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
-                    : form.step === 4 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
+                    : form.step === 3 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
                     : (<>Continuar <span aria-hidden="true">→</span></>)}
                 </Button>
               </>
