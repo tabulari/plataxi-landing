@@ -153,7 +153,7 @@ export function ApplyModal() {
                       aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado — clic para volver)' : ' (incompleto)'}`}
                       onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center gap-1 sm:gap-1.5 min-h-[34px] py-0.5 px-1.5 sm:px-2 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
+                        'flex items-center gap-1.5 sm:gap-2 min-h-[36px] py-1 px-2 sm:px-2.5 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
                         stepDot(i),
                         isClickable && !isCurrent && 'bg-amber-100/80 border border-amber-300/90 hover:bg-amber-200/90 text-navy cursor-pointer shadow-2xs active:scale-95 group',
                         !isClickable && !isCurrent && 'cursor-default opacity-60',
@@ -161,7 +161,7 @@ export function ApplyModal() {
                     >
                       <span
                         className={cn(
-                          'flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full text-[11px] font-bold transition-all shrink-0',
+                          'flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-xs font-bold transition-all shrink-0 p-0.5',
                           form.submitStatus === 'success'
                             ? 'bg-amber-400 text-navy font-black ring-2 ring-amber-400/80 shadow-xs'
                             : isCurrent
@@ -304,33 +304,17 @@ export function ApplyModal() {
             ) : form.submitStatus === 'error' ? (
               <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={() => form.submit(frozen)}>Reintentar envío <span aria-hidden="true">→</span></Button>
             ) : (
-              <>
-                <Button
-                  variant="outline"
-                  size="default"
-                  className={cn(
-                    'border border-border bg-white text-foreground hover:bg-muted hover:text-navy font-semibold shadow-xs transition-all active:scale-[0.98]',
-                    form.step === 1 && 'invisible pointer-events-none',
-                  )}
-                  aria-hidden={form.step === 1}
-                  tabIndex={form.step === 1 ? -1 : 0}
-                  disabled={form.submitStatus === 'pending'}
-                  onClick={() => form.setStep((s) => Math.max(1, s - 1))}
-                >
-                  <span aria-hidden="true" className="font-bold">←</span> Volver
-                </Button>
-                <Button
-                  variant="default"
-                  size="default"
-                  disabled={form.submitStatus === 'pending' || !form.isStepComplete}
-                  onClick={() => form.onNext(frozen)}
-                  className="bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40"
-                >
-                  {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
-                    : form.step === 3 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
-                    : (<>Continuar <span aria-hidden="true">→</span></>)}
-                </Button>
-              </>
+              <Button
+                variant="default"
+                size="block"
+                disabled={form.submitStatus === 'pending' || !form.isStepComplete}
+                onClick={() => form.onNext(frozen)}
+                className="w-full bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40 min-h-[46px] text-sm sm:text-base font-bold shadow-xs hover:shadow-md transition-all active:scale-[0.98]"
+              >
+                {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
+                  : form.step === 3 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)
+                  : (<>Continuar <span aria-hidden="true">→</span></>)}
+              </Button>
             )}
           </div>
         </div>
