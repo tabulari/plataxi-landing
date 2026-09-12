@@ -25,11 +25,16 @@ export function ApplyModal() {
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
+  const formScrollRef = useRef<HTMLFormElement>(null);
   const lastFocusedRef = useRef<HTMLElement | null>(null);
 
   const form = useApplicationForm(modalRef);
 
   useDraftAutoSave(mounted, form.values, form.consent, form.step, form.submitStatus);
+
+  useEffect(() => {
+    formScrollRef.current?.scrollTo({ top: 0, behavior: 'instant' });
+  }, [form.step]);
 
   useEffect(() => {
     if (applyOpen) {
@@ -57,7 +62,7 @@ export function ApplyModal() {
 
   useEffect(() => {
     if (mounted && form.submitStatus !== 'success' && form.submitStatus !== 'error')
-      setLiveMsg(`Paso ${form.step} de 4: ${STEP_TITLES[form.step]}`);
+      setLiveMsg(`Paso ${form.step} de 3: ${STEP_TITLES[form.step]}`);
   }, [form.step, mounted, form.submitStatus]);
 
   useEffect(() => {
@@ -133,7 +138,7 @@ export function ApplyModal() {
           {/* Step header — always visible ─────────────────────────────── */}
           <div className="shrink-0 bg-card border-b border-border">
             <div className="flex items-center gap-1 pr-1">
-              <ol className="flex-1 flex items-center justify-between sm:justify-start gap-0.5 sm:gap-2 px-3 sm:px-5 pt-1.5 sm:pt-2 pb-1 sm:pb-1.5" aria-label="Progreso del formulario">
+              <ol className="flex-1 flex items-center justify-between sm:justify-start gap-0.5 sm:gap-2 px-2 sm:px-5 pt-1.5 sm:pt-2 pb-1 sm:pb-1.5" aria-label="Progreso del formulario">
               {[1, 2, 3].map((i) => {
                 const isClickable = form.submitStatus !== 'success' && i < form.step;
                 const isCurrent = form.submitStatus === 'success' ? i === 3 : i === form.step;
@@ -153,7 +158,7 @@ export function ApplyModal() {
                       aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado — clic para volver)' : ' (incompleto)'}`}
                       onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center gap-1.5 sm:gap-2 min-h-[36px] py-1 px-2 sm:px-2.5 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
+                        'flex items-center gap-1 sm:gap-1.5 min-h-[30px] sm:min-h-[36px] py-0.5 px-1.5 sm:py-1 sm:px-2.5 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
                         stepDot(i),
                         isClickable && !isCurrent && 'bg-amber-100/80 border border-amber-300/90 hover:bg-amber-200/90 text-navy cursor-pointer shadow-2xs active:scale-95 group',
                         !isClickable && !isCurrent && 'cursor-default opacity-60',
@@ -161,7 +166,7 @@ export function ApplyModal() {
                     >
                       <span
                         className={cn(
-                          'flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full text-xs font-bold transition-all shrink-0 p-0.5',
+                          'flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 p-0.5',
                           form.submitStatus === 'success'
                             ? 'bg-amber-400 text-navy font-black ring-2 ring-amber-400/80 shadow-xs'
                             : isCurrent
@@ -173,7 +178,7 @@ export function ApplyModal() {
                       >
                         {form.submitStatus === 'success' || isClickable ? '✓' : i}
                       </span>
-                      <span className={cn('whitespace-nowrap text-[11px] sm:text-xs flex items-center gap-0.5', isCurrent ? 'font-bold text-navy' : isClickable ? 'font-bold text-navy group-hover:underline' : 'font-medium')}>
+                      <span className={cn('whitespace-nowrap text-[10px] sm:text-xs flex items-center gap-0.5', isCurrent ? 'font-bold text-navy' : isClickable ? 'font-bold text-navy group-hover:underline' : 'font-medium')}>
                         {isClickable && !isCurrent && (
                           <span aria-hidden="true" className="font-bold text-amber-900 leading-none">←</span>
                         )}
@@ -186,7 +191,7 @@ export function ApplyModal() {
                       <div
                         aria-hidden="true"
                         className={cn(
-                          'w-2 sm:w-4 mx-0.5 shrink transition-colors',
+                          'w-1.5 sm:w-4 mx-0.5 shrink transition-colors',
                           i < form.step ? 'h-[2px] bg-amber-400' : 'h-px bg-border',
                         )}
                       />
@@ -201,7 +206,7 @@ export function ApplyModal() {
                 type="button"
                 aria-label="Cerrar"
                 onClick={closeApply}
-                className="flex items-center justify-center w-9 h-9 min-w-[36px] min-h-[36px] rounded-lg bg-muted/60 text-muted-foreground hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 shrink-0 mr-1.5"
+                className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] rounded-lg bg-muted/60 text-muted-foreground hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 shrink-0 mr-1"
               >
                 <CloseIcon size={16} />
               </button>
@@ -226,10 +231,11 @@ export function ApplyModal() {
               ? `Solicitud enviada exitosamente. Tu radicado es ${form.radicado}`
               : form.submitStatus === 'error'
               ? 'Ocurrió un error al enviar la solicitud.'
-              : `Paso ${form.step} de 4: ${STEP_TITLES[form.step]}`}
+              : `Paso ${form.step} de 3: ${STEP_TITLES[form.step]}`}
           </div>
 
           <form
+            ref={formScrollRef}
             noValidate
             className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 py-5 flex flex-col gap-4"
             onSubmit={(e) => {
