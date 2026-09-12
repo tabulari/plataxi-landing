@@ -148,13 +148,14 @@ export function ApplyModal() {
                     <button
                       type="button"
                       disabled={!isClickable && !isCurrent}
+                      title={isClickable ? `Volver al paso ${i}: ${stepLabel.long}` : undefined}
                       aria-current={isCurrent ? 'step' : undefined}
-                      aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado)' : ' (incompleto)'}`}
+                      aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado — clic para volver)' : ' (incompleto)'}`}
                       onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center gap-1 sm:gap-1.5 min-h-[36px] py-0.5 px-1 sm:px-1.5 rounded-lg transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green',
+                        'flex items-center gap-1 sm:gap-1.5 min-h-[36px] py-0.5 px-1 sm:px-2 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-green',
                         stepDot(i),
-                        isClickable && !isCurrent && 'hover:bg-muted/60 cursor-pointer',
+                        isClickable && !isCurrent && 'hover:bg-muted/80 cursor-pointer hover:shadow-xs group',
                         !isClickable && !isCurrent && 'cursor-default opacity-60',
                       )}
                     >
@@ -166,7 +167,7 @@ export function ApplyModal() {
                             : isCurrent
                             ? 'bg-primary-brand text-primary-dark ring-2 ring-primary-brand/50 shadow-xs'
                             : isClickable
-                            ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50'
+                            ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50 group-hover:scale-105'
                             : 'bg-muted text-muted-2 ring-1 ring-inset ring-border',
                         )}
                       >
@@ -254,7 +255,7 @@ export function ApplyModal() {
                   <Step1 values={form.values} applyOrigin={applyOrigin} handlers={handlers} frozen={frozen} />
                 )}
                 {form.step === 2 && (
-                  <Step2 values={form.values} handlers={handlers} />
+                  <Step2 values={form.values} handlers={handlers} onBack={() => form.setStep(1)} />
                 )}
                 {form.step === 3 && (
                   <Step3
@@ -264,6 +265,7 @@ export function ApplyModal() {
                     setConsent={form.setConsent}
                     setConsentError={form.setConsentError}
                     frozen={frozen}
+                    onBack={() => form.setStep(2)}
                   />
                 )}
               </>
@@ -299,15 +301,18 @@ export function ApplyModal() {
             ) : (
               <>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="default"
-                  className={cn(form.step === 1 && 'invisible pointer-events-none')}
+                  className={cn(
+                    'border border-border bg-white text-foreground hover:bg-muted hover:text-navy font-semibold shadow-xs transition-all active:scale-[0.98]',
+                    form.step === 1 && 'invisible pointer-events-none',
+                  )}
                   aria-hidden={form.step === 1}
                   tabIndex={form.step === 1 ? -1 : 0}
                   disabled={form.submitStatus === 'pending'}
                   onClick={() => form.setStep((s) => Math.max(1, s - 1))}
                 >
-                  ← Atrás
+                  <span aria-hidden="true" className="font-bold">←</span> Volver
                 </Button>
                 <Button
                   variant="default"

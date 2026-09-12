@@ -15,7 +15,8 @@ const MSG = {
   fullName: "¿Cómo te llamas? Nombre y apellido.",
   idNumber: "Revisa tu cédula. 7 a 10 dígitos.",
   phone: "Teléfono inválido. 10 dígitos, empieza en 3.",
-  contactPhone: "Si lo pones, que sea un número válido de 10 dígitos.",
+  contactName: "¿Cómo se llama tu contacto de referencia?",
+  contactPhone: "Teléfono de contacto inválido. 10 dígitos, empieza en 3.",
   email: "Ese correo no se ve bien.",
   taxiRole: "Elige tu rol en el taxi.",
   taxiPlate: "Ingresa la placa del taxi.",
@@ -45,9 +46,10 @@ export const fieldSchemas = {
     const d = digits(v);
     return d.length === 10 && d.startsWith("3");
   }, MSG.phone),
-  contactName: z.string(), // optional — always valid (validated per-step as needed)
+  contactName: z
+    .string()
+    .refine((v) => v.trim().length >= 3, MSG.contactName),
   contactPhone: z.string().refine((v) => {
-    if (!v || v.trim() === "") return true;
     const d = digits(v);
     return d.length === 10 && d.startsWith("3");
   }, MSG.contactPhone),
@@ -72,8 +74,7 @@ export const fieldSchemas = {
 export type FieldName = keyof typeof fieldSchemas;
 
 export const STEP_FIELDS: Record<number, FieldName[]> = {
-  1: ["fullName", "idNumber", "phone", "email"],
-  // contactName/contactPhone are optional — not in required validation list
+  1: ["fullName", "idNumber", "phone", "email", "contactName", "contactPhone"],
   2: ["income", "incomeType", "hasBank"],
   // bankEntity is conditional on hasBank="yes" — handled in validateStep
 };
@@ -104,8 +105,8 @@ export const applicationSchema = z
     fullName: fieldSchemas.fullName,
     idNumber: fieldSchemas.idNumber,
     phone: fieldSchemas.phone,
-    contactName: z.string().optional().or(z.literal("")),
-    contactPhone: fieldSchemas.contactPhone.optional().or(z.literal("")),
+    contactName: fieldSchemas.contactName,
+    contactPhone: fieldSchemas.contactPhone,
     email: fieldSchemas.email,
     // Step 2 (opcional en landing, diferido a oferta según ADR-0002)
     taxiRole: z.string().optional().or(z.literal("")),

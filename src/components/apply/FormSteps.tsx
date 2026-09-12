@@ -88,10 +88,6 @@ export function Step1({ values, handlers }: {
   handlers: FieldHandlers;
   frozen: { amount: number; term: number; payment: number; unit: string };
 }) {
-  const [showContact, setShowContact] = useState(
-    () => !!(values.contactName || values.contactPhone),
-  );
-
   const formatCedula = (val: string) => {
     const d = val.replace(/\D/g, '');
     if (!d) return '';
@@ -155,53 +151,32 @@ export function Step1({ values, handlers }: {
         })}
       </div>
 
-      {/* Contacto secundario — toggle (IP-163) */}
-      {!showContact ? (
-        <button
-          type="button"
-          onClick={() => setShowContact(true)}
-          className="self-start flex items-center gap-1.5 text-sm font-semibold text-green-ink hover:text-green-bright transition-colors py-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-md"
-        >
-          <span className="text-lg leading-none">+</span>
-          Agregar teléfono de contacto
-        </button>
-      ) : (
-        <div className="flex flex-col gap-3 motion-safe:animate-step-in">
-          <div className="flex items-center justify-between">
-            <span className="text-sm font-semibold text-foreground">Contacto secundario</span>
-            <button
-              type="button"
-              onClick={() => {
-                setShowContact(false);
-                handlers.onFieldChange('contactName', '');
-                handlers.onFieldChange('contactPhone', '');
-              }}
-              aria-label="Quitar contacto secundario"
-              className="text-xs text-muted-2 hover:text-destructive transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
-            >
-              Quitar
-            </button>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {fieldEl('contactName', 'Nombre de contacto', handlers, {
-              type: 'text',
-              autoComplete: 'off',
-              enterKeyHint: 'next',
-              placeholder: 'Ej. Carlos Martínez',
-              value: values.contactName,
-            })}
-            {fieldEl('contactPhone', 'Teléfono de contacto', handlers, {
-              type: 'tel',
-              inputMode: 'numeric',
-              autoComplete: 'tel',
-              enterKeyHint: 'next',
-              placeholder: 'Ej. 300 765 4321',
-              value: values.contactPhone,
-              onChange: (e) => handlers.onFieldChange('contactPhone', formatPhone(e.target.value)),
-            })}
-          </div>
+      {/* Contacto secundario — obligatorio */}
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-semibold text-foreground">
+          Contacto secundario (familiar o conocido)<Req />
+        </span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {fieldEl('contactName', 'Nombre de contacto', handlers, {
+            type: 'text',
+            autoComplete: 'off',
+            enterKeyHint: 'next',
+            placeholder: 'Ej. Carlos Martínez',
+            value: values.contactName,
+            required: true,
+          })}
+          {fieldEl('contactPhone', 'Teléfono de contacto', handlers, {
+            type: 'tel',
+            inputMode: 'numeric',
+            autoComplete: 'tel',
+            enterKeyHint: 'next',
+            placeholder: 'Ej. 300 765 4321',
+            value: values.contactPhone,
+            onChange: (e) => handlers.onFieldChange('contactPhone', formatPhone(e.target.value)),
+            required: true,
+          })}
         </div>
-      )}
+      </div>
 
       {fieldEl('email', 'Correo', handlers, {
         type: 'email',
@@ -218,8 +193,15 @@ export function Step1({ values, handlers }: {
 
 // ─── Step 2 — Tus ingresos ───────────────────────────────────────────────────
 
-export function Step2({ values, handlers }: { values: Values; handlers: FieldHandlers }) {
-
+export function Step2({
+  values,
+  handlers,
+  onBack,
+}: {
+  values: Values;
+  handlers: FieldHandlers;
+  onBack?: () => void;
+}) {
   const formatIncome = (val: string) => {
     const d = val.replace(/\D/g, '');
     if (!d) return '';
@@ -229,7 +211,19 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
   return (
     <section className="flex-1 flex flex-col gap-5">
       <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 3</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 3</p>
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy hover:underline py-1 px-2 rounded-md hover:bg-muted/70 transition-colors"
+              aria-label="Volver a Tus datos"
+            >
+              <span aria-hidden="true">←</span> Volver a Tus datos
+            </button>
+          )}
+        </div>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tus ingresos">
           Tus ingresos
         </h2>
@@ -289,13 +283,14 @@ export function Step2({ values, handlers }: { values: Values; handlers: FieldHan
 
 // ─── Step 3 — Revisión ───────────────────────────────────────────────────────
 
-export function Step3({ values, consent, consentError, setConsent, setConsentError, frozen }: {
+export function Step3({ values, consent, consentError, setConsent, setConsentError, frozen, onBack }: {
   values: Values;
   consent: boolean;
   consentError: string;
   setConsent: (v: boolean) => void;
   setConsentError: (v: string) => void;
   frozen: { amount: number; term: number; payment: number; unit: string; frequency: string; periodRate: number };
+  onBack?: () => void;
 }) {
   const [showTerms, setShowTerms] = useState(false);
   const termsCloseRef = useRef<HTMLButtonElement>(null);
@@ -327,7 +322,19 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
   return (
     <section className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
       <div>
-        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy hover:underline py-1 px-2 rounded-md hover:bg-muted/70 transition-colors"
+              aria-label="Volver a Tus ingresos"
+            >
+              <span aria-hidden="true">←</span> Volver a Tus ingresos
+            </button>
+          )}
+        </div>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: ¿Todo bien?">
           ¿Todo bien? Revisa y envía
         </h2>
