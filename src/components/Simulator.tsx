@@ -46,22 +46,12 @@ export function Simulator() {
 
   const terms = useMemo(
     () =>
-      termOptions.map((value) => {
-        const disabled = isTermDisabled(amount, value);
-        let title: string | undefined;
-        if (disabled) {
-          title =
-            value === 2
-              ? 'Disponible a partir de $200.000'
-              : 'Disponible a partir de $300.000';
-        }
-        return {
+      termOptions
+        .filter((value) => !isTermDisabled(amount, value))
+        .map((value) => ({
           value,
           label: `${value} ${value === 1 ? 'mes' : 'meses'}`,
-          disabled,
-          title,
-        };
-      }),
+        })),
     [termOptions, amount],
   );
 
