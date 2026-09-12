@@ -196,11 +196,9 @@ export function Step1({ values, handlers }: {
 export function Step2({
   values,
   handlers,
-  onBack,
 }: {
   values: Values;
   handlers: FieldHandlers;
-  onBack?: () => void;
 }) {
   const formatIncome = (val: string) => {
     const d = val.replace(/\D/g, '');
@@ -211,19 +209,7 @@ export function Step2({
   return (
     <section className="flex-1 flex flex-col gap-5">
       <div>
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 3</p>
-          {onBack && (
-            <button
-              type="button"
-              onClick={onBack}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy hover:underline py-1 px-2 rounded-md hover:bg-muted/70 transition-colors"
-              aria-label="Volver a Tus datos"
-            >
-              <span aria-hidden="true">←</span> Volver a Tus datos
-            </button>
-          )}
-        </div>
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 2 de 3</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tus ingresos">
           Tus ingresos
         </h2>
@@ -283,14 +269,13 @@ export function Step2({
 
 // ─── Step 3 — Revisión ───────────────────────────────────────────────────────
 
-export function Step3({ values, consent, consentError, setConsent, setConsentError, frozen, onBack }: {
+export function Step3({ values, consent, consentError, setConsent, setConsentError, frozen }: {
   values: Values;
   consent: boolean;
   consentError: string;
   setConsent: (v: boolean) => void;
   setConsentError: (v: string) => void;
   frozen: { amount: number; term: number; payment: number; unit: string; frequency: string; periodRate: number };
-  onBack?: () => void;
 }) {
   const [showTerms, setShowTerms] = useState(false);
   const termsCloseRef = useRef<HTMLButtonElement>(null);
@@ -322,19 +307,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
   return (
     <section className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
       <div>
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
-          {onBack && (
-            <button
-              type="button"
-              onClick={onBack}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-navy hover:underline py-1 px-2 rounded-md hover:bg-muted/70 transition-colors"
-              aria-label="Volver a Tus ingresos"
-            >
-              <span aria-hidden="true">←</span> Volver a Tus ingresos
-            </button>
-          )}
-        </div>
+        <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: ¿Todo bien?">
           ¿Todo bien? Revisa y envía
         </h2>

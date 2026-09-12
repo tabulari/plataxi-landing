@@ -153,9 +153,9 @@ export function ApplyModal() {
                       aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado — clic para volver)' : ' (incompleto)'}`}
                       onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center gap-1 sm:gap-1.5 min-h-[36px] py-0.5 px-1 sm:px-2 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-green',
+                        'flex items-center gap-1 sm:gap-1.5 min-h-[36px] py-0.5 px-1 sm:px-2 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
                         stepDot(i),
-                        isClickable && !isCurrent && 'hover:bg-muted/80 cursor-pointer hover:shadow-xs group',
+                        isClickable && !isCurrent && 'hover:bg-amber-50/90 cursor-pointer hover:shadow-xs group',
                         !isClickable && !isCurrent && 'cursor-default opacity-60',
                       )}
                     >
@@ -163,17 +163,17 @@ export function ApplyModal() {
                         className={cn(
                           'flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full text-[11px] font-bold transition-all shrink-0',
                           form.submitStatus === 'success'
-                            ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/60'
+                            ? 'bg-amber-400 text-navy font-black ring-2 ring-amber-400/80 shadow-xs'
                             : isCurrent
-                            ? 'bg-primary-brand text-primary-dark ring-2 ring-primary-brand/50 shadow-xs'
+                            ? 'bg-amber-400 text-navy font-black ring-2 ring-amber-400 shadow-sm scale-105'
                             : isClickable
-                            ? 'bg-secondary-surface text-primary-dark ring-1 ring-inset ring-green/50 group-hover:scale-105'
+                            ? 'bg-amber-400 text-navy font-bold ring-2 ring-amber-400/80 shadow-xs group-hover:scale-105 group-hover:bg-amber-300'
                             : 'bg-muted text-muted-2 ring-1 ring-inset ring-border',
                         )}
                       >
-                        {form.submitStatus === 'success' ? '✓' : i}
+                        {form.submitStatus === 'success' || isClickable ? '✓' : i}
                       </span>
-                      <span className="font-semibold whitespace-nowrap text-[11px] sm:text-xs">
+                      <span className={cn('whitespace-nowrap text-[11px] sm:text-xs', isCurrent ? 'font-bold text-navy' : isClickable ? 'font-bold text-navy group-hover:underline' : 'font-medium')}>
                         <span className="sm:hidden">{stepLabel.short}</span>
                         <span className="hidden sm:inline">{stepLabel.long}</span>
                       </span>
@@ -182,7 +182,10 @@ export function ApplyModal() {
                     {i < 3 && (
                       <div
                         aria-hidden="true"
-                        className="w-2 sm:w-4 h-px bg-border mx-0.5 shrink"
+                        className={cn(
+                          'w-2 sm:w-4 mx-0.5 shrink transition-colors',
+                          i < form.step ? 'h-[2px] bg-amber-400' : 'h-px bg-border',
+                        )}
                       />
                     )}
                   </li>
@@ -204,7 +207,7 @@ export function ApplyModal() {
             {/* Dynamic progress bar — always visible below step labels */}
             <div className="h-1 bg-muted overflow-hidden" aria-hidden="true">
               <div
-                className="h-full bg-green transition-[width] duration-500 ease-out"
+                className="h-full bg-amber-400 transition-[width] duration-500 ease-out"
                 style={{
                   width: `${(form.submitStatus === 'success' ? 3 : form.step) * (100 / 3)}%`,
                 }}
@@ -255,7 +258,7 @@ export function ApplyModal() {
                   <Step1 values={form.values} applyOrigin={applyOrigin} handlers={handlers} frozen={frozen} />
                 )}
                 {form.step === 2 && (
-                  <Step2 values={form.values} handlers={handlers} onBack={() => form.setStep(1)} />
+                  <Step2 values={form.values} handlers={handlers} />
                 )}
                 {form.step === 3 && (
                   <Step3
@@ -265,7 +268,6 @@ export function ApplyModal() {
                     setConsent={form.setConsent}
                     setConsentError={form.setConsentError}
                     frozen={frozen}
-                    onBack={() => form.setStep(2)}
                   />
                 )}
               </>

@@ -256,6 +256,8 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
         validateField('fullName', values.fullName) === '' &&
         validateField('idNumber', values.idNumber) === '' &&
         validateField('phone', values.phone) === '' &&
+        validateField('contactName', values.contactName) === '' &&
+        validateField('contactPhone', values.contactPhone) === '' &&
         validateField('email', values.email) === ''
       );
     }
