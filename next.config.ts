@@ -14,6 +14,25 @@ const nextConfig: NextConfig = {
       { source: "/terminos", destination: "/legal/terminos" },
     ];
   },
+  // The root layout is force-dynamic (server reads Core's live rates), so Next
+  // already emits no-store on the document response. This header is the
+  // belt-and-suspenders guarantee against a reverse proxy/CDN in front of the
+  // app overriding or stripping that origin header and serving a stale page
+  // after deploy. /_next/* is excluded: Next already manages Cache-Control for
+  // its hashed static/image assets, and overriding it here breaks dev behavior.
+  async headers() {
+    return [
+      {
+        source: "/((?!_next/).*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, must-revalidate",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
