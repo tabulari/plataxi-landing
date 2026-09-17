@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { fmtCOP, type Simulation } from '@/lib/credit';
+import { fmtCOP, calculatePayment, type Simulation } from '@/lib/credit';
+import { config } from '@/lib/config';
 import {
   CONSENT_MESSAGE,
   STEP_FIELDS,
@@ -196,9 +197,9 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     else setStep((s) => s + 1);
   }, [step, validateStep, submit]);
 
-  const restoreDraft = useCallback((onRestoredSubmission?: (terms: Simulation) => void): boolean => {
+  const restoreDraft = useCallback((onRestoredSubmission?: (terms: Simulation) => void, allowSubmitted: boolean = true): boolean => {
     const submitted = loadSubmittedApplication();
-    if (submitted && submitted.radicado) {
+    if (allowSubmitted && submitted && submitted.radicado) {
       setRadicado(submitted.radicado);
       setWorkspaceUrl(submitted.workspaceUrl ?? null);
       setSubmittedAt(submitted.submittedAt ?? null);
@@ -208,7 +209,16 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
       setSubmitStatus('success');
       setSubmitErrorCode(null);
       if (onRestoredSubmission && submitted.terms) {
-        onRestoredSubmission(submitted.terms as Simulation);
+        const t = submitted.terms as Simulation;
+        const fresh = calculatePayment(
+          t.amount,
+          t.term,
+          t.frequency,
+          config.credit.monthlyRate,
+          t.acceptsPlatform ?? (t.platformFeeAmount ? t.platformFeeAmount > 0 : false),
+          t.acceptsGuarantee ?? (t.guaranteeFeeAmount ? t.guaranteeFeeAmount > 0 : false),
+        );
+        onRestoredSubmission(fresh);
       }
       return true;
     }
@@ -216,8 +226,16 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     let draft: { step?: number } & Partial<Values> & { consent?: boolean } = {};
     const loaded = loadDraft() as { step?: number } & Partial<Values> & { consent?: boolean } | null;
     if (loaded) draft = loaded;
+
+    const fallbackValues = submitted?.values ? (submitted.values as Partial<Values>) : {};
     const restored = { ...emptyValues };
-    for (const f of FIELDS) if (draft[f]) restored[f] = draft[f] as string;
+    for (const f of FIELDS) {
+      if (draft[f]) {
+        restored[f] = draft[f] as string;
+      } else if (fallbackValues[f]) {
+        restored[f] = fallbackValues[f] as string;
+      }
+    }
     setValues(restored);
     setConsent(!!draft.consent);
     setStep(draft.step && draft.step >= 1 && draft.step <= 3 ? draft.step : 1);

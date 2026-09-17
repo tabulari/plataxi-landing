@@ -27,7 +27,7 @@ export function HeroActiveNotice() {
         <b className="font-bold text-white tabular-nums text-xs">{submission.radicado}</b>
         <span className="text-white/40" aria-hidden="true">·</span>
         <ApplyButton
-          origin="hero"
+          origin="resume"
           variant="ghost"
           className="text-xs sm:text-sm font-bold text-green hover:text-green-bright p-0 h-auto bg-transparent hover:bg-transparent shadow-none underline underline-offset-2 cursor-pointer focus-visible:ring-1 focus-visible:ring-green shrink-0"
         >

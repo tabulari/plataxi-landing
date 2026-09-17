@@ -40,18 +40,33 @@ export function Simulator() {
   } = useSimulator();
 
   const frequencies = useMemo(
-    () => ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)),
+    () =>
+      ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)).map((f) => ({
+        ...f,
+        disabled: false,
+      })),
     [offeredFrequencies],
   );
 
   const terms = useMemo(
     () =>
-      termOptions
-        .filter((value) => !isTermDisabled(amount, value))
-        .map((value) => ({
+      termOptions.map((value) => {
+        const disabled = isTermDisabled(amount, value);
+        let title: string | undefined;
+        if (disabled) {
+          if (value === 2) {
+            title = 'Disponible a partir de $200.000';
+          } else if (value >= 3) {
+            title = 'Disponible a partir de $300.000';
+          }
+        }
+        return {
           value,
           label: `${value} ${value === 1 ? 'mes' : 'meses'}`,
-        })),
+          disabled,
+          title,
+        };
+      }),
     [termOptions, amount],
   );
 
@@ -172,7 +187,7 @@ export function Simulator() {
           options={frequencies.map((f) => ({
             value: f.value,
             label: f.estimate ? `${f.label} *` : f.label,
-            title: f.estimate ? 'Cuota estimada — el cargo definitivo se confirma en la oferta' : undefined,
+            disabled: f.disabled,
           }))}
           value={frequency}
           onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
@@ -216,7 +231,7 @@ export function Simulator() {
               </span>
             </span>
             <ApplyButton
-              origin="simulator"
+              origin="resume"
               variant="ghost"
               className="text-xs sm:text-sm font-bold text-navy hover:text-navy underline underline-offset-2 p-0 h-auto shrink-0 bg-transparent hover:bg-transparent shadow-none self-end sm:self-center cursor-pointer focus-visible:ring-1 focus-visible:ring-green"
             >
@@ -231,7 +246,7 @@ export function Simulator() {
           disabled={!liveValidity.ok}
           className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer"
         >
-          {activeSubmission ? 'Ver estado de mi solicitud' : 'Pedir mi crédito'}
+          Pedir mi crédito
         </ApplyButton>
         {activeSubmission && (
           <div className="text-center pt-0.5">

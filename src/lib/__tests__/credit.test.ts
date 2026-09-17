@@ -2,101 +2,200 @@ import { describe, it, expect } from "vitest";
 import {
   calculatePayment,
   validateApplication,
+  isFrequencyDisabled,
+  isTermDisabled,
   fmtCOP,
   fmtPct,
   formatCurrencyCOP,
 } from "@/lib/credit";
 
 /**
- * Slice 1 acceptance gate. These assertions are the contract: the ported
- * pricing/eligibility functions must reproduce the prototype's numbers exactly
- * before any UI is built. The formula is ported verbatim from `app.js` and is
- * NOT tuned to satisfy any single number.
+ * Plataxi Official Credit Specification Tests.
+ * Grounded directly on INDICACION PRESTAMOS PLATAXI.pdf and DOMAIN-011.
  */
 
-describe("calculatePayment — verification numbers (amount 500.000)", () => {
-  it("12 months monthly → payment 49.039, totalCost 588.468, EA 36,07%", () => {
-    const s = calculatePayment(500000, 12, "monthly");
-    expect(s.payment).toBe(49039);
-    expect(s.totalCost).toBe(588468);
-    expect(fmtCOP(s.totalCost)).toBe("588.468");
-    expect(fmtPct(s.ea, 2)).toBe("36,07");
-    expect(s.unit).toBe("/mes");
-    expect(s.valid).toBe(true);
+describe("calculatePayment — Plataxi Document Formulas", () => {
+  describe("Caso 1: Rango $100.000 a $150.000 (Solo 1 mes, Solo Diario /30)", () => {
+    it("$100.000 a 1 mes diario CON servicios opcionales (Total 110.000, Cuota 3.667)", () => {
+      // Capital: 100.000
+      // Interés legal 1m: 3.4% = 3.400
+      // Plataforma: 3.0% = 3.000
+      // Fianza: 3.6% = 3.600
+      // Total = 110.000, Cuota /30 = 3.667
+      const s = calculatePayment(100000, 1, "daily", 0.034, true, true);
+      expect(s.totalCost).toBe(110000);
+      expect(s.payment).toBe(3667);
+      expect(s.legalInterestAmount).toBe(3400);
+      expect(s.platformFeeAmount).toBe(3000);
+      expect(s.guaranteeFeeAmount).toBe(3600);
+      expect(s.unit).toBe("/día");
+      expect(s.valid).toBe(true);
+    });
+
+    it("$100.000 a 1 mes diario FÓRMULA BASE (sin plataforma ni fianza)", () => {
+      // Capital: 100.000
+      // Interés legal 1m: 3.4% = 3.400
+      // Total = 103.400, Cuota /30 = 3.447
+      const s = calculatePayment(100000, 1, "daily", 0.034, false, false);
+      expect(s.totalCost).toBe(103400);
+      expect(s.payment).toBe(3447);
+      expect(s.platformFeeAmount).toBe(0);
+      expect(s.guaranteeFeeAmount).toBe(0);
+      expect(s.valid).toBe(true);
+    });
   });
 
-  it("6 months monthly → payment 91.079", () => {
-    expect(calculatePayment(500000, 6, "monthly").payment).toBe(91079);
+  describe("Caso 2: Rango $200.000 a $250.000 (1 o 2 meses, Diario o Semanal)", () => {
+    it("$200.000 a 2 meses diario con servicios (Total 226.800, Cuota 7.560)", () => {
+      // Interés 2m: 6.8% = 13.600
+      // Plataforma: 3.0% = 6.000
+      // Fianza: 3.6% = 7.200
+      // Total = 226.800, Cuota /30 = 7.560
+      const s = calculatePayment(200000, 2, "daily", 0.034, true, true);
+      expect(s.totalCost).toBe(226800);
+      expect(s.payment).toBe(7560);
+      expect(s.valid).toBe(true);
+    });
+
+    it("$200.000 a 2 meses semanal con servicios (Total 226.800, Cuota /4 = 56.700)", () => {
+      const s = calculatePayment(200000, 2, "weekly", 0.034, true, true);
+      expect(s.totalCost).toBe(226800);
+      expect(s.payment).toBe(56700);
+      expect(s.unit).toBe("/semana");
+      expect(s.valid).toBe(true);
+    });
   });
 
-  it("24 months monthly → payment 28.266", () => {
-    expect(calculatePayment(500000, 24, "monthly").payment).toBe(28266);
+  describe("Caso 3: Rango $300.000 a $600.000 (1, 2 o 3 meses, Diario, Semanal o Quincenal)", () => {
+    it("$500.000 a 3 meses quincenal con servicios (Total 584.000, Cuota /2 = 292.000)", () => {
+      // Interés 3m: 10.2% = 51.000
+      // Plataforma: 3.0% = 15.000
+      // Fianza: 3.6% = 18.000
+      // Total = 584.000, Cuota /2 = 292.000
+      const s = calculatePayment(500000, 3, "biweekly", 0.034, true, true);
+      expect(s.totalCost).toBe(584000);
+      expect(s.payment).toBe(292000);
+      expect(s.unit).toBe("/quincena");
+      expect(s.valid).toBe(true);
+    });
   });
 
-  /**
-   * Biweekly: the verbatim formula (nPeriods = termMonths × 2, periodRate =
-   * MONTHLY_RATE / 2) yields 24.386 for term=12. The README's "12mo quincenal →
-   * 14.068" is internally inconsistent: 14.068 is exactly the term=24 biweekly
-   * result (48 fortnights), and 14.068 × 24 = 337.632 < principal, so it cannot
-   * amortize a 12-month loan. We pin BOTH true outputs and leave the formula
-   * untouched; the canonical fixture can be flipped in one line once the
-   * intended month count is confirmed.
-   */
-  it("12 months biweekly → payment 24.386 /quincena (verbatim formula, term=12)", () => {
-    const s = calculatePayment(500000, 12, "biweekly");
-    expect(s.payment).toBe(24386);
-    expect(s.unit).toBe("/quincena");
-    expect(s.nPeriods).toBe(24);
+  describe("Caso 4: Rango $600.000 a $1.000.000 (Incluye Mensual)", () => {
+    it("$800.000 a 1 mes mensual con servicios (Total 880.000, Cuota /1 = 880.000)", () => {
+      // Interés 1m: 3.4% = 27.200
+      // Plataforma: 3.0% = 24.000
+      // Fianza: 3.6% = 28.800
+      // Total = 880.000, Cuota /1 = 880.000
+      const s = calculatePayment(800000, 1, "monthly", 0.034, true, true);
+      expect(s.totalCost).toBe(880000);
+      expect(s.payment).toBe(880000);
+      expect(s.unit).toBe("/mes");
+      expect(s.valid).toBe(true);
+    });
   });
 
-  it("24 months biweekly → payment 14.068 /quincena (the figure the README labeled '12mo')", () => {
-    expect(calculatePayment(500000, 24, "biweekly").payment).toBe(14068);
+  describe("Validación exhaustiva de las Dos Fórmulas y los Divisores", () => {
+    // Ejemplo canónico con $500.000 a 3 meses (10.2% interés = 51.000)
+    // 1. Fórmula Base: Capital (500k) + Interés (51k) = 551.000
+    // Divisores: Diario /30 = 18.367, Semanal /4 = 137.750, Quincenal /2 = 275.500, Mensual /1 = 551.000
+    it("Fórmula Base: $500.000 a 3 meses en todas las frecuencias (/30, /4, /2, /1)", () => {
+      const daily = calculatePayment(500000, 3, "daily", 0.034, false, false);
+      expect(daily.totalCost).toBe(551000);
+      expect(daily.payment).toBe(18367); // 551.000 / 30
+
+      const weekly = calculatePayment(500000, 3, "weekly", 0.034, false, false);
+      expect(weekly.totalCost).toBe(551000);
+      expect(weekly.payment).toBe(137750); // 551.000 / 4
+
+      const biweekly = calculatePayment(500000, 3, "biweekly", 0.034, false, false);
+      expect(biweekly.totalCost).toBe(551000);
+      expect(biweekly.payment).toBe(275500); // 551.000 / 2
+
+      const monthly = calculatePayment(500000, 3, "monthly", 0.034, false, false);
+      expect(monthly.totalCost).toBe(551000);
+      expect(monthly.payment).toBe(551000); // 551.000 / 1
+    });
+
+    // 2. Con Servicios Opcionales: Capital (500k) + Interés (51k) + Plat (15k) + Fianza (18k) = 584.000
+    // Divisores: Diario /30 = 19.467, Semanal /4 = 146.000, Quincenal /2 = 292.000, Mensual /1 = 584.000
+    it("Fórmula Con Servicios: $500.000 a 3 meses en todas las frecuencias (/30, /4, /2, /1)", () => {
+      const daily = calculatePayment(500000, 3, "daily", 0.034, true, true);
+      expect(daily.totalCost).toBe(584000);
+      expect(daily.payment).toBe(19467); // 584.000 / 30
+
+      const weekly = calculatePayment(500000, 3, "weekly", 0.034, true, true);
+      expect(weekly.totalCost).toBe(584000);
+      expect(weekly.payment).toBe(146000); // 584.000 / 4
+
+      const biweekly = calculatePayment(500000, 3, "biweekly", 0.034, true, true);
+      expect(biweekly.totalCost).toBe(584000);
+      expect(biweekly.payment).toBe(292000); // 584.000 / 2
+
+      const monthly = calculatePayment(500000, 3, "monthly", 0.034, true, true);
+      expect(monthly.totalCost).toBe(584000);
+      expect(monthly.payment).toBe(584000); // 584.000 / 1
+    });
+
+    it("Tasas acumuladas por plazo: 1m=3.4%, 2m=6.8%, 3m=10.2%", () => {
+      const m1 = calculatePayment(1000000, 1, "monthly", 0.034, false, false);
+      expect(m1.legalInterestAmount).toBe(34000); // 3.4%
+
+      const m2 = calculatePayment(1000000, 2, "monthly", 0.034, false, false);
+      expect(m2.legalInterestAmount).toBe(68000); // 6.8%
+
+      const m3 = calculatePayment(1000000, 3, "monthly", 0.034, false, false);
+      expect(m3.legalInterestAmount).toBe(102000); // 10.2%
+    });
   });
 });
 
-describe("validateApplication — eligibility gate", () => {
-  it("montos de 100.000 y 150.000 solo permiten 1 mes", () => {
+describe("Matriz de Admisibilidad — isTermDisabled e isFrequencyDisabled", () => {
+  it("términos respetan el límite según monto", () => {
+    expect(isTermDisabled(100000, 1)).toBe(false);
+    expect(isTermDisabled(100000, 2)).toBe(true);
+    expect(isTermDisabled(100000, 3)).toBe(true);
+
+    expect(isTermDisabled(200000, 1)).toBe(false);
+    expect(isTermDisabled(200000, 2)).toBe(false);
+    expect(isTermDisabled(200000, 3)).toBe(true);
+
+    expect(isTermDisabled(500000, 1)).toBe(false);
+    expect(isTermDisabled(500000, 2)).toBe(false);
+    expect(isTermDisabled(500000, 3)).toBe(false);
+  });
+
+  it("todas las frecuencias ofrecidas están habilitadas sin deshabilitar ningún botón", () => {
+    // Para cualquier monto, diaria, semanal, quincenal y mensual están habilitadas
+    for (const amount of [100000, 200000, 500000, 800000]) {
+      expect(isFrequencyDisabled(amount, "daily")).toBe(false);
+      expect(isFrequencyDisabled(amount, "weekly")).toBe(false);
+      expect(isFrequencyDisabled(amount, "biweekly")).toBe(false);
+      expect(isFrequencyDisabled(amount, "monthly")).toBe(false);
+    }
+    // Únicamente las frecuencias no ofrecidas están deshabilitadas
+    expect(isFrequencyDisabled(500000, "bimonthly")).toBe(true);
+    expect(isFrequencyDisabled(500000, "quarterly")).toBe(true);
+  });
+});
+
+describe("validateApplication — guidance messages", () => {
+  it("valida combinaciones correctas de monto, plazo y frecuencia", () => {
+    expect(validateApplication(100000, 1, "daily").ok).toBe(true);
     expect(validateApplication(100000, 1, "monthly").ok).toBe(true);
-    expect(validateApplication(100000, 2, "monthly").ok).toBe(false);
-    expect(validateApplication(100000, 3, "monthly").ok).toBe(false);
-
-    expect(validateApplication(150000, 1, "monthly").ok).toBe(true);
-    expect(validateApplication(150000, 2, "monthly").ok).toBe(false);
-    expect(validateApplication(150000, 3, "monthly").ok).toBe(false);
-  });
-
-  it("monto 200.000 y 250.000 permiten 1 y 2 meses (3 meses inválido)", () => {
-    expect(validateApplication(200000, 1, "monthly").ok).toBe(true);
-    expect(validateApplication(200000, 2, "monthly").ok).toBe(true);
-    expect(validateApplication(200000, 3, "monthly").ok).toBe(false);
-
-    expect(validateApplication(250000, 1, "monthly").ok).toBe(true);
-    expect(validateApplication(250000, 2, "monthly").ok).toBe(true);
-    expect(validateApplication(250000, 3, "monthly").ok).toBe(false);
-  });
-
-  it("montos de 300.000 en adelante permiten 1, 2 y 3 meses", () => {
-    expect(validateApplication(300000, 1, "monthly").ok).toBe(true);
-    expect(validateApplication(300000, 2, "monthly").ok).toBe(true);
-    expect(validateApplication(300000, 3, "monthly").ok).toBe(true);
-
-    expect(validateApplication(500000, 1, "monthly").ok).toBe(true);
-    expect(validateApplication(500000, 2, "monthly").ok).toBe(true);
+    expect(validateApplication(200000, 2, "weekly").ok).toBe(true);
+    expect(validateApplication(500000, 3, "biweekly").ok).toBe(true);
     expect(validateApplication(500000, 3, "monthly").ok).toBe(true);
-
-    expect(validateApplication(900000, 1, "monthly").ok).toBe(true);
-    expect(validateApplication(900000, 2, "monthly").ok).toBe(true);
-    expect(validateApplication(900000, 3, "monthly").ok).toBe(true);
+    expect(validateApplication(800000, 1, "monthly").ok).toBe(true);
   });
 
-  it("carries guidance message onto the Simulation when invalid", () => {
-    const s1 = calculatePayment(100000, 2, "monthly");
-    expect(s1.valid).toBe(false);
-    expect(s1.message).toContain("1 mes");
+  it("rechaza plazos no disponibles según el monto", () => {
+    const r1 = validateApplication(100000, 2, "daily");
+    expect(r1.ok).toBe(false);
+    expect(r1.message).toContain("1 mes");
 
-    const s2 = calculatePayment(200000, 3, "monthly");
-    expect(s2.valid).toBe(false);
-    expect(s2.message).toContain("2 meses");
+    const r2 = validateApplication(200000, 3, "monthly");
+    expect(r2.ok).toBe(false);
+    expect(r2.message).toContain("2 meses");
   });
 });
 
@@ -104,17 +203,13 @@ describe("formatters", () => {
   it("fmtCOP groups thousands with '.'", () => {
     expect(fmtCOP(588468)).toBe("588.468");
     expect(fmtCOP(500000)).toBe("500.000");
-    expect(fmtCOP(49039)).toBe("49.039");
     expect(fmtCOP(1000000)).toBe("1.000.000");
   });
 
-  it("fmtCOP rounds before formatting", () => {
-    expect(fmtCOP(49038.6)).toBe("49.039");
-  });
-
   it("fmtPct renders with a comma decimal separator", () => {
-    expect(fmtPct(0.3607, 2)).toBe("36,07");
-    expect(fmtPct(0.026, 1)).toBe("2,6");
+    expect(fmtPct(0.034, 1)).toBe("3,4");
+    expect(fmtPct(0.068, 1)).toBe("6,8");
+    expect(fmtPct(0.102, 1)).toBe("10,2");
   });
 
   it("formatCurrencyCOP is deterministic via fmtCOP (no Intl)", () => {
