@@ -182,8 +182,8 @@ export default async function LegalDoc({
                   Conforme a la normativa de la Superintendencia Financiera de Colombia, los siguientes servicios son de carácter <strong>estrictamente opcional</strong> y requieren autorización previa y voluntaria del usuario:
                 </p>
 
-                <div className="p-4 rounded-xl bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/40 text-sm space-y-2">
-                  <h3 className="font-bold text-sky-900 dark:text-sky-200">4.1 Servicio de Plataforma Tecnológica (+3.0% sobre el capital)</h3>
+                <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-900/50 border border-stone-200 dark:border-stone-800 text-sm space-y-2">
+                  <h3 className="font-bold text-foreground">4.1 Servicio de Plataforma Tecnológica (+3.0% sobre el capital)</h3>
                   <p>Beneficios para el conductor:</p>
                   <ul className="list-disc pl-5 space-y-1">
                     <li><strong>Recibes tu dinero en 15 minutos</strong> en tu cuenta o billetera digital.</li>
@@ -192,20 +192,20 @@ export default async function LegalDoc({
                     <li><strong>Recordatorios automáticos por WhatsApp</strong> para que nunca se te pase una cuota.</li>
                     <li><strong>Pagos más seguros</strong> con comprobante de pago digital al instante.</li>
                   </ul>
-                  <p className="text-xs text-amber-800 dark:text-amber-300 pt-1">
+                  <p className="text-xs text-muted-foreground pt-1">
                     <strong>En caso de no autorizar:</strong> El desembolso se procesará mediante transferencia bancaria ordinaria (24 a 48 horas hábiles) y las consultas de saldo requerirán solicitud manual vía ticket.
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-pink-50 dark:bg-pink-950/30 border border-pink-200 dark:border-pink-800/40 text-sm space-y-2">
-                  <h3 className="font-bold text-pink-900 dark:text-pink-200">4.2 Servicio de Fianza de Respaldo (+3.6% sobre el capital)</h3>
+                <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-900/50 border border-stone-200 dark:border-stone-800 text-sm space-y-2">
+                  <h3 className="font-bold text-foreground">4.2 Servicio de Fianza de Respaldo (+3.6% sobre el capital)</h3>
                   <p>Beneficios de garantía y respaldo:</p>
                   <ul className="list-disc pl-5 space-y-1">
                     <li><strong>Prórroga de hasta 2 días:</strong> Si un día no puedes pagar por imprevisto o pico y placa, cuentas con hasta 48 horas de gracia sin cobro de mora.</li>
                     <li><strong>Cero afectación de historial:</strong> No afecta tu historial crediticio ni calificación interna en la plataforma.</li>
                     <li><strong>Acumulación de prórrogas:</strong> Si nunca las has utilizado, se acumulan para futuros créditos solicitados.</li>
                   </ul>
-                  <p className="text-xs text-amber-800 dark:text-amber-300 pt-1">
+                  <p className="text-xs text-muted-foreground pt-1">
                     <strong>En caso de no autorizar:</strong> Cualquier retraso o impago causará de inmediato intereses de mora legales y suspensión de renovaciones.
                   </p>
                 </div>

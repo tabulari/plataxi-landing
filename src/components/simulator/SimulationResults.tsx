@@ -78,14 +78,14 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
         </div>
 
         {/* 1. Servicio de Plataforma */}
-        <div className="rounded-xl border border-amber-300/80 bg-amber-50/50 dark:border-amber-700/50 dark:bg-amber-950/20 p-3.5 space-y-2 transition-colors">
+        <div className="rounded-xl border border-border bg-muted/20 dark:bg-stone-900/40 p-3.5 space-y-2 transition-colors">
           <div className="flex items-start gap-3">
             <input
               type="checkbox"
               id="opt-platform"
               checked={acceptsPlatform}
               onChange={(e) => setAcceptsPlatform(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded text-amber-500 focus:ring-amber-400 border-amber-300 cursor-pointer"
+              className="mt-1 h-4 w-4 rounded accent-green border-border cursor-pointer"
             />
             <div className="flex-1 text-xs">
               <div className="flex items-center justify-between gap-2">
@@ -105,7 +105,7 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
               <button
                 type="button"
                 onClick={() => setShowPlatformHelp(!showPlatformHelp)}
-                className="text-[11px] text-amber-800 dark:text-amber-300 font-semibold underline underline-offset-2 mt-1 hover:text-navy inline-flex items-center gap-1 cursor-pointer"
+                className="text-[11px] text-muted-foreground font-semibold underline underline-offset-2 mt-1 hover:text-navy dark:hover:text-foreground inline-flex items-center gap-1 cursor-pointer"
                 aria-expanded={showPlatformHelp}
               >
                 <span>ℹ️ {showPlatformHelp ? 'Ocultar detalle' : 'Ver detalle pequeño'}</span>
@@ -115,7 +115,7 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
 
           {/* Tooltip / Texto pequeño desplegable (en la misma tarjeta) */}
           {showPlatformHelp && (
-            <div className="text-[11px] text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 p-3 rounded-lg border border-amber-200 dark:border-amber-800/40 space-y-1.5 mt-2 animate-in fade-in duration-150">
+            <div className="text-[11px] text-stone-700 dark:text-stone-300 bg-background dark:bg-stone-900 p-3 rounded-lg border border-border space-y-1.5 mt-2 animate-in fade-in duration-150">
               <div className="font-semibold text-navy dark:text-foreground">¿Por qué es mejor usar Plataforma PLATAXI?</div>
               <ul className="list-disc pl-4 space-y-0.5">
                 <li>Recibes tu dinero en 15 min.</li>
@@ -124,11 +124,11 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
                 <li>Recibes recordatorios para que nunca se te pase una cuota.</li>
                 <li>Pagos más seguros y tu comprobante al instante.</li>
               </ul>
-              <div className="text-amber-900 dark:text-amber-300 pt-1 border-t border-amber-100 dark:border-white/5">
+              <div className="text-muted-foreground pt-1 border-t border-border">
                 <strong>Si no lo autorizas:</strong> Desembolso bancario ordinario (24 a 48h hábiles) y soporte manual.
               </div>
               <div className="pt-0.5">
-                <Link href="/legal/terminos#servicios-opcionales" className="text-navy hover:text-amber-800 dark:text-amber-300 font-bold underline">
+                <Link href="/legal/terminos#servicios-opcionales" className="text-navy dark:text-foreground hover:underline font-bold">
                   Ver detalles en Términos y Condiciones
                 </Link>
               </div>
@@ -137,14 +137,14 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
         </div>
 
         {/* 2. Fianza de Respaldo */}
-        <div className="rounded-xl border border-amber-300/80 bg-amber-50/50 dark:border-amber-700/50 dark:bg-amber-950/20 p-3.5 space-y-2 transition-colors">
+        <div className="rounded-xl border border-border bg-muted/20 dark:bg-stone-900/40 p-3.5 space-y-2 transition-colors">
           <div className="flex items-start gap-3">
             <input
               type="checkbox"
               id="opt-guarantee"
               checked={acceptsGuarantee}
               onChange={(e) => setAcceptsGuarantee(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded text-amber-500 focus:ring-amber-400 border-amber-300 cursor-pointer"
+              className="mt-1 h-4 w-4 rounded accent-green border-border cursor-pointer"
             />
             <div className="flex-1 text-xs">
               <div className="flex items-center justify-between gap-2">
@@ -164,7 +164,7 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
               <button
                 type="button"
                 onClick={() => setShowGuaranteeHelp(!showGuaranteeHelp)}
-                className="text-[11px] text-amber-800 dark:text-amber-300 font-semibold underline underline-offset-2 mt-1 hover:text-navy inline-flex items-center gap-1 cursor-pointer"
+                className="text-[11px] text-muted-foreground font-semibold underline underline-offset-2 mt-1 hover:text-navy dark:hover:text-foreground inline-flex items-center gap-1 cursor-pointer"
                 aria-expanded={showGuaranteeHelp}
               >
                 <span>ℹ️ {showGuaranteeHelp ? 'Ocultar detalle' : 'Ver detalle pequeño'}</span>
@@ -174,18 +174,18 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
 
           {/* Tooltip / Texto pequeño desplegable (en la misma tarjeta) */}
           {showGuaranteeHelp && (
-            <div className="text-[11px] text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 p-3 rounded-lg border border-amber-200 dark:border-amber-800/40 space-y-1.5 mt-2 animate-in fade-in duration-150">
+            <div className="text-[11px] text-stone-700 dark:text-stone-300 bg-background dark:bg-stone-900 p-3 rounded-lg border border-border space-y-1.5 mt-2 animate-in fade-in duration-150">
               <div className="font-semibold text-navy dark:text-foreground">Fianza: Tu respaldo cuando lo necesites</div>
               <ul className="list-disc pl-4 space-y-0.5">
                 <li>Si un día no puedes pagar, prórroga por 2 días tu pago.</li>
                 <li>No afecta tu historial.</li>
                 <li>Acumulas prórrogas si nunca las has utilizado, para otros préstamos.</li>
               </ul>
-              <div className="text-amber-900 dark:text-amber-300 pt-1 border-t border-amber-100 dark:border-white/5">
+              <div className="text-muted-foreground pt-1 border-t border-border">
                 <strong>Si no lo autorizas:</strong> Cobro de intereses moratorios inmediatos ante cualquier retraso.
               </div>
               <div className="pt-0.5">
-                <Link href="/legal/terminos#servicios-opcionales" className="text-navy hover:text-amber-800 dark:text-amber-300 font-bold underline">
+                <Link href="/legal/terminos#servicios-opcionales" className="text-navy dark:text-foreground hover:underline font-bold">
                   Ver detalles en Términos y Condiciones
                 </Link>
               </div>
