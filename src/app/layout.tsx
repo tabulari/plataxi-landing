@@ -92,6 +92,8 @@ export default async function RootLayout({
   // sin re-sembrar. Falls back to static config when Core is unreachable.
   const fallbackRates: RuntimeRatesConfig = {
     monthlyRate: config.credit.monthlyRate,
+    platformFeeRate: config.credit.platformFeeRate,
+    guaranteeFeeRate: config.credit.guaranteeFeeRate,
     amountMin: config.simulator.amountMin,
     amountMax: config.simulator.amountMax,
     termOptions: config.simulator.termOptions,

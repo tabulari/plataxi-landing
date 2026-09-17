@@ -82,12 +82,12 @@ export function findUnresolvedPlaceholders(env: Env = process.env): PlaceholderK
 }
 
 /** Placeholder sentinel for the monthly rate (dev/test fallback). */
-export const PLACEHOLDER_MONTHLY_RATE = 0.026;
+export const PLACEHOLDER_MONTHLY_RATE = 0.034;
 
 /**
  * Validates the monthly interest rate env var if provided.
  * Optional in production because Core (RATES_CONFIG_ENDPOINT) is the source of truth,
- * with PLACEHOLDER_MONTHLY_RATE (0.026) serving as compile-time offline fallback.
+ * with PLACEHOLDER_MONTHLY_RATE (0.034) serving as compile-time offline fallback.
  *
  * Pure — accepts an injected env so the production guard can be unit-tested.
  */
@@ -117,7 +117,7 @@ export function assertProductionConfig(env: Env = process.env): void {
   if (unresolvedRate.length > 0) {
     throw new Error(
       "Refusing to build for production: invalid monthly interest rate in NEXT_PUBLIC_CREDIT_MONTHLY_RATE. " +
-        "Must be a real decimal between 0 and 1 (e.g. 0.026 for 2.6% monthly).",
+        "Must be a real decimal between 0 and 1 (e.g. 0.034 for 3.4% monthly).",
     );
   }
 }
@@ -198,8 +198,12 @@ export const config = {
 
   /** --- Credit rate (interim — will come from Plataxi dashboard API) --- */
   credit: {
-    /** Monthly interest rate as decimal (e.g. 0.026 = 2.6%). */
-    monthlyRate: readNum(process.env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE, 0.026),
+    /** Monthly interest rate as decimal (e.g. 0.034 = 3.4%). Tope DOMAIN-011 INV-1. */
+    monthlyRate: readNum(process.env.NEXT_PUBLIC_CREDIT_MONTHLY_RATE, 0.034),
+    /** Servicio de Plataforma Tecnológica, decimal del capital (ej. 0.030 = 3.0%). */
+    platformFeeRate: readNum(process.env.NEXT_PUBLIC_CREDIT_PLATFORM_FEE_RATE, 0.030),
+    /** Fianza de Respaldo, decimal del capital (ej. 0.036 = 3.6%). */
+    guaranteeFeeRate: readNum(process.env.NEXT_PUBLIC_CREDIT_GUARANTEE_FEE_RATE, 0.036),
     /** Eligibility: high-amount threshold above which a minimum term applies. */
     highAmountThreshold: readNum(process.env.NEXT_PUBLIC_CREDIT_HIGH_AMOUNT_THRESHOLD, 800000),
     /** Eligibility: min term (months) for amounts above highAmountThreshold. */

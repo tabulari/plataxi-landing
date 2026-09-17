@@ -149,6 +149,33 @@ describe("calculatePayment — Plataxi Document Formulas", () => {
   });
 });
 
+describe("calculatePayment — tasas dinámicas servidas por Core", () => {
+  // Core sirve la tasa mensual y las tasas de los servicios opcionales; el
+  // motor ya no las mantiene fijas en código. Los literales de DOMAIN-011
+  // (3.4% / 3.0% / 3.6%) son solo los valores históricos de los argumentos.
+  it("usa la tasa mensual servida por Core para el interés (ej. 2.6%)", () => {
+    const s = calculatePayment(100000, 1, "daily", 0.026, false, false);
+    expect(s.legalInterestAmount).toBe(2600); // 2.6% de 100.000
+    expect(s.totalCost).toBe(102600);
+    expect(s.monthlyRate).toBe(0.026);
+    expect(s.ea).toBeCloseTo(Math.pow(1.026, 12) - 1, 10);
+  });
+
+  it("usa las tasas de servicio dinámicas cuando Core las cambia", () => {
+    const s = calculatePayment(100000, 1, "daily", 0.034, true, true, 0.025, 0.040);
+    expect(s.platformFeeAmount).toBe(2500); // 2.5% de 100.000
+    expect(s.guaranteeFeeAmount).toBe(4000); // 4.0% de 100.000
+    expect(s.totalCost).toBe(109900); // 100.000 + 3.400 + 2.500 + 4.000
+    expect(s.payment).toBe(3663); // 109.900 / 30
+  });
+
+  it("mantiene los literales históricos como valores por defecto de los argumentos", () => {
+    const s = calculatePayment(100000, 1, "daily", 0.034);
+    expect(s.platformFeeAmount).toBe(3000); // 3.0%
+    expect(s.guaranteeFeeAmount).toBe(3600); // 3.6%
+  });
+});
+
 describe("Matriz de Admisibilidad — isTermDisabled e isFrequencyDisabled", () => {
   it("términos respetan el límite según monto", () => {
     expect(isTermDisabled(100000, 1)).toBe(false);

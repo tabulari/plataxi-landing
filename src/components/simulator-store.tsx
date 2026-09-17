@@ -31,6 +31,8 @@ import {
 
 const STATIC_RATES: RuntimeRatesConfig = {
   monthlyRate: config.credit.monthlyRate,
+  platformFeeRate: config.credit.platformFeeRate,
+  guaranteeFeeRate: config.credit.guaranteeFeeRate,
   amountMin: config.simulator.amountMin,
   amountMax: config.simulator.amountMax,
   termOptions: config.simulator.termOptions,
@@ -198,8 +200,19 @@ export function SimulatorProvider({
         rates.monthlyRate,
         acceptsPlatform,
         acceptsGuarantee,
+        rates.platformFeeRate,
+        rates.guaranteeFeeRate,
       ),
-    [settledAmount, term, frequency, rates.monthlyRate, acceptsPlatform, acceptsGuarantee],
+    [
+      settledAmount,
+      term,
+      frequency,
+      rates.monthlyRate,
+      rates.platformFeeRate,
+      rates.guaranteeFeeRate,
+      acceptsPlatform,
+      acceptsGuarantee,
+    ],
   );
 
   const value = useMemo<SimulatorStore>(
