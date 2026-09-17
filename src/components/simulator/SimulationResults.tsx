@@ -76,14 +76,11 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
       <div className="space-y-3 pt-2">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold uppercase tracking-wider text-foreground">
-            Servicios Opcionales
-          </span>
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-700/50">
-            100% Opcional
+            Servicios opcionales
           </span>
         </div>
 
-        {/* 1. Servicio de Plataforma (+3.0%) */}
+        {/* 1. Servicio de Plataforma */}
         <div className="rounded-xl border border-amber-300/80 bg-amber-50/50 dark:border-amber-700/50 dark:bg-amber-950/20 p-3.5 space-y-2 transition-colors">
           <div className="flex items-start gap-3">
             <input
@@ -96,10 +93,10 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
             <div className="flex-1 text-xs">
               <div className="flex items-center justify-between gap-2">
                 <label htmlFor="opt-platform" className="font-bold text-navy dark:text-foreground cursor-pointer">
-                  Servicio de Plataforma (+3.0%)
+                  Servicio de Plataforma
                 </label>
-                <span className="font-semibold text-navy dark:text-foreground tabular-nums">
-                  {acceptsPlatform ? `+$${fmtCOP(platformAmount)}` : '$0 (Sin servicio)'}
+                <span className={`text-xs tabular-nums ${acceptsPlatform ? 'font-bold text-navy dark:text-foreground' : 'font-medium text-muted-foreground'}`}>
+                  {acceptsPlatform ? `+$${fmtCOP(platformAmount)}` : '(opcional)'}
                 </span>
               </div>
               {/* Microcopy pedido */}
@@ -140,7 +137,7 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
           )}
         </div>
 
-        {/* 2. Fianza de Respaldo (+3.6%) */}
+        {/* 2. Fianza de Respaldo */}
         <div className="rounded-xl border border-amber-300/80 bg-amber-50/50 dark:border-amber-700/50 dark:bg-amber-950/20 p-3.5 space-y-2 transition-colors">
           <div className="flex items-start gap-3">
             <input
@@ -153,10 +150,10 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
             <div className="flex-1 text-xs">
               <div className="flex items-center justify-between gap-2">
                 <label htmlFor="opt-guarantee" className="font-bold text-navy dark:text-foreground cursor-pointer">
-                  Fianza de Respaldo (+3.6%)
+                  Fianza de Respaldo
                 </label>
-                <span className="font-semibold text-navy dark:text-foreground tabular-nums">
-                  {acceptsGuarantee ? `+$${fmtCOP(guaranteeAmount)}` : '$0 (Sin servicio)'}
+                <span className={`text-xs tabular-nums ${acceptsGuarantee ? 'font-bold text-navy dark:text-foreground' : 'font-medium text-muted-foreground'}`}>
+                  {acceptsGuarantee ? `+$${fmtCOP(guaranteeAmount)}` : '(opcional)'}
                 </span>
               </div>
               {/* Microcopy pedido */}
