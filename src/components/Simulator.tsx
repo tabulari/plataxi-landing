@@ -60,10 +60,9 @@ export function Simulator() {
             title = 'Disponible a partir de $300.000';
           }
         }
-        const rateLabel = value === 1 ? '3,4%' : value === 2 ? '6,8%' : '10,2%';
         return {
           value,
-          label: `${value} ${value === 1 ? 'mes' : 'meses'} (${rateLabel})`,
+          label: `${value} ${value === 1 ? 'mes' : 'meses'}`,
           disabled,
           title,
         };
@@ -163,10 +162,10 @@ export function Simulator() {
         />
         <p id="plazoHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]" aria-live="polite">
           {amount <= 150000
-            ? 'Para montos de hasta $150.000 el plazo disponible es de 1 mes (3,4%)'
+            ? 'Para montos de hasta $150.000 el plazo disponible es de 1 mes'
             : amount < 300000
-              ? 'Para montos inferiores a $300.000 el plazo máximo es de 2 meses (6,8%)'
-              : '1 mes equivale al 3,4% · 2 meses al 6,8% · 3 meses al 10,2% (sumatoria de cada mes)'}
+              ? 'Para montos inferiores a $300.000 el plazo máximo es de 2 meses'
+              : '\u00A0'}
         </p>
       </div>
 
