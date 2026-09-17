@@ -151,17 +151,55 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
                 <strong className="text-lg font-extrabold text-navy">${fmtCOP(application.amount)} COP</strong>
               </div>
               <div className="p-3.5 rounded-xl bg-bg-soft border border-border">
-                <span className="text-xs text-muted-2 font-medium block">Plazo</span>
+                <span className="text-xs text-muted-2 font-medium block">Plazo ({application.frequencyLabel})</span>
                 <strong className="text-lg font-extrabold text-navy">{application.termMonths} meses</strong>
               </div>
               <div className="p-3.5 rounded-xl bg-bg-soft border border-border">
-                <span className="text-xs text-muted-2 font-medium block">Cuota Mensual</span>
-                <strong className="text-lg font-extrabold text-green-ink">${fmtCOP(application.monthlyPayment)} /mes</strong>
+                <span className="text-xs text-muted-2 font-medium block">Cuota Fija</span>
+                <strong className="text-lg font-extrabold text-green-ink">${fmtCOP(application.monthlyPayment)} {application.frequencyUnit}</strong>
               </div>
               <div className="p-3.5 rounded-xl bg-bg-soft border border-border">
                 <span className="text-xs text-muted-2 font-medium block">Cuenta de Desembolso</span>
                 <strong className="text-sm font-bold text-navy">{application.bankName}</strong>
               </div>
+            </div>
+
+            {/* Desglose Plataxi */}
+            <div className="p-4 rounded-xl bg-bg-soft border border-border space-y-2 text-xs">
+              <span className="font-bold text-navy text-xs uppercase tracking-wide block mb-1">Desglose de Liquidación</span>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 tabular-nums text-muted-foreground">
+                <div className="flex flex-col">
+                  <span>Capital</span>
+                  <b className="text-navy text-sm font-bold">${fmtCOP(application.amount)}</b>
+                </div>
+                <div className="flex flex-col">
+                  <span>Interés Legal (3.4% mes)</span>
+                  <b className="text-navy text-sm font-bold">${fmtCOP(Math.round(application.amount * 0.034 * application.termMonths))}</b>
+                </div>
+                <div className="flex flex-col">
+                  <span>Servicios (Plataforma y Fianza)</span>
+                  <b className="text-navy text-sm font-bold">${fmtCOP(Math.round(application.amount * 0.066 * application.termMonths))}</b>
+                </div>
+                <div className="flex flex-col">
+                  <span>Total Liquidado</span>
+                  <b className="text-green-ink text-sm font-extrabold">${fmtCOP(Math.round(application.amount * (1 + 0.10 * application.termMonths)))}</b>
+                </div>
+              </div>
+            </div>
+
+            {/* Nota de fórmula en rojo (documento base Plataxi) */}
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3.5 text-xs text-red-700">
+              <p className="font-semibold mb-0.5">Fórmula de liquidación aplicada:</p>
+              <p className="font-mono text-[11px] leading-relaxed">
+                (nota: capital + % de plazo + plataforma + fianza = cuota dividida en día semana quincena o mes)
+              </p>
+            </div>
+
+            {/* Cláusula de inmutabilidad contractual */}
+            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3.5 text-xs text-amber-900 flex items-start gap-2.5">
+              <p className="leading-relaxed">
+                <strong className="font-semibold">Condición inmutable:</strong> La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.
+              </p>
             </div>
 
             <div className="flex justify-end gap-3 pt-2">

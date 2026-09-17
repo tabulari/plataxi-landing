@@ -254,6 +254,8 @@ export function ApplyModal() {
                   radicado={form.radicado}
                   workspaceUrl={form.workspaceUrl}
                   submittedAt={form.submittedAt}
+                  terms={frozen}
+                  values={form.values}
                   onNewApplication={() => {
                     form.startNewApplication();
                     setFrozen(simRef.current);

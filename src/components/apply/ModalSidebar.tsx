@@ -1,26 +1,18 @@
 'use client';
 
-import { fmtCOP, fmtPct, type Simulation } from '@/lib/credit';
+import { fmtCOP, type Simulation } from '@/lib/credit';
 import { capFreq } from './use-application-form';
 
-const CALC_FORMULAS: Record<string, { formula: string; legend: string }> = {
-  bimonthly: {
-    formula: 'C = P × 2i / (1 − (1+2i)^−n)',
-    legend: 'i = tasa mensual · n = meses ÷ 2',
-  },
-  quarterly: {
-    formula: 'C = P × 3i / (1 − (1+3i)^−n)',
-    legend: 'i = tasa mensual · n = meses ÷ 3',
-  },
-};
-
 export function ModalSidebar({ frozen }: { frozen: Simulation }) {
-  const calc = CALC_FORMULAS[frozen.frequency];
+  const legalInterest = frozen.legalInterestAmount ?? Math.round(frozen.amount * 0.034 * frozen.term);
+  const platformFee = frozen.platformFeeAmount ?? 0;
+  const guaranteeFee = frozen.guaranteeFeeAmount ?? 0;
+  const totalCost = frozen.totalCost ?? (frozen.amount + legalInterest + platformFee + guaranteeFee);
 
   return (
     <aside
       aria-label="Resumen de simulación"
-      className="dot-grid w-[240px] bg-surface-dark border-r border-white/10 text-white p-6 flex flex-col shrink-0 max-[760px]:w-full max-[760px]:border-r-0 max-[760px]:border-b max-[760px]:flex-row max-[760px]:items-center max-[760px]:justify-between max-[760px]:p-3.5 max-[760px]:pr-14 tabular-nums"
+      className="dot-grid w-[260px] bg-surface-dark border-r border-white/10 text-white p-5 flex flex-col shrink-0 max-[760px]:w-full max-[760px]:border-r-0 max-[760px]:border-b max-[760px]:flex-row max-[760px]:items-center max-[760px]:justify-between max-[760px]:p-3.5 max-[760px]:pr-14 tabular-nums"
     >
       {/* Mobile Compact Header (<760px) */}
       <div className="hidden max-[760px]:flex items-center justify-between w-full gap-3 text-left">
@@ -37,34 +29,57 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
       </div>
 
       {/* Desktop Rich Sidebar (>=760px) */}
-      <p className="text-xs uppercase tracking-wider font-bold text-white/60 mb-2.5 max-[760px]:hidden">Tu solicitud</p>
+      <p className="text-xs uppercase tracking-wider font-bold text-white/60 mb-2 max-[760px]:hidden">Tu solicitud</p>
       <div className="text-2xl font-extrabold max-[760px]:hidden tracking-tight">
         {`$${fmtCOP(frozen.payment)}`}
         <small className="text-sm font-semibold text-white/60 ml-1.5">{frozen.unit}</small>
       </div>
-      <ul className="mt-5 flex flex-col gap-2 rounded-xl bg-white/[0.05] ring-1 ring-white/12 p-3.5 text-sm max-[760px]:hidden">
-        {[
-          ['Monto', `$${fmtCOP(frozen.amount)}`],
-          ['Plazo', `${frozen.term} meses`],
-          ['Nº pagos', String(Math.round(frozen.nPeriods))],
-          ['Tasa/período', `${fmtPct(frozen.periodRate, 2)}%`],
-          ['Forma de pago', capFreq(frozen.frequency)],
-        ].map(([k, v]) => (
-          <li key={k} className="flex justify-between gap-2">
-            <span className="text-white/60">{k}</span><b>{v}</b>
+
+      <ul className="mt-4 flex flex-col gap-1.5 rounded-xl bg-white/[0.05] ring-1 ring-white/12 p-3 text-xs max-[760px]:hidden">
+        <li className="flex justify-between gap-2">
+          <span className="text-white/60">Capital</span><b>${fmtCOP(frozen.amount)}</b>
+        </li>
+        <li className="flex justify-between gap-2">
+          <span className="text-white/60">Plazo</span><b>{frozen.term} {frozen.term === 1 ? 'mes' : 'meses'}</b>
+        </li>
+        <li className="flex justify-between gap-2">
+          <span className="text-white/60">Forma de pago</span><b>{capFreq(frozen.frequency)}</b>
+        </li>
+        <li className="flex justify-between gap-2">
+          <span className="text-white/60">Nº pagos</span><b>{Math.round(frozen.nPeriods)} cuotas</b>
+        </li>
+        <li className="flex justify-between gap-2">
+          <span className="text-white/60">Interés Legal (3.4% mes)</span><b>${fmtCOP(legalInterest)}</b>
+        </li>
+        {platformFee > 0 && (
+          <li className="flex justify-between gap-2">
+            <span className="text-white/60">Plataforma (3.0%)</span><b>${fmtCOP(platformFee)}</b>
           </li>
-        ))}
+        )}
+        {guaranteeFee > 0 && (
+          <li className="flex justify-between gap-2">
+            <span className="text-white/60">Fianza (3.6%)</span><b>${fmtCOP(guaranteeFee)}</b>
+          </li>
+        )}
+        <li className="flex justify-between gap-2 pt-1 border-t border-white/10 text-white font-bold">
+          <span>Préstamo Total</span><span className="text-green-bright">${fmtCOP(totalCost)}</span>
+        </li>
       </ul>
 
-      {calc && (
-        <div className="mt-4 rounded-xl bg-white/[0.06] ring-1 ring-white/10 p-3 text-xs max-[760px]:hidden">
-          <p className="text-white/50 mb-1.5 uppercase tracking-wider font-semibold text-[10px]">Cálculo estimado</p>
-          <p className="font-mono text-white/90 text-[11px] leading-relaxed">{calc.formula}</p>
-          <p className="text-white/50 mt-1 text-[10px] leading-relaxed">{calc.legend}</p>
-        </div>
-      )}
+      {/* Nota de fórmula en rojo (documento base Plataxi) */}
+      <div className="mt-3 rounded-xl border border-red-400/40 bg-red-950/40 p-2.5 text-[11px] text-red-200 max-[760px]:hidden">
+        <p className="font-semibold text-red-300 mb-0.5">Fórmula de liquidación:</p>
+        <p className="font-mono text-[10px] leading-tight text-red-100">
+          (nota: capital + % de plazo + plataforma + fianza = cuota dividida en día semana quincena o mes)
+        </p>
+      </div>
 
-      <p className="text-xs text-white/50 mt-auto max-[760px]:hidden">
+      {/* Cláusula de inmutabilidad contractual */}
+      <div className="mt-2.5 rounded-xl border border-amber-400/30 bg-amber-950/30 p-2.5 text-[11px] text-amber-200 leading-snug max-[760px]:hidden">
+        <b className="font-semibold text-amber-300">Condición inmutable:</b> La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.
+      </div>
+
+      <p className="text-[11px] text-white/50 mt-auto pt-3 max-[760px]:hidden">
         {frozen.isEstimate
           ? 'Cuota estimada. Cargo definitivo se confirma en la oferta.'
           : 'Sujeto a verificación. No representa aprobación definitiva.'}
