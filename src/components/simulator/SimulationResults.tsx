@@ -95,9 +95,11 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
                 <label htmlFor="opt-platform" className="font-bold text-navy dark:text-foreground cursor-pointer">
                   Servicio de Plataforma
                 </label>
-                <span className={`text-xs tabular-nums ${acceptsPlatform ? 'font-bold text-navy dark:text-foreground' : 'font-medium text-muted-foreground'}`}>
-                  {acceptsPlatform ? `+$${fmtCOP(platformAmount)}` : '(opcional)'}
-                </span>
+                {acceptsPlatform && (
+                  <span className="text-xs font-bold text-navy dark:text-foreground tabular-nums">
+                    +${fmtCOP(platformAmount)}
+                  </span>
+                )}
               </div>
               {/* Microcopy pedido */}
               <p className="text-muted-foreground text-[11px] mt-0.5 leading-snug">
@@ -152,9 +154,11 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
                 <label htmlFor="opt-guarantee" className="font-bold text-navy dark:text-foreground cursor-pointer">
                   Fianza de Respaldo
                 </label>
-                <span className={`text-xs tabular-nums ${acceptsGuarantee ? 'font-bold text-navy dark:text-foreground' : 'font-medium text-muted-foreground'}`}>
-                  {acceptsGuarantee ? `+$${fmtCOP(guaranteeAmount)}` : '(opcional)'}
-                </span>
+                {acceptsGuarantee && (
+                  <span className="text-xs font-bold text-navy dark:text-foreground tabular-nums">
+                    +${fmtCOP(guaranteeAmount)}
+                  </span>
+                )}
               </div>
               {/* Microcopy pedido */}
               <p className="text-muted-foreground text-[11px] mt-0.5 leading-snug">
