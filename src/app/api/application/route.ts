@@ -169,6 +169,23 @@ export async function POST(request: NextRequest) {
         ),
       );
     }
+    // A Core 422 with identity_conflict means the phone/email is registered to another ID.
+    if (upstreamStatus === 422) {
+      let code = "backend";
+      let message = "No pudimos registrar la solicitud. Intenta nuevamente.";
+      const body = error instanceof CoreLeadError ? error.detail : undefined;
+      const detailStr = JSON.stringify(body ?? "");
+      if (detailStr.includes("identity_conflict")) {
+        code = "national_id_already_registered";
+        message = "El número de teléfono o correo ya está asociado a otro documento de identidad.";
+      }
+      return applySecurityHeaders(
+        NextResponse.json(
+          { error: message, code, upstreamStatus },
+          { status: 422 },
+        ),
+      );
+    }
     // Otherwise it's an upstream (Core) failure — which the user should NOT be
     // told is their connection. The client reads `code` for accurate copy.
     return applySecurityHeaders(
