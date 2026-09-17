@@ -93,6 +93,60 @@ describe("calculatePayment — Plataxi Document Formulas", () => {
       expect(s.valid).toBe(true);
     });
   });
+
+  describe("Validación exhaustiva de las Dos Fórmulas y los Divisores", () => {
+    // Ejemplo canónico con $500.000 a 3 meses (10.2% interés = 51.000)
+    // 1. Fórmula Base: Capital (500k) + Interés (51k) = 551.000
+    // Divisores: Diario /30 = 18.367, Semanal /4 = 137.750, Quincenal /2 = 275.500, Mensual /1 = 551.000
+    it("Fórmula Base: $500.000 a 3 meses en todas las frecuencias (/30, /4, /2, /1)", () => {
+      const daily = calculatePayment(500000, 3, "daily", 0.034, false, false);
+      expect(daily.totalCost).toBe(551000);
+      expect(daily.payment).toBe(18367); // 551.000 / 30
+
+      const weekly = calculatePayment(500000, 3, "weekly", 0.034, false, false);
+      expect(weekly.totalCost).toBe(551000);
+      expect(weekly.payment).toBe(137750); // 551.000 / 4
+
+      const biweekly = calculatePayment(500000, 3, "biweekly", 0.034, false, false);
+      expect(biweekly.totalCost).toBe(551000);
+      expect(biweekly.payment).toBe(275500); // 551.000 / 2
+
+      const monthly = calculatePayment(500000, 3, "monthly", 0.034, false, false);
+      expect(monthly.totalCost).toBe(551000);
+      expect(monthly.payment).toBe(551000); // 551.000 / 1
+    });
+
+    // 2. Con Servicios Opcionales: Capital (500k) + Interés (51k) + Plat (15k) + Fianza (18k) = 584.000
+    // Divisores: Diario /30 = 19.467, Semanal /4 = 146.000, Quincenal /2 = 292.000, Mensual /1 = 584.000
+    it("Fórmula Con Servicios: $500.000 a 3 meses en todas las frecuencias (/30, /4, /2, /1)", () => {
+      const daily = calculatePayment(500000, 3, "daily", 0.034, true, true);
+      expect(daily.totalCost).toBe(584000);
+      expect(daily.payment).toBe(19467); // 584.000 / 30
+
+      const weekly = calculatePayment(500000, 3, "weekly", 0.034, true, true);
+      expect(weekly.totalCost).toBe(584000);
+      expect(weekly.payment).toBe(146000); // 584.000 / 4
+
+      const biweekly = calculatePayment(500000, 3, "biweekly", 0.034, true, true);
+      expect(biweekly.totalCost).toBe(584000);
+      expect(biweekly.payment).toBe(292000); // 584.000 / 2
+
+      const monthly = calculatePayment(500000, 3, "monthly", 0.034, true, true);
+      expect(monthly.totalCost).toBe(584000);
+      expect(monthly.payment).toBe(584000); // 584.000 / 1
+    });
+
+    it("Tasas acumuladas por plazo: 1m=3.4%, 2m=6.8%, 3m=10.2%", () => {
+      const m1 = calculatePayment(1000000, 1, "monthly", 0.034, false, false);
+      expect(m1.legalInterestAmount).toBe(34000); // 3.4%
+
+      const m2 = calculatePayment(1000000, 2, "monthly", 0.034, false, false);
+      expect(m2.legalInterestAmount).toBe(68000); // 6.8%
+
+      const m3 = calculatePayment(1000000, 3, "monthly", 0.034, false, false);
+      expect(m3.legalInterestAmount).toBe(102000); // 10.2%
+    });
+  });
 });
 
 describe("Matriz de Admisibilidad — isTermDisabled e isFrequencyDisabled", () => {

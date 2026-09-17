@@ -113,24 +113,13 @@ export function SimulatorProvider({
   const [acceptsPlatform, setAcceptsPlatform] = useState(true);
   const [acceptsGuarantee, setAcceptsGuarantee] = useState(true);
 
-  // Auto-corrige la frecuencia si ya no está en la lista ofrecida o según la matriz de montos
+  // Auto-corrige la frecuencia si ya no está en la lista ofrecida
   useEffect(() => {
     if (!rates.offeredFrequencies.includes(frequency)) {
       setFrequency((rates.offeredFrequencies[0] as Frequency) ?? "monthly");
       return;
     }
-    // Matriz Plataxi:
-    // <= 150k -> Solo daily
-    // <= 250k -> Solo daily o weekly
-    // <= 600k -> daily, weekly, biweekly (no monthly)
-    if (amount <= 150000 && frequency !== "daily") {
-      setFrequency("daily");
-    } else if (amount <= 250000 && frequency !== "daily" && frequency !== "weekly") {
-      setFrequency("daily");
-    } else if (amount <= 600000 && frequency === "monthly") {
-      setFrequency("biweekly");
-    }
-  }, [rates.offeredFrequencies, frequency, amount]);
+  }, [rates.offeredFrequencies, frequency]);
 
   // Auto-corrige el plazo cuando el monto entra en rangos con plazos restringidos
   useEffect(() => {

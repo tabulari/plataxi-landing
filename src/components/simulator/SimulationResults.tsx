@@ -30,10 +30,7 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
   const [showPlatformHelp, setShowPlatformHelp] = useState(false);
   const [showGuaranteeHelp, setShowGuaranteeHelp] = useState(false);
 
-  const displayPayment =
-    sim.payment >= 10000
-      ? Math.round(sim.payment / 1000) * 1000
-      : Math.round(sim.payment / 100) * 100;
+  const displayPayment = sim.payment;
 
   useEffect(() => {
     const changed = sim.payment !== prevPayment.current;
