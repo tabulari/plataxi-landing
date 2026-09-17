@@ -52,7 +52,6 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
 
   const platformAmount = sim.platformFeeAmount ?? (acceptsPlatform ? Math.round(sim.amount * 0.030) : 0);
   const guaranteeAmount = sim.guaranteeFeeAmount ?? (acceptsGuarantee ? Math.round(sim.amount * 0.036) : 0);
-  const legalInterest = sim.legalInterestAmount ?? Math.round(sim.amount * (0.034 * sim.term));
 
   return (
     <div className="mt-6 pt-6 border-t border-border/80 space-y-4">
@@ -197,33 +196,6 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
         </div>
       </div>
 
-      {/* Desglose Matemático */}
-      <div className="text-xs text-muted-foreground border-t border-border/60 pt-3 space-y-1">
-        <div className="flex justify-between">
-          <span>Capital solicitado:</span>
-          <span className="font-medium text-foreground tabular-nums">${fmtCOP(sim.amount)}</span>
-        </div>
-        <div className="flex justify-between">
-          <span>% de plazo (3.4% mensual legal):</span>
-          <span className="font-medium text-foreground tabular-nums">${fmtCOP(legalInterest)}</span>
-        </div>
-        {acceptsPlatform && (
-          <div className="flex justify-between">
-            <span>Servicio de Plataforma (3.0%):</span>
-            <span className="font-medium text-sky-700 dark:text-sky-300 tabular-nums">${fmtCOP(platformAmount)}</span>
-          </div>
-        )}
-        {acceptsGuarantee && (
-          <div className="flex justify-between">
-            <span>Fianza de Respaldo (3.6%):</span>
-            <span className="font-medium text-pink-700 dark:text-pink-300 tabular-nums">${fmtCOP(guaranteeAmount)}</span>
-          </div>
-        )}
-        <div className="flex justify-between pt-1 border-t border-border/40 font-bold text-foreground">
-          <span>Préstamo Total:</span>
-          <span className="tabular-nums">${fmtCOP(sim.totalCost)}</span>
-        </div>
-      </div>
 
       {/* Cláusula Contractual Literal de Inmutabilidad */}
       <div className="text-[11px] text-muted-foreground text-center pt-2 leading-relaxed">
