@@ -84,32 +84,32 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
         </div>
 
         {/* 1. Servicio de Plataforma (+3.0%) */}
-        <div className="rounded-xl border border-sky-200 dark:border-sky-800/60 bg-sky-50/60 dark:bg-sky-950/30 p-3.5 space-y-2 transition-colors">
+        <div className="rounded-xl border border-amber-300/80 bg-amber-50/50 dark:border-amber-700/50 dark:bg-amber-950/20 p-3.5 space-y-2 transition-colors">
           <div className="flex items-start gap-3">
             <input
               type="checkbox"
               id="opt-platform"
               checked={acceptsPlatform}
               onChange={(e) => setAcceptsPlatform(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded text-sky-600 focus:ring-sky-500 border-sky-300 cursor-pointer"
+              className="mt-1 h-4 w-4 rounded text-amber-500 focus:ring-amber-400 border-amber-300 cursor-pointer"
             />
             <div className="flex-1 text-xs">
               <div className="flex items-center justify-between gap-2">
-                <label htmlFor="opt-platform" className="font-bold text-sky-950 dark:text-sky-200 cursor-pointer">
+                <label htmlFor="opt-platform" className="font-bold text-navy dark:text-foreground cursor-pointer">
                   Servicio de Plataforma (+3.0%)
                 </label>
-                <span className="font-semibold text-sky-900 dark:text-sky-300 tabular-nums">
+                <span className="font-semibold text-navy dark:text-foreground tabular-nums">
                   {acceptsPlatform ? `+$${fmtCOP(platformAmount)}` : '$0 (Sin servicio)'}
                 </span>
               </div>
               {/* Microcopy pedido */}
-              <p className="text-sky-800 dark:text-sky-300/90 text-[11px] mt-0.5 leading-snug">
+              <p className="text-muted-foreground text-[11px] mt-0.5 leading-snug">
                 Desembolso en 15 min, historial en vivo y recordatorios WhatsApp.
               </p>
               <button
                 type="button"
                 onClick={() => setShowPlatformHelp(!showPlatformHelp)}
-                className="text-[11px] text-sky-700 dark:text-sky-400 font-semibold underline underline-offset-2 mt-1 hover:text-sky-900 inline-flex items-center gap-1"
+                className="text-[11px] text-amber-800 dark:text-amber-300 font-semibold underline underline-offset-2 mt-1 hover:text-navy inline-flex items-center gap-1 cursor-pointer"
                 aria-expanded={showPlatformHelp}
               >
                 <span>ℹ️ {showPlatformHelp ? 'Ocultar detalle' : 'Ver detalle pequeño'}</span>
@@ -119,8 +119,8 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
 
           {/* Tooltip / Texto pequeño desplegable (en la misma tarjeta) */}
           {showPlatformHelp && (
-            <div className="text-[11px] text-stone-700 dark:text-stone-300 bg-white/80 dark:bg-black/40 p-3 rounded-lg border border-sky-200 dark:border-sky-800/40 space-y-1.5 mt-2 animate-in fade-in duration-150">
-              <div className="font-semibold text-sky-900 dark:text-sky-200">¿Por qué es mejor usar Plataforma PLATAXI?</div>
+            <div className="text-[11px] text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 p-3 rounded-lg border border-amber-200 dark:border-amber-800/40 space-y-1.5 mt-2 animate-in fade-in duration-150">
+              <div className="font-semibold text-navy dark:text-foreground">¿Por qué es mejor usar Plataforma PLATAXI?</div>
               <ul className="list-disc pl-4 space-y-0.5">
                 <li>Recibes tu dinero en 15 min.</li>
                 <li>Consulta tus pagos e historial cuando quieras.</li>
@@ -128,11 +128,11 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
                 <li>Recibes recordatorios para que nunca se te pase una cuota.</li>
                 <li>Pagos más seguros y tu comprobante al instante.</li>
               </ul>
-              <div className="text-amber-800 dark:text-amber-300 pt-1 border-t border-sky-100 dark:border-white/5">
+              <div className="text-amber-900 dark:text-amber-300 pt-1 border-t border-amber-100 dark:border-white/5">
                 <strong>Si no lo autorizas:</strong> Desembolso bancario ordinario (24 a 48h hábiles) y soporte manual.
               </div>
               <div className="pt-0.5">
-                <Link href="/legal/terminos#servicios-opcionales" className="text-sky-700 dark:text-sky-400 font-bold underline">
+                <Link href="/legal/terminos#servicios-opcionales" className="text-navy hover:text-amber-800 dark:text-amber-300 font-bold underline">
                   Ver detalles en Términos y Condiciones
                 </Link>
               </div>
@@ -141,32 +141,32 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
         </div>
 
         {/* 2. Fianza de Respaldo (+3.6%) */}
-        <div className="rounded-xl border border-pink-200 dark:border-pink-800/60 bg-pink-50/60 dark:bg-pink-950/30 p-3.5 space-y-2 transition-colors">
+        <div className="rounded-xl border border-amber-300/80 bg-amber-50/50 dark:border-amber-700/50 dark:bg-amber-950/20 p-3.5 space-y-2 transition-colors">
           <div className="flex items-start gap-3">
             <input
               type="checkbox"
               id="opt-guarantee"
               checked={acceptsGuarantee}
               onChange={(e) => setAcceptsGuarantee(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded text-pink-600 focus:ring-pink-500 border-pink-300 cursor-pointer"
+              className="mt-1 h-4 w-4 rounded text-amber-500 focus:ring-amber-400 border-amber-300 cursor-pointer"
             />
             <div className="flex-1 text-xs">
               <div className="flex items-center justify-between gap-2">
-                <label htmlFor="opt-guarantee" className="font-bold text-pink-950 dark:text-pink-200 cursor-pointer">
+                <label htmlFor="opt-guarantee" className="font-bold text-navy dark:text-foreground cursor-pointer">
                   Fianza de Respaldo (+3.6%)
                 </label>
-                <span className="font-semibold text-pink-900 dark:text-pink-300 tabular-nums">
+                <span className="font-semibold text-navy dark:text-foreground tabular-nums">
                   {acceptsGuarantee ? `+$${fmtCOP(guaranteeAmount)}` : '$0 (Sin servicio)'}
                 </span>
               </div>
               {/* Microcopy pedido */}
-              <p className="text-pink-800 dark:text-pink-300/90 text-[11px] mt-0.5 leading-snug">
+              <p className="text-muted-foreground text-[11px] mt-0.5 leading-snug">
                 Prórroga de hasta 2 días sin cobro de mora ni reporte.
               </p>
               <button
                 type="button"
                 onClick={() => setShowGuaranteeHelp(!showGuaranteeHelp)}
-                className="text-[11px] text-pink-700 dark:text-pink-400 font-semibold underline underline-offset-2 mt-1 hover:text-pink-900 inline-flex items-center gap-1"
+                className="text-[11px] text-amber-800 dark:text-amber-300 font-semibold underline underline-offset-2 mt-1 hover:text-navy inline-flex items-center gap-1 cursor-pointer"
                 aria-expanded={showGuaranteeHelp}
               >
                 <span>ℹ️ {showGuaranteeHelp ? 'Ocultar detalle' : 'Ver detalle pequeño'}</span>
@@ -176,18 +176,18 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
 
           {/* Tooltip / Texto pequeño desplegable (en la misma tarjeta) */}
           {showGuaranteeHelp && (
-            <div className="text-[11px] text-stone-700 dark:text-stone-300 bg-white/80 dark:bg-black/40 p-3 rounded-lg border border-pink-200 dark:border-pink-800/40 space-y-1.5 mt-2 animate-in fade-in duration-150">
-              <div className="font-semibold text-pink-900 dark:text-pink-200">Fianza: Tu respaldo cuando lo necesites</div>
+            <div className="text-[11px] text-stone-700 dark:text-stone-300 bg-white dark:bg-stone-900 p-3 rounded-lg border border-amber-200 dark:border-amber-800/40 space-y-1.5 mt-2 animate-in fade-in duration-150">
+              <div className="font-semibold text-navy dark:text-foreground">Fianza: Tu respaldo cuando lo necesites</div>
               <ul className="list-disc pl-4 space-y-0.5">
                 <li>Si un día no puedes pagar, prórroga por 2 días tu pago.</li>
                 <li>No afecta tu historial.</li>
                 <li>Acumulas prórrogas si nunca las has utilizado, para otros préstamos.</li>
               </ul>
-              <div className="text-amber-800 dark:text-amber-300 pt-1 border-t border-pink-100 dark:border-white/5">
+              <div className="text-amber-900 dark:text-amber-300 pt-1 border-t border-amber-100 dark:border-white/5">
                 <strong>Si no lo autorizas:</strong> Cobro de intereses moratorios inmediatos ante cualquier retraso.
               </div>
               <div className="pt-0.5">
-                <Link href="/legal/terminos#servicios-opcionales" className="text-pink-700 dark:text-pink-400 font-bold underline">
+                <Link href="/legal/terminos#servicios-opcionales" className="text-navy hover:text-amber-800 dark:text-amber-300 font-bold underline">
                   Ver detalles en Términos y Condiciones
                 </Link>
               </div>
