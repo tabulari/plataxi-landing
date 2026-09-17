@@ -14,11 +14,16 @@ const nextConfig: NextConfig = {
       { source: "/terminos", destination: "/legal/terminos" },
     ];
   },
-  // Anti-cache headers on HTML routes so browsers never retain stale designs or layouts
+  // The root layout is force-dynamic (server reads Core's live rates), so Next
+  // already emits no-store on the document response. This header is the
+  // belt-and-suspenders guarantee against a reverse proxy/CDN in front of the
+  // app overriding or stripping that origin header and serving a stale page
+  // after deploy. /_next/* is excluded: Next already manages Cache-Control for
+  // its hashed static/image assets, and overriding it here breaks dev behavior.
   async headers() {
     return [
       {
-        source: "/",
+        source: "/((?!_next/).*)",
         headers: [
           {
             key: "Cache-Control",
@@ -31,24 +36,6 @@ const nextConfig: NextConfig = {
           {
             key: "Expires",
             value: "0",
-          },
-        ],
-      },
-      {
-        source: "/legal/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache, no-store, max-age=0, must-revalidate",
-          },
-        ],
-      },
-      {
-        source: "/api/:path*",
-        headers: [
-          {
-            key: "Cache-Control",
-            value: "no-cache, no-store, max-age=0, must-revalidate",
           },
         ],
       },
