@@ -105,14 +105,6 @@ export function ApplicationSuccess({
             )}
           </div>
 
-          {/* Nota de fórmula en rojo (documento base Plataxi) */}
-          <div className="rounded-lg border border-red-400/40 bg-red-50 p-2 text-[11px] text-red-700">
-            <p className="font-semibold text-red-800">Fórmula de liquidación:</p>
-            <p className="font-mono text-[10px] leading-tight text-red-700 mt-0.5">
-              (nota: capital + % de plazo + plataforma + fianza = cuota dividida en día semana quincena o mes)
-            </p>
-          </div>
-
           {/* Cláusula de inmutabilidad */}
           <div className="rounded-lg border border-amber-300 bg-amber-50 p-2 text-[11px] text-amber-900 leading-snug">
             <b className="font-semibold text-amber-800">Condición inmutable:</b> La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.

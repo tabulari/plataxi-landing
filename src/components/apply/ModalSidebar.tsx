@@ -62,16 +62,8 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
         )}
       </ul>
 
-      {/* Nota de fórmula en rojo (documento base Plataxi) */}
-      <div className="mt-3 rounded-xl border border-red-400/40 bg-red-950/40 p-2.5 text-[11px] text-red-200 max-[760px]:hidden">
-        <p className="font-semibold text-red-300 mb-0.5">Fórmula de liquidación:</p>
-        <p className="font-mono text-[10px] leading-tight text-red-100">
-          (nota: capital + % de plazo + plataforma + fianza = cuota dividida en día semana quincena o mes)
-        </p>
-      </div>
-
       {/* Cláusula de inmutabilidad contractual */}
-      <div className="mt-2.5 rounded-xl border border-amber-400/30 bg-amber-950/30 p-2.5 text-[11px] text-amber-200 leading-snug max-[760px]:hidden">
+      <div className="mt-3 rounded-xl border border-amber-400/30 bg-amber-950/30 p-2.5 text-[11px] text-amber-200 leading-snug max-[760px]:hidden">
         <b className="font-semibold text-amber-300">Condición inmutable:</b> La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.
       </div>
 
