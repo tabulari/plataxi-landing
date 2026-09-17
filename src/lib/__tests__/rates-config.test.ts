@@ -12,6 +12,27 @@ describe("dynamic rates config", () => {
   it("normalizes Core decimals and terms", () => {
     expect(parseRatesConfig(validPayload)).toEqual({
       monthlyRate: 0.032,
+      // Fee rates absent -> historical literals (DOMAIN-011 §4.1) as fallback.
+      platformFeeRate: 0.030,
+      guaranteeFeeRate: 0.036,
+      amountMin: 60000,
+      amountMax: 1200000,
+      termOptions: [3, 6, 12],
+      offeredFrequencies: ['daily', 'weekly', 'biweekly', 'monthly'],
+    });
+  });
+
+  it("parses Core-served fee rates when present", () => {
+    expect(
+      parseRatesConfig({
+        ...validPayload,
+        platform_fee_rate: "0.0250",
+        guarantee_fee_rate: "0.0400",
+      }),
+    ).toEqual({
+      monthlyRate: 0.032,
+      platformFeeRate: 0.025,
+      guaranteeFeeRate: 0.04,
       amountMin: 60000,
       amountMax: 1200000,
       termOptions: [3, 6, 12],
@@ -27,6 +48,8 @@ describe("dynamic rates config", () => {
     };
     expect(parseRatesConfig(withoutTerms)).toEqual({
       monthlyRate: 0.032,
+      platformFeeRate: 0.030,
+      guaranteeFeeRate: 0.036,
       amountMin: 60000,
       amountMax: 1200000,
       termOptions: [],
@@ -67,6 +90,12 @@ describe("dynamic rates config", () => {
     expect(parseRatesConfig({ ...validPayload, max_amount: "50000" })).toBeNull();
     expect(parseRatesConfig({ ...validPayload, term_options_months: ["x"] })).toBeNull();
     expect(parseRatesConfig({ ...validPayload, term_options_months: [0] })).toBeNull();
+    expect(parseRatesConfig({ ...validPayload, platform_fee_rate: "-0.01" })).toBeNull();
+    expect(parseRatesConfig({ ...validPayload, guarantee_fee_rate: "-0.01" })).toBeNull();
+    // null/"": Number(null) y Number("") son 0 — no pueden colarse como "servicio 0%".
+    expect(parseRatesConfig({ ...validPayload, platform_fee_rate: null })).not.toBeNull();
+    expect(parseRatesConfig({ ...validPayload, platform_fee_rate: null })?.platformFeeRate).toBe(0.030);
+    expect(parseRatesConfig({ ...validPayload, guarantee_fee_rate: "" })).toBeNull();
   });
 
   it("returns null when Core is down so the provider retains static defaults", async () => {
@@ -89,7 +118,9 @@ describe("dynamic rates config", () => {
       json: async () => corePayload,
     } as Response);
     const fallback = {
-      monthlyRate: 0.026,
+      monthlyRate: 0.034,
+      platformFeeRate: 0.030,
+      guaranteeFeeRate: 0.036,
       amountMin: 20000,
       amountMax: 1000000,
       termOptions: [1, 2, 3],
@@ -112,7 +143,9 @@ describe("dynamic rates config", () => {
       json: async () => coreWithoutTerms,
     } as Response);
     const fallback = {
-      monthlyRate: 0.026,
+      monthlyRate: 0.034,
+      platformFeeRate: 0.030,
+      guaranteeFeeRate: 0.036,
       amountMin: 20000,
       amountMax: 1000000,
       termOptions: [1, 2, 3],

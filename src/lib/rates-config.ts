@@ -1,5 +1,9 @@
 export interface RuntimeRatesConfig {
   monthlyRate: number;
+  /** Servicio de Plataforma Tecnológica, decimal del capital (ej. 0.030 = 3.0%). */
+  platformFeeRate: number;
+  /** Fianza de Respaldo, decimal del capital (ej. 0.036 = 3.6%). */
+  guaranteeFeeRate: number;
   amountMin: number;
   amountMax: number;
   termOptions: number[];
@@ -8,6 +12,12 @@ export interface RuntimeRatesConfig {
 }
 
 const STANDARD_FREQUENCIES = ['daily', 'weekly', 'biweekly', 'monthly'] as const;
+
+// Fallbacks cuando el payload de Core aún no trae los campos de tasas de
+// servicio (payload viejo / Core desactualizado): los valores que la landing
+// usaba fijos en código (DOMAIN-011 §4.1).
+const FALLBACK_PLATFORM_FEE_RATE = 0.030;
+const FALLBACK_GUARANTEE_FEE_RATE = 0.036;
 
 type FetchLike = typeof fetch;
 
@@ -18,6 +28,19 @@ export function parseRatesConfig(payload: unknown): RuntimeRatesConfig | null {
   const monthlyRate = Number(record.monthly_interest_rate);
   const amountMin = Number(record.min_amount);
   const amountMax = Number(record.max_amount);
+  // Tasas de servicio opcionales: retrocompatibles. Ausentes o null -> fallback a
+  // los literales históricos; presentes pero inválidas ("", NaN o negativas) -> el
+  // payload completo se rechaza (parser estricto, mismo criterio que la tasa).
+  // Number(null) === 0 y Number("") === 0, así que null/"" no pueden colarse como 0%.
+  const toFeeRate = (raw: unknown, fallback: number): number | null => {
+    if (raw === undefined || raw === null) return fallback;
+    if (raw === "") return null;
+    const n = Number(raw);
+    if (!Number.isFinite(n) || n < 0) return null;
+    return n;
+  };
+  const platformFeeRate = toFeeRate(record.platform_fee_rate, FALLBACK_PLATFORM_FEE_RATE);
+  const guaranteeFeeRate = toFeeRate(record.guarantee_fee_rate, FALLBACK_GUARANTEE_FEE_RATE);
   // Core retiró term_options_months (ya no hay elección de plazo): los plazos son
   // opcionales y los completa quien llama con los estáticos. Un array presente pero
   // malformado sigue siendo inseguro y rechaza el payload completo.
@@ -33,6 +56,12 @@ export function parseRatesConfig(payload: unknown): RuntimeRatesConfig | null {
     amountMin <= 0 ||
     !Number.isFinite(amountMax) ||
     amountMax <= amountMin ||
+    platformFeeRate === null ||
+    guaranteeFeeRate === null ||
+    !Number.isFinite(platformFeeRate) ||
+    platformFeeRate < 0 ||
+    !Number.isFinite(guaranteeFeeRate) ||
+    guaranteeFeeRate < 0 ||
     (hasTerms &&
       (termOptions.length === 0 ||
         termOptions.some((term) => !Number.isInteger(term) || term <= 0)))
@@ -63,6 +92,8 @@ export function parseRatesConfig(payload: unknown): RuntimeRatesConfig | null {
 
   return {
     monthlyRate,
+    platformFeeRate,
+    guaranteeFeeRate,
     amountMin,
     amountMax,
     termOptions: [...new Set(termOptions)].sort((a, b) => a - b),

@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-import { fmtCOP, type Frequency } from '@/lib/credit';
+import { fmtCOP, fmtPct, type Frequency } from '@/lib/credit';
+import { config } from '@/lib/config';
 import { useSimulator } from '../simulator-store';
 
 interface SimData {
@@ -15,6 +16,7 @@ interface SimData {
   unit: string;
   adminFeePerPeriod: number;
   guaranteeFeeTotal: number;
+  monthlyRate?: number;
   legalInterestAmount?: number;
   platformFeeAmount?: number;
   guaranteeFeeAmount?: number;
@@ -23,7 +25,14 @@ interface SimData {
 }
 
 export function SimulationResults({ sim, frequency }: { sim: SimData; frequency: Frequency }) {
-  const { acceptsPlatform, setAcceptsPlatform, acceptsGuarantee, setAcceptsGuarantee } = useSimulator();
+  const {
+    acceptsPlatform,
+    setAcceptsPlatform,
+    acceptsGuarantee,
+    setAcceptsGuarantee,
+    platformFeeRate,
+    guaranteeFeeRate,
+  } = useSimulator();
   const paymentRef = useRef<HTMLDivElement>(null);
   const prevPayment = useRef(sim.payment);
 
@@ -47,8 +56,9 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
     return () => clearTimeout(t);
   }, [sim.payment]);
 
-  const platformAmount = sim.platformFeeAmount ?? (acceptsPlatform ? Math.round(sim.amount * 0.030) : 0);
-  const guaranteeAmount = sim.guaranteeFeeAmount ?? (acceptsGuarantee ? Math.round(sim.amount * 0.036) : 0);
+  const platformAmount = sim.platformFeeAmount ?? (acceptsPlatform ? Math.round(sim.amount * platformFeeRate) : 0);
+  const guaranteeAmount = sim.guaranteeFeeAmount ?? (acceptsGuarantee ? Math.round(sim.amount * guaranteeFeeRate) : 0);
+  const monthlyRate = sim.monthlyRate ?? config.credit.monthlyRate;
 
   return (
     <div className="mt-6 pt-6 border-t border-border/80 space-y-4">
@@ -64,7 +74,7 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
             <span className="text-base sm:text-lg font-semibold text-muted-2 tracking-normal">{sim.unit}</span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-md pt-0.5">
-            Cuota fija con interés legal del {sim.term === 1 ? '3,4%' : sim.term === 2 ? '6,8%' : '10,2%'} ({sim.term} {sim.term === 1 ? 'mes' : 'meses'}).
+            Cuota fija con interés del {fmtPct(monthlyRate * sim.term, 1)}% ({sim.term} {sim.term === 1 ? 'mes' : 'meses'}).
           </p>
         </div>
       </div>

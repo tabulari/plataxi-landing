@@ -29,9 +29,11 @@ export interface Simulation {
   isEstimate: boolean;
   adminFeePerPeriod: number; // COP por cuota (plataforma)
   guaranteeFeeTotal: number; // COP total fianza
-  legalInterestAmount: number; // COP interés legal SFC (3.4% simple por mes)
-  platformFeeAmount: number; // COP servicio plataforma (+3.0% opcional)
-  guaranteeFeeAmount: number; // COP servicio fianza (+3.6% opcional)
+  legalInterestAmount: number; // COP interés (tasa mensual simple servida por Core)
+  platformFeeAmount: number; // COP servicio plataforma (opcional)
+  guaranteeFeeAmount: number; // COP servicio fianza (opcional)
+  platformFeeRate: number; // decimal del capital usado para platformFeeAmount
+  guaranteeFeeRate: number; // decimal del capital usado para guaranteeFeeAmount
   acceptsPlatform: boolean;
   acceptsGuarantee: boolean;
   valid: boolean; // false when the amount/term combo isn't offered
@@ -114,18 +116,18 @@ export function calculatePayment(
   monthlyRate: number = config.credit.monthlyRate,
   acceptsPlatform: boolean = true,
   acceptsGuarantee: boolean = true,
+  platformFeeRate: number = config.credit.platformFeeRate,
+  guaranteeFeeRate: number = config.credit.guaranteeFeeRate,
 ): Simulation {
-  // 1. Tasa mensual legal por el gobierno: 3.4% mensual simple
-  // 1 MES = 3.4% | 2 MES = 6.8% | 3 MES = 10.2%
-  const legalMonthlyRate = 0.034;
-  const termInterestPct = legalMonthlyRate * termMonths;
+  // 1. Tasa de interés mensual simple, servida por Core (financial_settings).
+  // Tope regulatorio: 3.4% mensual (DOMAIN-011 INV-1); 1 MES = r% | 2 MES = 2r% | 3 MES = 3r%
+  const termInterestPct = monthlyRate * termMonths;
   const legalInterestAmount = Math.round(amount * termInterestPct);
 
-  // 2. Servicios Opcionales (previa autorización del usuario):
-  // Plataforma: +3.0% sobre el capital
-  // Fianza: +3.6% sobre el capital
-  const platformFeeAmount = acceptsPlatform ? Math.round(amount * 0.030) : 0;
-  const guaranteeFeeAmount = acceptsGuarantee ? Math.round(amount * 0.036) : 0;
+  // 2. Servicios Opcionales (previa autorización del usuario), tasas servidas
+  // por Core: Plataforma sobre el capital + Fianza sobre el capital.
+  const platformFeeAmount = acceptsPlatform ? Math.round(amount * platformFeeRate) : 0;
+  const guaranteeFeeAmount = acceptsGuarantee ? Math.round(amount * guaranteeFeeRate) : 0;
 
   // Fórmula literal: capital + % de plazo + plataforma + fianza = cuota dividida en día, semana, quincena o mes
   const totalCost = amount + legalInterestAmount + platformFeeAmount + guaranteeFeeAmount;
@@ -144,7 +146,7 @@ export function calculatePayment(
   const payment = Math.round(totalCost / divisor);
   const nPeriods = divisor;
   const periodRate = termInterestPct / divisor;
-  const ea = Math.pow(1 + legalMonthlyRate, 12) - 1; // TEA legal
+  const ea = Math.pow(1 + monthlyRate, 12) - 1;
   const validity = validateApplication(amount, termMonths, frequency);
 
   return {
@@ -154,7 +156,7 @@ export function calculatePayment(
     payment,
     totalCost,
     periodRate,
-    monthlyRate: legalMonthlyRate,
+    monthlyRate,
     ea,
     nPeriods,
     unit:
@@ -170,6 +172,8 @@ export function calculatePayment(
     legalInterestAmount,
     platformFeeAmount,
     guaranteeFeeAmount,
+    platformFeeRate,
+    guaranteeFeeRate,
     acceptsPlatform,
     acceptsGuarantee,
     valid: validity.ok,
