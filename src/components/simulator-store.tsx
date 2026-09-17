@@ -58,10 +58,14 @@ interface SimulatorStore {
   amountStepBig: number;
   termOptions: number[];
   offeredFrequencies: string[];
+  acceptsPlatform: boolean;
+  acceptsGuarantee: boolean;
   /** Clamp to [MIN,MAX]; `round` also snaps to AMOUNT_STEP (slider/stepper/blur). */
   setAmount: (value: number, round?: boolean) => void;
   setTerm: (term: number) => void;
   setFrequency: (frequency: Frequency) => void;
+  setAcceptsPlatform: (accepts: boolean) => void;
+  setAcceptsGuarantee: (accepts: boolean) => void;
 }
 
 const SimulatorContext = createContext<SimulatorStore | null>(null);
@@ -106,12 +110,27 @@ export function SimulatorProvider({
       : (rates.offeredFrequencies[0] as Frequency) ?? preferred;
   });
 
-  // Auto-corrige la frecuencia si ya no está en la lista ofrecida
+  const [acceptsPlatform, setAcceptsPlatform] = useState(true);
+  const [acceptsGuarantee, setAcceptsGuarantee] = useState(true);
+
+  // Auto-corrige la frecuencia si ya no está en la lista ofrecida o según la matriz de montos
   useEffect(() => {
     if (!rates.offeredFrequencies.includes(frequency)) {
       setFrequency((rates.offeredFrequencies[0] as Frequency) ?? "monthly");
+      return;
     }
-  }, [rates.offeredFrequencies, frequency]);
+    // Matriz Plataxi:
+    // <= 150k -> Solo daily
+    // <= 250k -> Solo daily o weekly
+    // <= 600k -> daily, weekly, biweekly (no monthly)
+    if (amount <= 150000 && frequency !== "daily") {
+      setFrequency("daily");
+    } else if (amount <= 250000 && frequency !== "daily" && frequency !== "weekly") {
+      setFrequency("daily");
+    } else if (amount <= 600000 && frequency === "monthly") {
+      setFrequency("biweekly");
+    }
+  }, [rates.offeredFrequencies, frequency, amount]);
 
   // Auto-corrige el plazo cuando el monto entra en rangos con plazos restringidos
   useEffect(() => {
@@ -182,8 +201,16 @@ export function SimulatorProvider({
   }, [amount]);
 
   const sim = useMemo(
-    () => calculatePayment(settledAmount, term, frequency, rates.monthlyRate),
-    [settledAmount, term, frequency, rates.monthlyRate],
+    () =>
+      calculatePayment(
+        settledAmount,
+        term,
+        frequency,
+        rates.monthlyRate,
+        acceptsPlatform,
+        acceptsGuarantee,
+      ),
+    [settledAmount, term, frequency, rates.monthlyRate, acceptsPlatform, acceptsGuarantee],
   );
 
   const value = useMemo<SimulatorStore>(
@@ -198,11 +225,24 @@ export function SimulatorProvider({
       amountStepBig: config.simulator.amountStepBig,
       termOptions: rates.termOptions,
       offeredFrequencies: rates.offeredFrequencies,
+      acceptsPlatform,
+      acceptsGuarantee,
       setAmount,
       setTerm,
       setFrequency,
+      setAcceptsPlatform,
+      setAcceptsGuarantee,
     }),
-    [amount, term, frequency, sim, rates, setAmount],
+    [
+      amount,
+      term,
+      frequency,
+      sim,
+      rates,
+      acceptsPlatform,
+      acceptsGuarantee,
+      setAmount,
+    ],
   );
 
   return (

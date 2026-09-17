@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { fmtCOP, validateApplication, isTermDisabled, type Frequency } from '@/lib/credit';
+import { fmtCOP, validateApplication, isTermDisabled, isFrequencyDisabled, type Frequency } from '@/lib/credit';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
 import { ApplyButton } from './ApplyButton';
@@ -40,18 +40,33 @@ export function Simulator() {
   } = useSimulator();
 
   const frequencies = useMemo(
-    () => ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)),
-    [offeredFrequencies],
+    () =>
+      ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)).map((f) => ({
+        ...f,
+        disabled: isFrequencyDisabled(amount, f.value),
+      })),
+    [offeredFrequencies, amount],
   );
 
   const terms = useMemo(
     () =>
-      termOptions
-        .filter((value) => !isTermDisabled(amount, value))
-        .map((value) => ({
+      termOptions.map((value) => {
+        const disabled = isTermDisabled(amount, value);
+        let title: string | undefined;
+        if (disabled) {
+          if (value === 2) {
+            title = 'Disponible a partir de $200.000';
+          } else if (value >= 3) {
+            title = 'Disponible a partir de $300.000';
+          }
+        }
+        return {
           value,
           label: `${value} ${value === 1 ? 'mes' : 'meses'}`,
-        })),
+          disabled,
+          title,
+        };
+      }),
     [termOptions, amount],
   );
 
@@ -172,7 +187,7 @@ export function Simulator() {
           options={frequencies.map((f) => ({
             value: f.value,
             label: f.estimate ? `${f.label} *` : f.label,
-            title: f.estimate ? 'Cuota estimada — el cargo definitivo se confirma en la oferta' : undefined,
+            disabled: f.disabled,
           }))}
           value={frequency}
           onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
