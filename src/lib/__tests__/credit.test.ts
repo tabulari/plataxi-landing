@@ -95,64 +95,53 @@ describe("calculatePayment — Plataxi Document Formulas", () => {
   });
 });
 
-describe("Matriz de Admisibilidad — isTermDisabled y isFrequencyDisabled", () => {
-  it("$100.000 y $150.000: solo 1 mes y solo diario", () => {
+describe("Matriz de Admisibilidad — isTermDisabled e isFrequencyDisabled", () => {
+  it("términos respetan el límite según monto", () => {
     expect(isTermDisabled(100000, 1)).toBe(false);
     expect(isTermDisabled(100000, 2)).toBe(true);
     expect(isTermDisabled(100000, 3)).toBe(true);
 
-    expect(isFrequencyDisabled(100000, "daily")).toBe(false);
-    expect(isFrequencyDisabled(100000, "weekly")).toBe(true);
-    expect(isFrequencyDisabled(100000, "biweekly")).toBe(true);
-    expect(isFrequencyDisabled(100000, "monthly")).toBe(true);
-  });
-
-  it("$200.000 y $250.000: 1 y 2 meses, diario o semanal", () => {
     expect(isTermDisabled(200000, 1)).toBe(false);
     expect(isTermDisabled(200000, 2)).toBe(false);
     expect(isTermDisabled(200000, 3)).toBe(true);
 
-    expect(isFrequencyDisabled(200000, "daily")).toBe(false);
-    expect(isFrequencyDisabled(200000, "weekly")).toBe(false);
-    expect(isFrequencyDisabled(200000, "biweekly")).toBe(true);
-    expect(isFrequencyDisabled(200000, "monthly")).toBe(true);
-  });
-
-  it("$300.000 a $600.000: 1, 2 y 3 meses, diario, semanal o quincenal (no mensual)", () => {
     expect(isTermDisabled(500000, 1)).toBe(false);
     expect(isTermDisabled(500000, 2)).toBe(false);
     expect(isTermDisabled(500000, 3)).toBe(false);
-
-    expect(isFrequencyDisabled(500000, "daily")).toBe(false);
-    expect(isFrequencyDisabled(500000, "weekly")).toBe(false);
-    expect(isFrequencyDisabled(500000, "biweekly")).toBe(false);
-    expect(isFrequencyDisabled(500000, "monthly")).toBe(true);
   });
 
-  it("$600.000 a $1.000.000: todas las frecuencias permitidas", () => {
-    expect(isFrequencyDisabled(800000, "daily")).toBe(false);
-    expect(isFrequencyDisabled(800000, "weekly")).toBe(false);
-    expect(isFrequencyDisabled(800000, "biweekly")).toBe(false);
-    expect(isFrequencyDisabled(800000, "monthly")).toBe(false);
+  it("todas las frecuencias ofrecidas están habilitadas sin deshabilitar ningún botón", () => {
+    // Para cualquier monto, diaria, semanal, quincenal y mensual están habilitadas
+    for (const amount of [100000, 200000, 500000, 800000]) {
+      expect(isFrequencyDisabled(amount, "daily")).toBe(false);
+      expect(isFrequencyDisabled(amount, "weekly")).toBe(false);
+      expect(isFrequencyDisabled(amount, "biweekly")).toBe(false);
+      expect(isFrequencyDisabled(amount, "monthly")).toBe(false);
+    }
+    // Únicamente las frecuencias no ofrecidas están deshabilitadas
+    expect(isFrequencyDisabled(500000, "bimonthly")).toBe(true);
+    expect(isFrequencyDisabled(500000, "quarterly")).toBe(true);
   });
 });
 
 describe("validateApplication — guidance messages", () => {
-  it("valida combinaciones correctas", () => {
+  it("valida combinaciones correctas de monto, plazo y frecuencia", () => {
     expect(validateApplication(100000, 1, "daily").ok).toBe(true);
+    expect(validateApplication(100000, 1, "monthly").ok).toBe(true);
     expect(validateApplication(200000, 2, "weekly").ok).toBe(true);
     expect(validateApplication(500000, 3, "biweekly").ok).toBe(true);
+    expect(validateApplication(500000, 3, "monthly").ok).toBe(true);
     expect(validateApplication(800000, 1, "monthly").ok).toBe(true);
   });
 
-  it("rechaza combinaciones inválidas con mensajes claros", () => {
-    const r1 = validateApplication(100000, 1, "weekly");
+  it("rechaza plazos no disponibles según el monto", () => {
+    const r1 = validateApplication(100000, 2, "daily");
     expect(r1.ok).toBe(false);
-    expect(r1.message).toContain("diarios");
+    expect(r1.message).toContain("1 mes");
 
-    const r2 = validateApplication(500000, 1, "monthly");
+    const r2 = validateApplication(200000, 3, "monthly");
     expect(r2.ok).toBe(false);
-    expect(r2.message).toContain("600.000");
+    expect(r2.message).toContain("2 meses");
   });
 });
 

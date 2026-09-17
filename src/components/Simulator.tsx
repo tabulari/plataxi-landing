@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { fmtCOP, validateApplication, isTermDisabled, isFrequencyDisabled, type Frequency } from '@/lib/credit';
+import { fmtCOP, validateApplication, isTermDisabled, type Frequency } from '@/lib/credit';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
 import { ApplyButton } from './ApplyButton';
@@ -43,9 +43,9 @@ export function Simulator() {
     () =>
       ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)).map((f) => ({
         ...f,
-        disabled: isFrequencyDisabled(amount, f.value),
+        disabled: false,
       })),
-    [offeredFrequencies, amount],
+    [offeredFrequencies],
   );
 
   const terms = useMemo(

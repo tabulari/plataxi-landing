@@ -61,23 +61,11 @@ export function getDisabledTerms(amount: number, termOptions: number[]): number[
 }
 
 /**
- * Matriz estricta de formas de pago según monto (Documento Plataxi):
- * 1) $100.000 hasta $150.000: solo Diario.
- * 2) $200.000 hasta $250.000: Diario o Semanal.
- * 3) $300.000 hasta $600.000: Diario, Semanal o Quincenal.
- * 4) $600.000 hasta $1.000.000: Diario, Semanal, Quincenal o Mensual.
+ * Forma de pago en frecuencia de pago debe estar normal sin deshabilitar ningún botón.
+ * Todas las frecuencias ofrecidas (daily, weekly, biweekly, monthly) están siempre habilitadas.
  */
 export function isFrequencyDisabled(amount: number, frequency: Frequency): boolean {
   if (frequency === "bimonthly" || frequency === "quarterly") return true;
-  if (amount <= 150000) {
-    return frequency !== "daily";
-  }
-  if (amount <= 250000) {
-    return frequency !== "daily" && frequency !== "weekly";
-  }
-  if (amount <= 600000) {
-    return frequency === "monthly";
-  }
   return false;
 }
 
@@ -110,27 +98,9 @@ export function validateApplication(
   }
 
   if (isFrequencyDisabled(amount, frequency)) {
-    if (amount <= 150000 && frequency !== "daily") {
-      return {
-        ok: false,
-        message: "Para montos de hasta $150.000 los pagos son únicamente diarios.",
-      };
-    }
-    if (amount <= 250000 && frequency !== "daily" && frequency !== "weekly") {
-      return {
-        ok: false,
-        message: "Para montos de hasta $250.000 la forma de pago es diaria o semanal.",
-      };
-    }
-    if (amount <= 600000 && frequency === "monthly") {
-      return {
-        ok: false,
-        message: "El pago mensual está disponible para montos a partir de $600.000.",
-      };
-    }
     return {
       ok: false,
-      message: "La forma de pago seleccionada no está disponible para este monto.",
+      message: "La forma de pago seleccionada no está disponible.",
     };
   }
 
