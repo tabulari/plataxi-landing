@@ -51,3 +51,4 @@ lighthouserc.json
 
 # Local Claude Code dev-server config (port choice is per-machine)
 .claude/launch.json
+.playwright-mcp/
