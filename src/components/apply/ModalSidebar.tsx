@@ -1,10 +1,16 @@
 'use client';
 
-import { fmtCOP, type Simulation } from '@/lib/credit';
+import { config } from '@/lib/config';
+import { fmtCOP, fmtPct, type Simulation } from '@/lib/credit';
 import { capFreq } from './use-application-form';
 
 export function ModalSidebar({ frozen }: { frozen: Simulation }) {
-  const legalInterest = frozen.legalInterestAmount ?? Math.round(frozen.amount * 0.034 * frozen.term);
+  // Tasas servidas por Core y congeladas en el snapshot; los ?? cubren
+  // snapshots previos a las tasas dinámicas (config = literales históricos).
+  const monthlyRate = frozen.monthlyRate ?? config.credit.monthlyRate;
+  const platformRate = frozen.platformFeeRate ?? config.credit.platformFeeRate;
+  const guaranteeRate = frozen.guaranteeFeeRate ?? config.credit.guaranteeFeeRate;
+  const legalInterest = frozen.legalInterestAmount ?? Math.round(frozen.amount * monthlyRate * frozen.term);
   const platformFee = frozen.platformFeeAmount ?? 0;
   const guaranteeFee = frozen.guaranteeFeeAmount ?? 0;
 
@@ -48,16 +54,16 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
           <span className="text-white/60">Nº pagos</span><b>{Math.round(frozen.nPeriods)} cuotas</b>
         </li>
         <li className="flex justify-between gap-2">
-          <span className="text-white/60">Interés Legal ({frozen.term === 1 ? '3,4%' : frozen.term === 2 ? '6,8%' : '10,2%'})</span><b>${fmtCOP(legalInterest)}</b>
+          <span className="text-white/60">Interés Legal ({fmtPct(monthlyRate * frozen.term, 1)}%)</span><b>${fmtCOP(legalInterest)}</b>
         </li>
         {platformFee > 0 && (
           <li className="flex justify-between gap-2">
-            <span className="text-white/60">Plataforma (3.0%)</span><b>${fmtCOP(platformFee)}</b>
+            <span className="text-white/60">Plataforma ({fmtPct(platformRate, 1)}%)</span><b>${fmtCOP(platformFee)}</b>
           </li>
         )}
         {guaranteeFee > 0 && (
           <li className="flex justify-between gap-2">
-            <span className="text-white/60">Fianza (3.6%)</span><b>${fmtCOP(guaranteeFee)}</b>
+            <span className="text-white/60">Fianza ({fmtPct(guaranteeRate, 1)}%)</span><b>${fmtCOP(guaranteeFee)}</b>
           </li>
         )}
       </ul>

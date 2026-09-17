@@ -83,7 +83,7 @@ export function PhoneChat() {
   const { openApply } = useSiteUi();
   const { sim } = useSimulator();
 
-  // Derive the demo cuota from the store's live rate so it never shows a
+  // Derive the demo cuota from the store's live rates so it never shows a
   // placeholder value that differs from the real SSR cuota above it.
   const phoneSim = useMemo(
     () => calculatePayment(
@@ -91,8 +91,12 @@ export function PhoneChat() {
       config.simulator.defaultTerm,
       'monthly',
       sim.monthlyRate,
+      true,
+      true,
+      sim.platformFeeRate,
+      sim.guaranteeFeeRate,
     ),
-    [sim.monthlyRate],
+    [sim.monthlyRate, sim.platformFeeRate, sim.guaranteeFeeRate],
   );
 
   // Dynamic live device clock & message timestamps
@@ -346,7 +350,7 @@ export function PhoneChat() {
                   <div className="wa-card-row"><strong>Plazo:</strong> {phoneSim.term} meses</div>
                   <div className="wa-card-row"><strong>Cuota:</strong> {fmtCOP(phoneSim.payment)} / mes</div>
                   <div className="wa-card-row text-[10px] text-[#667781] pt-0.5 border-t border-[#f0f2f5] mt-1">
-                    Tasa fija según tu perfil • Detalles en preguntas frecuentes
+                    Tasa fija • Detalles en preguntas frecuentes
                   </div>
                   <div className="wa-meta">
                     <span className="tabular-nums">{msgTimes.t1}</span>

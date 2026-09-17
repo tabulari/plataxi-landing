@@ -1,10 +1,11 @@
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
-import { FAQS } from '@/lib/faqs';
+import { buildFaqs } from '@/lib/faqs';
+import { useSimulator } from './simulator-store';
 import {
   Accordion,
   AccordionContent,
@@ -20,6 +21,10 @@ if (typeof window !== 'undefined') {
 
 export function Faq() {
   const containerRef = useRef<HTMLElement>(null);
+  // Las tasas vienen de Core (vía el store): la copy de la FAQ siempre
+  // coincide con lo que el simulador cobra.
+  const { platformFeeRate, guaranteeFeeRate } = useSimulator();
+  const FAQS = useMemo(() => buildFaqs({ platformFeeRate, guaranteeFeeRate }), [platformFeeRate, guaranteeFeeRate]);
   // 10. Deep-link: #faq-2 abre y scrollea la pregunta
   const [value, setValue] = useState<string[]>(() => {
     if (typeof window !== 'undefined' && window.location.hash.startsWith('#faq-')) {
@@ -42,7 +47,7 @@ export function Faq() {
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
+  }, [FAQS]);
 
   const handleValueChange = (newVal: string[]) => {
     if (typeof window !== 'undefined' && window.innerWidth < 768 && newVal.length > 1) {

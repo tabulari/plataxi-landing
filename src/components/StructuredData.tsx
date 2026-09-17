@@ -1,15 +1,28 @@
 import { config } from "@/lib/config";
 import { fmtCOP } from "@/lib/credit";
-import { FAQS } from "@/lib/faqs";
+import { buildFaqs } from "@/lib/faqs";
+
+interface StructuredDataRates {
+  platformFeeRate: number;
+  guaranteeFeeRate: number;
+}
 
 /**
  * JSON-LD structured data (ported from the prototype <head>): FinancialService
  * + FAQPage (eligible for Google rich results). URLs/telephone/address are
  * config-driven (⚠️ placeholders until set); the FAQ list is the single source
- * shared with the FAQ accordion.
+ * shared with the FAQ accordion. The rates come from Core (layout seeds them
+ * server-side) so the schema never quotes stale config numbers; falls back to
+ * config when Core is unreachable.
  */
-export function StructuredData() {
+export function StructuredData({ rates }: { rates?: StructuredDataRates }) {
   const base = config.siteUrl.replace(/\/$/, "");
+  const FAQS = buildFaqs(
+    rates ?? {
+      platformFeeRate: config.credit.platformFeeRate,
+      guaranteeFeeRate: config.credit.guaranteeFeeRate,
+    },
+  );
 
   const financialService = {
     "@context": "https://schema.org",

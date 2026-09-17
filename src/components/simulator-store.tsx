@@ -60,6 +60,10 @@ interface SimulatorStore {
   amountStepBig: number;
   termOptions: number[];
   offeredFrequencies: string[];
+  /** Servicio de Plataforma, decimal del capital — servido por Core. */
+  platformFeeRate: number;
+  /** Fianza, decimal del capital — servida por Core. */
+  guaranteeFeeRate: number;
   acceptsPlatform: boolean;
   acceptsGuarantee: boolean;
   /** Clamp to [MIN,MAX]; `round` also snaps to AMOUNT_STEP (slider/stepper/blur). */
@@ -227,6 +231,8 @@ export function SimulatorProvider({
       amountStepBig: config.simulator.amountStepBig,
       termOptions: rates.termOptions,
       offeredFrequencies: rates.offeredFrequencies,
+      platformFeeRate: rates.platformFeeRate,
+      guaranteeFeeRate: rates.guaranteeFeeRate,
       acceptsPlatform,
       acceptsGuarantee,
       setAmount,

@@ -29,9 +29,11 @@ export interface Simulation {
   isEstimate: boolean;
   adminFeePerPeriod: number; // COP por cuota (plataforma)
   guaranteeFeeTotal: number; // COP total fianza
-  legalInterestAmount: number; // COP interés legal SFC (3.4% simple por mes)
-  platformFeeAmount: number; // COP servicio plataforma (+3.0% opcional)
-  guaranteeFeeAmount: number; // COP servicio fianza (+3.6% opcional)
+  legalInterestAmount: number; // COP interés (tasa mensual simple servida por Core)
+  platformFeeAmount: number; // COP servicio plataforma (opcional)
+  guaranteeFeeAmount: number; // COP servicio fianza (opcional)
+  platformFeeRate: number; // decimal del capital usado para platformFeeAmount
+  guaranteeFeeRate: number; // decimal del capital usado para guaranteeFeeAmount
   acceptsPlatform: boolean;
   acceptsGuarantee: boolean;
   valid: boolean; // false when the amount/term combo isn't offered
@@ -170,6 +172,8 @@ export function calculatePayment(
     legalInterestAmount,
     platformFeeAmount,
     guaranteeFeeAmount,
+    platformFeeRate,
+    guaranteeFeeRate,
     acceptsPlatform,
     acceptsGuarantee,
     valid: validity.ok,

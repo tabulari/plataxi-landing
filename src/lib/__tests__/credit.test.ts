@@ -174,6 +174,30 @@ describe("calculatePayment — tasas dinámicas servidas por Core", () => {
     expect(s.platformFeeAmount).toBe(3000); // 3.0%
     expect(s.guaranteeFeeAmount).toBe(3600); // 3.6%
   });
+
+  it("replay de un snapshot con sus propias tasas reproduce exactamente las cifras mostradas", () => {
+    // El usuario vio y envió una simulación con las tasas de Core en el momento
+    // T1; al volver (T2) las tasas pueden haber cambiado: el replay usa las
+    // tasas congeladas del snapshot, nunca las actuales.
+    const quoted = calculatePayment(500000, 3, "biweekly", 0.026, true, true, 0.025, 0.040);
+    expect(quoted.monthlyRate).toBe(0.026);
+    expect(quoted.platformFeeRate).toBe(0.025);
+    expect(quoted.guaranteeFeeRate).toBe(0.040);
+
+    // "Hoy" las tasas cambiaron en Core (3.4% / 3.0% / 3.6%): el replay del
+    // snapshot ignorará esas y usará las del snapshot (t.monthlyRate, etc.).
+    const replayed = calculatePayment(
+      quoted.amount,
+      quoted.term,
+      quoted.frequency,
+      quoted.monthlyRate,
+      quoted.acceptsPlatform,
+      quoted.acceptsGuarantee,
+      quoted.platformFeeRate,
+      quoted.guaranteeFeeRate,
+    );
+    expect(replayed).toEqual(quoted);
+  });
 });
 
 describe("Matriz de Admisibilidad — isTermDisabled e isFrequencyDisabled", () => {
