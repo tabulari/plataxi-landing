@@ -231,7 +231,7 @@ export function Simulator() {
               </span>
             </span>
             <ApplyButton
-              origin="simulator"
+              origin="resume"
               variant="ghost"
               className="text-xs sm:text-sm font-bold text-navy hover:text-navy underline underline-offset-2 p-0 h-auto shrink-0 bg-transparent hover:bg-transparent shadow-none self-end sm:self-center cursor-pointer focus-visible:ring-1 focus-visible:ring-green"
             >
@@ -246,7 +246,7 @@ export function Simulator() {
           disabled={!liveValidity.ok}
           className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer"
         >
-          {activeSubmission ? 'Ver estado de mi solicitud' : 'Pedir mi crédito'}
+          Pedir mi crédito
         </ApplyButton>
         {activeSubmission && (
           <div className="text-center pt-0.5">

@@ -40,9 +40,10 @@ export function ApplyModal() {
     if (applyOpen) {
       lastFocusedRef.current = document.activeElement as HTMLElement | null;
       let initialFrozen = simRef.current;
+      const shouldResumeSubmitted = applyOrigin === 'resume';
       form.restoreDraft((submittedTerms) => {
         initialFrozen = submittedTerms;
-      });
+      }, shouldResumeSubmitted);
       setFrozen(initialFrozen);
       setMounted(true);
       document.body.style.overflow = 'hidden';

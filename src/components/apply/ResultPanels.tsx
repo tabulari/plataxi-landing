@@ -35,7 +35,6 @@ export function ApplicationSuccess({
   const legalInterest = terms?.legalInterestAmount ?? (terms ? Math.round(terms.amount * 0.034 * terms.term) : 0);
   const platformFee = terms?.platformFeeAmount ?? 0;
   const guaranteeFee = terms?.guaranteeFeeAmount ?? 0;
-  const totalCost = terms?.totalCost ?? (terms ? terms.amount + legalInterest + platformFee + guaranteeFee : 0);
 
   return (
     <section className="flex-1 flex flex-col items-center text-center py-4 sm:py-6 px-1 max-w-lg mx-auto w-full">
@@ -104,10 +103,6 @@ export function ApplicationSuccess({
                 <b className="text-navy">${fmtCOP(guaranteeFee)}</b>
               </div>
             )}
-            <div className="flex justify-between col-span-2 pt-1 border-t border-border font-bold text-navy text-[13px]">
-              <span>Préstamo Total:</span>
-              <span className="text-green-ink">${fmtCOP(totalCost)}</span>
-            </div>
           </div>
 
           {/* Nota de fórmula en rojo (documento base Plataxi) */}

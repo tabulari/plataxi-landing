@@ -289,7 +289,7 @@ export function Nav() {
             })}
             {activeSubmission && (
               <ApplyButton
-                origin="nav"
+                origin="resume"
                 variant="ghost"
                 className={cn(
                   'min-h-[36px] h-9 px-3.5 rounded-full inline-flex items-center gap-2 text-xs font-bold border transition-colors shadow-xs cursor-pointer focus-visible:ring-1 focus-visible:ring-green',
@@ -362,7 +362,7 @@ export function Nav() {
                 {activeSubmission && (
                   <div className="pb-2 border-b border-white/10">
                     <ApplyButton
-                      origin="nav"
+                      origin="resume"
                       variant="ghost"
                       onClick={close}
                       tabIndex={open ? 0 : -1}

@@ -7,7 +7,6 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
   const legalInterest = frozen.legalInterestAmount ?? Math.round(frozen.amount * 0.034 * frozen.term);
   const platformFee = frozen.platformFeeAmount ?? 0;
   const guaranteeFee = frozen.guaranteeFeeAmount ?? 0;
-  const totalCost = frozen.totalCost ?? (frozen.amount + legalInterest + platformFee + guaranteeFee);
 
   return (
     <aside
@@ -61,9 +60,6 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
             <span className="text-white/60">Fianza (3.6%)</span><b>${fmtCOP(guaranteeFee)}</b>
           </li>
         )}
-        <li className="flex justify-between gap-2 pt-1 border-t border-white/10 text-white font-bold">
-          <span>Préstamo Total</span><span className="text-green-bright">${fmtCOP(totalCost)}</span>
-        </li>
       </ul>
 
       {/* Nota de fórmula en rojo (documento base Plataxi) */}
