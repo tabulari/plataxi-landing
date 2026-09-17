@@ -67,7 +67,7 @@ export function SimulationResults({ sim, frequency }: { sim: SimData; frequency:
             <span className="text-base sm:text-lg font-semibold text-muted-2 tracking-normal">{sim.unit}</span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-md pt-0.5">
-            Cuota periódica fija con interés legal del 3.4% mensual.
+            Cuota fija con interés legal del {sim.term === 1 ? '3,4%' : sim.term === 2 ? '6,8%' : '10,2%'} ({sim.term} {sim.term === 1 ? 'mes' : 'meses'}).
           </p>
         </div>
       </div>

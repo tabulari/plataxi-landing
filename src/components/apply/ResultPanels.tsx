@@ -88,7 +88,7 @@ export function ApplicationSuccess({
               <b className="text-navy">{Math.round(terms.nPeriods)} cuotas</b>
             </div>
             <div className="flex justify-between">
-              <span>Interés Legal (3.4%):</span>
+              <span>Interés Legal ({terms.term === 1 ? '3,4%' : terms.term === 2 ? '6,8%' : '10,2%'}):</span>
               <b className="text-navy">${fmtCOP(legalInterest)}</b>
             </div>
             {platformFee > 0 && (

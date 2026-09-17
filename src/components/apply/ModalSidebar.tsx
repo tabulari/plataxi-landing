@@ -48,7 +48,7 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
           <span className="text-white/60">Nº pagos</span><b>{Math.round(frozen.nPeriods)} cuotas</b>
         </li>
         <li className="flex justify-between gap-2">
-          <span className="text-white/60">Interés Legal (3.4% mes)</span><b>${fmtCOP(legalInterest)}</b>
+          <span className="text-white/60">Interés Legal ({frozen.term === 1 ? '3,4%' : frozen.term === 2 ? '6,8%' : '10,2%'})</span><b>${fmtCOP(legalInterest)}</b>
         </li>
         {platformFee > 0 && (
           <li className="flex justify-between gap-2">

@@ -173,7 +173,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
                   <b className="text-navy text-sm font-bold">${fmtCOP(application.amount)}</b>
                 </div>
                 <div className="flex flex-col">
-                  <span>Interés Legal (3.4% mes)</span>
+                  <span>Interés Legal ({application.termMonths === 1 ? '3,4%' : application.termMonths === 2 ? '6,8%' : '10,2%'})</span>
                   <b className="text-navy text-sm font-bold">${fmtCOP(Math.round(application.amount * 0.034 * application.termMonths))}</b>
                 </div>
                 <div className="flex flex-col">
