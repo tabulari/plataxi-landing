@@ -187,9 +187,9 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
               </div>
             </div>
 
-            {/* Nota de fórmula en rojo (documento base Plataxi) */}
-            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3.5 text-xs text-red-700">
-              <p className="font-semibold mb-0.5">Fórmula de liquidación aplicada:</p>
+            {/* Nota de fórmula en gris neutral (documento base Plataxi) */}
+            <div className="rounded-xl border border-border bg-muted/40 p-3.5 text-xs text-muted-foreground">
+              <p className="font-semibold mb-0.5 text-foreground">Fórmula de liquidación aplicada:</p>
               <p className="font-mono text-[11px] leading-relaxed">
                 (nota: capital + % de plazo + plataforma + fianza = cuota dividida en día semana quincena o mes)
               </p>
