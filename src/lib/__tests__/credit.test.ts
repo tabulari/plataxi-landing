@@ -46,35 +46,38 @@ describe("calculatePayment — Plataxi Document Formulas", () => {
   });
 
   describe("Caso 2: Rango $200.000 a $250.000 (1 o 2 meses, Diario o Semanal)", () => {
-    it("$200.000 a 2 meses diario con servicios (Total 226.800, Cuota 7.560)", () => {
+    it("$200.000 a 2 meses diario con servicios (Total 226.800, N=60, Cuota 3.780)", () => {
       // Interés 2m: 6.8% = 13.600
       // Plataforma: 3.0% = 6.000
       // Fianza: 3.6% = 7.200
-      // Total = 226.800, Cuota /30 = 7.560
+      // Total = 226.800, N = T × 30 = 60, Cuota = 3.780
       const s = calculatePayment(200000, 2, "daily", 0.034, true, true);
       expect(s.totalCost).toBe(226800);
-      expect(s.payment).toBe(7560);
+      expect(s.nPeriods).toBe(60);
+      expect(s.payment).toBe(3780);
       expect(s.valid).toBe(true);
     });
 
-    it("$200.000 a 2 meses semanal con servicios (Total 226.800, Cuota /4 = 56.700)", () => {
+    it("$200.000 a 2 meses semanal con servicios (Total 226.800, N=8, Cuota 28.350)", () => {
       const s = calculatePayment(200000, 2, "weekly", 0.034, true, true);
       expect(s.totalCost).toBe(226800);
-      expect(s.payment).toBe(56700);
+      expect(s.nPeriods).toBe(8);
+      expect(s.payment).toBe(28350);
       expect(s.unit).toBe("/semana");
       expect(s.valid).toBe(true);
     });
   });
 
   describe("Caso 3: Rango $300.000 a $600.000 (1, 2 o 3 meses, Diario, Semanal o Quincenal)", () => {
-    it("$500.000 a 3 meses quincenal con servicios (Total 584.000, Cuota /2 = 292.000)", () => {
+    it("$500.000 a 3 meses quincenal con servicios (Total 584.000, N=6, Cuota 97.333)", () => {
       // Interés 3m: 10.2% = 51.000
       // Plataforma: 3.0% = 15.000
       // Fianza: 3.6% = 18.000
-      // Total = 584.000, Cuota /2 = 292.000
+      // Total = 584.000, N = T × 2 = 6, Cuota = 97.333
       const s = calculatePayment(500000, 3, "biweekly", 0.034, true, true);
       expect(s.totalCost).toBe(584000);
-      expect(s.payment).toBe(292000);
+      expect(s.nPeriods).toBe(6);
+      expect(s.payment).toBe(97333);
       expect(s.unit).toBe("/quincena");
       expect(s.valid).toBe(true);
     });
@@ -97,43 +100,46 @@ describe("calculatePayment — Plataxi Document Formulas", () => {
   describe("Validación exhaustiva de las Dos Fórmulas y los Divisores", () => {
     // Ejemplo canónico con $500.000 a 3 meses (10.2% interés = 51.000)
     // 1. Fórmula Base: Capital (500k) + Interés (51k) = 551.000
-    // Divisores: Diario /30 = 18.367, Semanal /4 = 137.750, Quincenal /2 = 275.500, Mensual /1 = 551.000
-    it("Fórmula Base: $500.000 a 3 meses en todas las frecuencias (/30, /4, /2, /1)", () => {
+    // N = T × divisor: Diario 90, Semanal 12, Quincenal 6, Mensual 3
+    it("Fórmula Base: $500.000 a 3 meses en todas las frecuencias (/90, /12, /6, /3)", () => {
       const daily = calculatePayment(500000, 3, "daily", 0.034, false, false);
       expect(daily.totalCost).toBe(551000);
-      expect(daily.payment).toBe(18367); // 551.000 / 30
+      expect(daily.nPeriods).toBe(90);
+      expect(daily.payment).toBe(6122); // 551.000 / 90
 
       const weekly = calculatePayment(500000, 3, "weekly", 0.034, false, false);
       expect(weekly.totalCost).toBe(551000);
-      expect(weekly.payment).toBe(137750); // 551.000 / 4
+      expect(weekly.nPeriods).toBe(12);
+      expect(weekly.payment).toBe(45917); // 551.000 / 12
 
       const biweekly = calculatePayment(500000, 3, "biweekly", 0.034, false, false);
       expect(biweekly.totalCost).toBe(551000);
-      expect(biweekly.payment).toBe(275500); // 551.000 / 2
+      expect(biweekly.nPeriods).toBe(6);
+      expect(biweekly.payment).toBe(91833); // 551.000 / 6
 
       const monthly = calculatePayment(500000, 3, "monthly", 0.034, false, false);
       expect(monthly.totalCost).toBe(551000);
-      expect(monthly.payment).toBe(551000); // 551.000 / 1
+      expect(monthly.nPeriods).toBe(3);
+      expect(monthly.payment).toBe(183667); // 551.000 / 3
     });
 
     // 2. Con Servicios Opcionales: Capital (500k) + Interés (51k) + Plat (15k) + Fianza (18k) = 584.000
-    // Divisores: Diario /30 = 19.467, Semanal /4 = 146.000, Quincenal /2 = 292.000, Mensual /1 = 584.000
-    it("Fórmula Con Servicios: $500.000 a 3 meses en todas las frecuencias (/30, /4, /2, /1)", () => {
+    it("Fórmula Con Servicios: $500.000 a 3 meses en todas las frecuencias (/90, /12, /6, /3)", () => {
       const daily = calculatePayment(500000, 3, "daily", 0.034, true, true);
       expect(daily.totalCost).toBe(584000);
-      expect(daily.payment).toBe(19467); // 584.000 / 30
+      expect(daily.payment).toBe(6489); // 584.000 / 90
 
       const weekly = calculatePayment(500000, 3, "weekly", 0.034, true, true);
       expect(weekly.totalCost).toBe(584000);
-      expect(weekly.payment).toBe(146000); // 584.000 / 4
+      expect(weekly.payment).toBe(48667); // 584.000 / 12
 
       const biweekly = calculatePayment(500000, 3, "biweekly", 0.034, true, true);
       expect(biweekly.totalCost).toBe(584000);
-      expect(biweekly.payment).toBe(292000); // 584.000 / 2
+      expect(biweekly.payment).toBe(97333); // 584.000 / 6
 
       const monthly = calculatePayment(500000, 3, "monthly", 0.034, true, true);
       expect(monthly.totalCost).toBe(584000);
-      expect(monthly.payment).toBe(584000); // 584.000 / 1
+      expect(monthly.payment).toBe(194667); // 584.000 / 3
     });
 
     it("Tasas acumuladas por plazo: 1m=3.4%, 2m=6.8%, 3m=10.2%", () => {

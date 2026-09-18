@@ -129,23 +129,21 @@ export function calculatePayment(
   const platformFeeAmount = acceptsPlatform ? Math.round(amount * platformFeeRate) : 0;
   const guaranteeFeeAmount = acceptsGuarantee ? Math.round(amount * guaranteeFeeRate) : 0;
 
-  // Fórmula literal: capital + % de plazo + plataforma + fianza = cuota dividida en día, semana, quincena o mes
+  // Fórmula literal: capital + % de plazo + plataforma + fianza = total,
+  // dividido en N cuotas según forma de pago y plazo (DOMAIN-011 §4.2: N = T × divisor).
   const totalCost = amount + legalInterestAmount + platformFeeAmount + guaranteeFeeAmount;
 
-  // Divisores de tecla:
-  // 1) La tecla DIARIO divide en 30
-  // 2) La tecla SEMANAL divide en 4
-  // 3) La tecla QUINCENAL divide en 2
-  // 4) La tecla mensual deja todo igual (divide en 1)
-  const divisor =
+  // Cuotas por mes según la tecla (DOMAIN-011 §4.2):
+  // Diario 30 · Semanal 4 · Quincenal 2 · Mensual 1 — multiplicadas por el plazo T.
+  const periodsPerMonth =
     frequency === "daily" ? 30
     : frequency === "weekly" ? 4
     : frequency === "biweekly" ? 2
     : 1;
 
-  const payment = Math.round(totalCost / divisor);
-  const nPeriods = divisor;
-  const periodRate = termInterestPct / divisor;
+  const nPeriods = periodsPerMonth * termMonths;
+  const payment = Math.round(totalCost / nPeriods);
+  const periodRate = termInterestPct / nPeriods;
   const ea = Math.pow(1 + monthlyRate, 12) - 1;
   const validity = validateApplication(amount, termMonths, frequency);
 
