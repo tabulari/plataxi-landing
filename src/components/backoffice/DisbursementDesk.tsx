@@ -168,7 +168,7 @@ export function DisbursementDesk({
                 type="text"
                 placeholder="Ej. Transferencia ACH aprobada Lote #9012"
                 value={operatorNote}
-                onChange={(e) => setOperatorNote(e.target.value)}
+                onChange={(e) => setOperatorNote(e.target.value.replace(/^\s+/, '').replace(/\s{2,}/g, ' '))}
                 className="w-full h-10 px-3 text-xs rounded-lg border border-border outline-none focus:ring-2 focus:ring-ring/20"
               />
             </div>

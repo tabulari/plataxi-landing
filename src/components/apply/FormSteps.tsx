@@ -89,16 +89,30 @@ export function Step1({ values, handlers }: {
   frozen: { amount: number; term: number; payment: number; unit: string };
 }) {
   const formatCedula = (val: string) => {
-    const d = val.replace(/\D/g, '');
+    const d = val.replace(/\D/g, '').slice(0, 10);
     if (!d) return '';
     return fmtCOP(parseInt(d, 10));
   };
 
   const formatPhone = (val: string) => {
-    const d = val.replace(/\D/g, '').slice(0, 10);
+    const d = val.replace(/\D/g, '').replace(/^[^3]+/, '').slice(0, 10);
     if (d.length <= 3) return d;
     if (d.length <= 6) return `${d.slice(0, 3)} ${d.slice(3)}`;
     return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
+  };
+
+  const formatName = (val: string) => {
+    return val
+      .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s'-]/g, '')
+      .replace(/^\s+/, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/([^\W_]+[^\s-]*) */g, (txt) => {
+        return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
+      });
+  };
+
+  const formatEmail = (val: string) => {
+    return val.toLowerCase().replace(/\s/g, '');
   };
 
   return (
@@ -123,6 +137,7 @@ export function Step1({ values, handlers }: {
           placeholder: 'Ej. Laura Martínez',
           value: values.fullName,
           className: 'h-[52px] text-[15px] font-medium',
+          onChange: (e) => handlers.onFieldChange('fullName', formatName(e.target.value)),
           required: true,
         })}
       </div>
@@ -163,6 +178,7 @@ export function Step1({ values, handlers }: {
             enterKeyHint: 'next',
             placeholder: 'Ej. Carlos Martínez',
             value: values.contactName,
+            onChange: (e) => handlers.onFieldChange('contactName', formatName(e.target.value)),
             required: true,
           })}
           {fieldEl('contactPhone', 'Teléfono de contacto', handlers, {
@@ -185,6 +201,7 @@ export function Step1({ values, handlers }: {
         enterKeyHint: 'next',
         placeholder: 'tucorreo@ejemplo.com',
         value: values.email,
+        onChange: (e) => handlers.onFieldChange('email', formatEmail(e.target.value)),
         required: true,
       })}
     </section>
@@ -201,7 +218,7 @@ export function Step2({
   handlers: FieldHandlers;
 }) {
   const formatIncome = (val: string) => {
-    const d = val.replace(/\D/g, '');
+    const d = val.replace(/\D/g, '').slice(0, 10);
     if (!d) return '';
     return fmtCOP(parseInt(d, 10));
   };

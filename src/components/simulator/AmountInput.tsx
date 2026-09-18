@@ -38,7 +38,7 @@ export function AmountInput({
     // Allow typing on desktop, keep slider/buttons as primary on coarse pointer
     if (window.matchMedia('(pointer: coarse)').matches) return;
     markInteract('amount');
-    const digits = e.target.value.replace(/\D/g, '');
+    const digits = e.target.value.replace(/\D/g, '').slice(0, 9);
     if (!digits) {
       setInputText('');
       setHint(`Ingresa un monto entre $${fmtCOP(amountMin)} y $${fmtCOP(amountMax)}.`);

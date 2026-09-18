@@ -47,7 +47,7 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const v = e.target.value;
+    const v = e.target.value.replace(/\s{2,}/g, ' ');
     setQuery(v);
     setHighlighted(-1);
     if (!v) onChange('');
