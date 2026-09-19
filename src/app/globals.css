@@ -520,14 +520,6 @@ a:focus-visible {
   flex-shrink: 0;
 }
 
-/* ===== payment number flash ===== */
-@keyframes flash {
-  0%   { opacity: 1; }
-  30%  { opacity: 0.4; }
-  60%  { opacity: 1; }
-}
-.flash { animation: flash 0.28s ease-out; }
-
 /* ===== footer texture & animations ===== */
 .footer-texture {
   background-color: #161615;

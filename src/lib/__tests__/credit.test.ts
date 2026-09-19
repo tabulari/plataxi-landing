@@ -221,28 +221,59 @@ describe("Matriz de Admisibilidad — isTermDisabled e isFrequencyDisabled", () 
     expect(isTermDisabled(500000, 3)).toBe(false);
   });
 
-  it("todas las frecuencias ofrecidas están habilitadas sin deshabilitar ningún botón", () => {
-    // Para cualquier monto, diaria, semanal, quincenal y mensual están habilitadas
-    for (const amount of [100000, 200000, 500000, 800000]) {
-      expect(isFrequencyDisabled(amount, "daily")).toBe(false);
-      expect(isFrequencyDisabled(amount, "weekly")).toBe(false);
-      expect(isFrequencyDisabled(amount, "biweekly")).toBe(false);
-      expect(isFrequencyDisabled(amount, "monthly")).toBe(false);
+  it("forma de pago restringida por monto (matriz VENTANA)", () => {
+    // 100k–150k: solo Diario
+    expect(isFrequencyDisabled(100000, "daily")).toBe(false);
+    expect(isFrequencyDisabled(100000, "weekly")).toBe(true);
+    expect(isFrequencyDisabled(100000, "biweekly")).toBe(true);
+    expect(isFrequencyDisabled(100000, "monthly")).toBe(true);
+    expect(isFrequencyDisabled(150000, "daily")).toBe(false);
+    expect(isFrequencyDisabled(150000, "weekly")).toBe(true);
+
+    // 151k–299k: Diario o Semanal
+    expect(isFrequencyDisabled(200000, "daily")).toBe(false);
+    expect(isFrequencyDisabled(200000, "weekly")).toBe(false);
+    expect(isFrequencyDisabled(200000, "biweekly")).toBe(true);
+    expect(isFrequencyDisabled(200000, "monthly")).toBe(true);
+    expect(isFrequencyDisabled(250000, "weekly")).toBe(false);
+    expect(isFrequencyDisabled(250000, "biweekly")).toBe(true);
+
+    // 300k–599k: Diario, Semanal o Quincenal (mensual bloqueado)
+    expect(isFrequencyDisabled(300000, "daily")).toBe(false);
+    expect(isFrequencyDisabled(300000, "weekly")).toBe(false);
+    expect(isFrequencyDisabled(300000, "biweekly")).toBe(false);
+    expect(isFrequencyDisabled(300000, "monthly")).toBe(true);
+    expect(isFrequencyDisabled(500000, "monthly")).toBe(true);
+
+    // 600k–1M: incluye Mensual
+    expect(isFrequencyDisabled(600000, "monthly")).toBe(false);
+    expect(isFrequencyDisabled(800000, "monthly")).toBe(false);
+    expect(isFrequencyDisabled(1000000, "daily")).toBe(false);
+    expect(isFrequencyDisabled(1000000, "monthly")).toBe(false);
+
+    // Bimestral/Trimestral siempre deshabilitadas
+    for (const amount of [100000, 300000, 800000]) {
+      expect(isFrequencyDisabled(amount, "bimonthly")).toBe(true);
+      expect(isFrequencyDisabled(amount, "quarterly")).toBe(true);
     }
-    // Únicamente las frecuencias no ofrecidas están deshabilitadas
-    expect(isFrequencyDisabled(500000, "bimonthly")).toBe(true);
-    expect(isFrequencyDisabled(500000, "quarterly")).toBe(true);
   });
 });
 
 describe("validateApplication — guidance messages", () => {
   it("valida combinaciones correctas de monto, plazo y frecuencia", () => {
     expect(validateApplication(100000, 1, "daily").ok).toBe(true);
-    expect(validateApplication(100000, 1, "monthly").ok).toBe(true);
     expect(validateApplication(200000, 2, "weekly").ok).toBe(true);
     expect(validateApplication(500000, 3, "biweekly").ok).toBe(true);
-    expect(validateApplication(500000, 3, "monthly").ok).toBe(true);
     expect(validateApplication(800000, 1, "monthly").ok).toBe(true);
+    expect(validateApplication(600000, 3, "monthly").ok).toBe(true);
+  });
+
+  it("rechaza forma de pago no disponible según el monto", () => {
+    expect(validateApplication(100000, 1, "weekly").ok).toBe(false);
+    expect(validateApplication(100000, 1, "monthly").ok).toBe(false);
+    expect(validateApplication(200000, 1, "biweekly").ok).toBe(false);
+    expect(validateApplication(500000, 1, "monthly").ok).toBe(false);
+    expect(validateApplication(500000, 1, "monthly").message).toContain("600.000");
   });
 
   it("rechaza plazos no disponibles según el monto", () => {

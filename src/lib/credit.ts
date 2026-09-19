@@ -63,12 +63,26 @@ export function getDisabledTerms(amount: number, termOptions: number[]): number[
 }
 
 /**
- * Forma de pago en frecuencia de pago debe estar normal sin deshabilitar ningún botón.
- * Todas las frecuencias ofrecidas (daily, weekly, biweekly, monthly) están siempre habilitadas.
+ * Matriz VENTANA: forma de pago restringida por monto (ver legal/[doc]/page.tsx:96-123).
+ * - Hasta $150.000: solo Diario
+ * - $150.001 – $299.999: Diario o Semanal
+ * - $300.000 – $599.999: Diario, Semanal o Quincenal
+ * - $600.000 – $1.000.000: Diario, Semanal, Quincenal o Mensual
+ * Bimestral/Trimestral siempre deshabilitadas (estimadas, no ofrecidas).
  */
 export function isFrequencyDisabled(amount: number, frequency: Frequency): boolean {
   if (frequency === "bimonthly" || frequency === "quarterly") return true;
+  if (amount <= 150000) return frequency !== "daily";
+  if (amount < 300000) return frequency !== "daily" && frequency !== "weekly";
+  if (amount < 600000) return frequency !== "daily" && frequency !== "weekly" && frequency !== "biweekly";
   return false;
+}
+
+export function getAllowedFrequencies(amount: number): Frequency[] {
+  if (amount <= 150000) return ["daily"];
+  if (amount < 300000) return ["daily", "weekly"];
+  if (amount < 600000) return ["daily", "weekly", "biweekly"];
+  return ["daily", "weekly", "biweekly", "monthly"];
 }
 
 /**
@@ -100,6 +114,15 @@ export function validateApplication(
   }
 
   if (isFrequencyDisabled(amount, frequency)) {
+    if (amount <= 150000) {
+      return { ok: false, message: "Para montos de hasta $150.000 solo está disponible la forma de pago diaria." };
+    }
+    if (amount < 300000) {
+      return { ok: false, message: "Para montos inferiores a $300.000 solo están disponibles las formas de pago diaria y semanal." };
+    }
+    if (amount < 600000) {
+      return { ok: false, message: "Para montos inferiores a $600.000 la forma de pago mensual no está disponible." };
+    }
     return {
       ok: false,
       message: "La forma de pago seleccionada no está disponible.",

@@ -1,7 +1,7 @@
 'use client';
 
 import { fmtCOP } from '@/lib/credit';
-import { clampAmount, clampRoundAmount } from '../simulator-store';
+import { clampRoundAmount } from '../simulator-store';
 import { MinusIcon, PlusIcon } from '../icons';
 import { FieldError } from '../FieldError';
 import { cn } from '@/lib/utils';
@@ -10,7 +10,6 @@ export function AmountInput({
   amount,
   amountMin,
   amountMax,
-  amountStep,
   amountStepBig,
   setAmount,
   inputText,
@@ -23,7 +22,7 @@ export function AmountInput({
   amount: number;
   amountMin: number;
   amountMax: number;
-  amountStep: number;
+  amountStep?: number;
   amountStepBig: number;
   setAmount: (v: number, round?: boolean) => void;
   inputText: string;
@@ -33,39 +32,6 @@ export function AmountInput({
   inputRef: React.RefObject<HTMLInputElement | null>;
   markInteract: (control: string) => void;
 }) {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Allow typing on desktop, keep slider/buttons as primary on coarse pointer
-    if (window.matchMedia('(pointer: coarse)').matches) return;
-    markInteract('amount');
-    const digits = e.target.value.replace(/\D/g, '').slice(0, 9);
-    if (!digits) {
-      setInputText('');
-      setHint(`Ingresa un monto entre $${fmtCOP(amountMin)} y $${fmtCOP(amountMax)}.`);
-      return;
-    }
-    const raw = parseInt(digits, 10);
-    setInputText(fmtCOP(raw));
-    if (raw > amountMax) {
-      setHint(`El monto máximo es $${fmtCOP(amountMax)}.`);
-      return;
-    }
-    if (raw < amountMin) {
-      setHint(`El monto mínimo es $${fmtCOP(amountMin)}.`);
-      return;
-    }
-    setHint('');
-    setAmount(clampAmount(raw, amountMin, amountMax), false);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleInputBlur = () => {
-    setHint('');
-    const v = clampRoundAmount(amount || amountMin, amountMin, amountMax, amountStep);
-    setAmount(v, true);
-    setInputText(fmtCOP(v));
-  };
-
   const handleSliderChange = (e: React.FormEvent<HTMLInputElement>) => {
     markInteract('slider');
     setHint('');
@@ -98,13 +64,13 @@ export function AmountInput({
           </label>
         </div>
 
-        <div className="field-shell flex items-center gap-1 sm:gap-3 bg-white rounded-xl p-1.5 sm:p-2 border border-border transition-[border-color,box-shadow]">
+        <div className="field-shell flex items-center gap-2 sm:gap-3 bg-white rounded-[12px] p-1.5 sm:p-2 border border-border transition-[border-color,box-shadow]">
           <button
             type="button"
             aria-label="Disminuir monto"
             onClick={() => bump(-1)}
             disabled={amount <= amountMin}
-            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
+            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
           >
             <MinusIcon size={18} />
           </button>
@@ -130,7 +96,7 @@ export function AmountInput({
             aria-label="Aumentar monto"
             onClick={() => bump(1)}
             disabled={amount >= amountMax}
-            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green"
+            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
           >
             <PlusIcon size={18} />
           </button>
@@ -151,7 +117,7 @@ export function AmountInput({
       <div className="space-y-2.5">
         <div className="relative w-full h-12 flex items-center">
           <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 bg-border rounded-full overflow-hidden pointer-events-none" aria-hidden="true">
-            <div className="h-full bg-green rounded-full transition-[width] duration-75 ease-out" style={{ width: `${pct}%` }} />
+            <div className="h-full bg-green rounded-full origin-left transition-[transform] duration-75 ease-out" style={{ transform: `scaleX(${pct / 100})` }} />
           </div>
           <input
             type="range"

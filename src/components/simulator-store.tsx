@@ -11,6 +11,8 @@ import {
 } from "react";
 import {
   calculatePayment,
+  getAllowedFrequencies,
+  isFrequencyDisabled,
   type Frequency,
   type Simulation,
 } from "@/lib/credit";
@@ -110,6 +112,15 @@ export function SimulatorProvider({
     return rates.termOptions.includes(d) ? d : rates.termOptions[0];
   });
   const [frequency, setFrequency] = useState<Frequency>(() => {
+    const allowed = getAllowedFrequencies(
+      clampRoundAmount(
+        config.simulator.defaultAmount,
+        config.simulator.amountMin,
+        config.simulator.amountMax,
+        config.simulator.amountStep,
+      ),
+    ).filter((f) => (rates.offeredFrequencies as string[]).includes(f)) as Frequency[];
+    if (allowed.length > 0) return allowed[0];
     const preferred = "monthly";
     return (rates.offeredFrequencies as string[]).includes(preferred)
       ? preferred
@@ -119,22 +130,44 @@ export function SimulatorProvider({
   const [acceptsPlatform, setAcceptsPlatform] = useState(true);
   const [acceptsGuarantee, setAcceptsGuarantee] = useState(true);
 
-  // Auto-corrige la frecuencia si ya no está en la lista ofrecida
+  // Settle the amount before deriving sim and before snap (debounce to avoid mid-drag jank)
+  const [settledAmount, setSettledAmount] = useState(() =>
+    clampRoundAmount(
+      config.simulator.defaultAmount,
+      rates.amountMin,
+      rates.amountMax,
+      config.simulator.amountStep,
+    ),
+  );
+  useEffect(() => {
+    const t = setTimeout(() => setSettledAmount(amount), 150);
+    return () => clearTimeout(t);
+  }, [amount]);
+
+  // Auto-corrige la frecuencia si ya no está en la lista ofrecida o pasa a ser no permitida por monto (usa settledAmount para no saltar mid-drag)
   useEffect(() => {
     if (!rates.offeredFrequencies.includes(frequency)) {
       setFrequency((rates.offeredFrequencies[0] as Frequency) ?? "monthly");
       return;
     }
-  }, [rates.offeredFrequencies, frequency]);
+    if (isFrequencyDisabled(settledAmount, frequency)) {
+      const allowed = getAllowedFrequencies(settledAmount).filter((f) =>
+        (rates.offeredFrequencies as string[]).includes(f),
+      ) as Frequency[];
+      if (allowed.length > 0 && !allowed.includes(frequency)) {
+        setFrequency(allowed[0]);
+      }
+    }
+  }, [rates.offeredFrequencies, settledAmount, frequency]);
 
-  // Auto-corrige el plazo cuando el monto entra en rangos con plazos restringidos
+  // Auto-corrige el plazo cuando el monto entra en rangos con plazos restringidos (usa settledAmount)
   useEffect(() => {
-    if (amount <= 150000 && term > 1) {
+    if (settledAmount <= 150000 && term > 1) {
       setTerm(1);
-    } else if (amount < 300000 && term > 2) {
+    } else if (settledAmount < 300000 && term > 2) {
       setTerm(2);
     }
-  }, [amount, term]);
+  }, [settledAmount, term]);
 
   const setAmount = useCallback(
     (value: number, round = true) => {
@@ -176,24 +209,6 @@ export function SimulatorProvider({
       active = false;
     };
   }, [initialRates]);
-
-  // Settle the amount before deriving sim. Dragging the slider fires every ~15ms;
-  // rendering every change (~90/sec) reads as an odometer not a calculation.
-  // Debounce to a calm settled value used for all downstream displays (payment,
-  // total cost, validity, sticky bar, etc.) — keeps them all consistent and
-  // responsive, not rolling.
-  const [settledAmount, setSettledAmount] = useState(() =>
-    clampRoundAmount(
-      config.simulator.defaultAmount,
-      rates.amountMin,
-      rates.amountMax,
-      config.simulator.amountStep,
-    ),
-  );
-  useEffect(() => {
-    const t = setTimeout(() => setSettledAmount(amount), 150);
-    return () => clearTimeout(t);
-  }, [amount]);
 
   const sim = useMemo(
     () =>

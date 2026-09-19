@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { fmtCOP, validateApplication, isTermDisabled, type Frequency } from '@/lib/credit';
+import { fmtCOP, validateApplication, isTermDisabled, isFrequencyDisabled, type Frequency } from '@/lib/credit';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
 import { ApplyButton } from './ApplyButton';
@@ -41,11 +41,17 @@ export function Simulator() {
 
   const frequencies = useMemo(
     () =>
-      ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)).map((f) => ({
-        ...f,
-        disabled: false,
-      })),
-    [offeredFrequencies],
+      ALL_FREQUENCIES.filter((f) => offeredFrequencies.includes(f.value)).map((f) => {
+        const disabled = isFrequencyDisabled(amount, f.value);
+        let title: string | undefined;
+        if (disabled) {
+          if (amount <= 150000) title = 'Solo pago diario disponible hasta $150.000';
+          else if (amount < 300000) title = 'Disponible: diario o semanal';
+          else if (amount < 600000) title = 'Mensual disponible desde $600.000';
+        }
+        return { ...f, disabled, title };
+      }),
+    [offeredFrequencies, amount],
   );
 
   const terms = useMemo(
@@ -84,8 +90,9 @@ export function Simulator() {
   const [snapAnnouncement, setSnapAnnouncement] = useState('');
   const activeSubmission = useActiveSubmission();
 
-  // Anuncio accesible cuando el plazo hace auto-snap por cambio de monto
+  // Anuncio accesible cuando el plazo o forma de pago hacen auto-snap por cambio de monto
   const prevTermRef = useRef(term);
+  const prevFrequencyRef = useRef(frequency);
   useEffect(() => {
     if (prevTermRef.current !== term) {
       const msg = `Plazo ajustado a ${term} ${term === 1 ? 'mes' : 'meses'}`;
@@ -96,6 +103,17 @@ export function Simulator() {
     }
     prevTermRef.current = term;
   }, [term]);
+  useEffect(() => {
+    if (prevFrequencyRef.current !== frequency) {
+      const labels: Record<string, string> = { daily: 'diaria', weekly: 'semanal', biweekly: 'quincenal', monthly: 'mensual' };
+      const msg = `Forma de pago ajustada a ${labels[frequency] ?? frequency}`;
+      setSnapAnnouncement(msg);
+      const t = setTimeout(() => setSnapAnnouncement(''), 3000);
+      prevFrequencyRef.current = frequency;
+      return () => clearTimeout(t);
+    }
+    prevFrequencyRef.current = frequency;
+  }, [frequency]);
 
   // 1. Sync inputText cuando amount cambia externamente (clamp de rates, auto-snap de plazo)
   // No pisa mientras el usuario está tipeando (input enfocado)
@@ -188,11 +206,12 @@ export function Simulator() {
             value: f.value,
             label: f.estimate ? `${f.label} *` : f.label,
             disabled: f.disabled,
+            title: (f as { title?: string }).title,
           }))}
           value={frequency}
           onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
         />
-        <p id="freqHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]">
+        <p id="freqHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]" aria-live="polite">
           {frequencies.find((f) => f.value === frequency)?.estimate
             ? '* Cuota estimada. El cargo definitivo se confirmará en la oferta.'
             : 'Las opciones con * son estimadas.'}
@@ -212,7 +231,7 @@ export function Simulator() {
           message={liveValidity.ok ? '' : liveValidity.message}
           reserveSpace={false}
           iconSize={15}
-          className={cn('text-sm transition-all', liveValidity.ok ? 'h-0 overflow-hidden' : 'h-auto mb-2')}
+          className={cn('text-sm transition-[opacity,transform] duration-150 ease-out', liveValidity.ok ? 'h-0 overflow-hidden opacity-0' : 'h-auto mb-2 opacity-100')}
           role={liveValidity.ok ? undefined : 'alert'}
           aria-live="polite"
           aria-hidden={liveValidity.ok ? true : undefined}
