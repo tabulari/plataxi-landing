@@ -26,6 +26,7 @@ export default function ActiveCreditPage() {
     paidInstallments: 3,
     totalInstallments: 12,
     monthlyRatePct: '2.6% m.v.',
+    unit: '/mes',
   });
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function ActiveCreditPage() {
         currentBalance: Math.round((sub.terms?.amount || 500000) * 0.75),
         nextPaymentAmount: sub.terms?.payment || prev.nextPaymentAmount,
         totalInstallments: sub.terms?.term || prev.totalInstallments,
+        unit: sub.terms?.unit || prev.unit,
       }));
     }
   }, []);
@@ -113,7 +115,7 @@ export default function ActiveCreditPage() {
             <div className="space-y-1 md:border-l md:border-white/15 md:pl-6">
               <span className="text-xs font-bold uppercase tracking-wider text-white/70">Próxima Cuota</span>
               <div className="text-2xl sm:text-3xl font-bold tabular-nums text-green-bright">
-                ${fmtCOP(credit.nextPaymentAmount)} <span className="text-xs font-normal text-white">/mes</span>
+                ${fmtCOP(credit.nextPaymentAmount)} <span className="text-xs font-normal text-white">{credit.unit}</span>
               </div>
               <p className="text-xs text-white/80 font-medium flex items-center gap-1.5">
                 <CalendarIcon size={14} className="text-green-bright" />

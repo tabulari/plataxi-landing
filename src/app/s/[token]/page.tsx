@@ -266,6 +266,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
         monthlyPayment={application.monthlyPayment}
         borrowerName={application.borrowerName}
         borrowerId={application.borrowerId}
+        documentNumber={application.radicado}
       />
     </div>
   );

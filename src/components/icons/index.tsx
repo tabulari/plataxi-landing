@@ -46,27 +46,6 @@ export function LockIcon({ size = 20, className }: IconProps) {
   );
 }
 
-export function LockKeyholeIcon({ size = 24, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <circle cx="12" cy="16" r="1" />
-      <rect width="18" height="12" x="3" y="10" rx="2" />
-      <path d="M7 10V7a5 5 0 0 1 10 0v3" />
-    </svg>
-  );
-}
-
 export function CalendarIcon({ size = 16, className }: IconProps) {
   return (
     <svg
@@ -107,26 +86,6 @@ export function ClockIcon({ size = 16, className }: IconProps) {
   );
 }
 
-export function HelpIcon({ size = 16, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <circle cx="12" cy="12" r="10" />
-      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-      <line x1="12" y1="17" x2="12.01" y2="17" />
-    </svg>
-  );
-}
 
 export function CheckIcon({ size = 18, className }: IconProps) {
   return (
@@ -202,26 +161,6 @@ export function LightningIcon({ size = 14, className }: IconProps) {
   );
 }
 
-export function HomeIcon({ size = 16, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
-    </svg>
-  );
-}
-
 export function DocumentIcon({ size = 20, className }: IconProps) {
   return (
     <svg
@@ -245,26 +184,6 @@ export function DocumentIcon({ size = 20, className }: IconProps) {
   );
 }
 
-export function DocumentCheckIcon({ size = 20, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-      <polyline points="14 2 14 8 20 8" />
-      <path d="m9 15 2 2 4-4" />
-    </svg>
-  );
-}
 
 export function SearchCheckIcon({ size = 20, className }: IconProps) {
   return (
@@ -361,26 +280,6 @@ export function HamburgerIcon({ size = 24, className }: IconProps) {
   );
 }
 
-export function PersonIcon({ size = 20, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
-
 export function IdCardIcon({ size = 20, className }: IconProps) {
   return (
     <svg
@@ -473,53 +372,6 @@ export function DocUploadIcon({ size = 22, className }: IconProps) {
   );
 }
 
-export function RefreshCheckIcon({ size = 22, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-      <path d="M3 3v5h5" />
-      <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16" />
-      <path d="M16 21h5v-5" />
-      <polyline points="9 12 11 14 15 10" />
-    </svg>
-  );
-}
-
-export function BankIcon({ size = 22, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <line x1="3" y1="22" x2="21" y2="22" />
-      <line x1="6" y1="18" x2="6" y2="11" />
-      <line x1="10" y1="18" x2="10" y2="11" />
-      <line x1="14" y1="18" x2="14" y2="11" />
-      <line x1="18" y1="18" x2="18" y2="11" />
-      <polygon points="12 2 20 7 4 7 12 2" />
-    </svg>
-  );
-}
-
 export function AlertCircleIcon({ size = 36, className }: IconProps) {
   return (
     <svg
@@ -592,49 +444,6 @@ export function WhatsAppIcon({ size = 20, className }: IconProps) {
       className={className}
     >
       <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm0 18.15c-1.49 0-2.95-.4-4.22-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.16 8.16 0 0 1-1.25-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.23 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-2-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.12-.15.17-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.43.06-.66.31-.22.25-.86.84-.86 2.05 0 1.21.88 2.38 1 2.55.12.17 1.74 2.66 4.22 3.73.59.25 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.07-.1-.23-.17-.48-.29z" />
-    </svg>
-  );
-}
-
-export function SparklesIcon({ size = 20, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" />
-      <path d="M5 3v4" />
-      <path d="M19 17v4" />
-      <path d="M3 5h4" />
-      <path d="M17 19h4" />
-    </svg>
-  );
-}
-
-export function UserIcon({ size = 20, className }: IconProps) {
-  return (
-    <svg
-      aria-hidden="true"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
     </svg>
   );
 }
@@ -778,87 +587,6 @@ export function PlataxiWordmark({
   );
 }
 
-export function BrandLogo({
-  height = 32,
-  className,
-  style,
-  monochrome = false,
-  variant = 'default',
-}: {
-  height?: number;
-  className?: string;
-  style?: React.CSSProperties;
-  monochrome?: boolean;
-  variant?: 'default' | 'footer';
-}) {
-  const onDark = variant === 'footer';
-  const textColor = monochrome ? 'currentColor' : onDark ? '#ffffff' : '#111110';
-  const markBg = monochrome ? 'transparent' : BRAND.yellow;
-  const markFg = monochrome ? 'currentColor' : '#111110';
-  const markSize = Math.round(height);
-
-  return (
-    <span
-      className={className}
-      aria-hidden="true"
-      style={{ display: 'inline-flex', alignItems: 'center', gap: Math.round(height * 0.3), ...style }}
-    >
-      <span
-        style={{
-          width: markSize,
-          height: markSize,
-          borderRadius: Math.round(height * 0.28),
-          background: markBg,
-          color: markFg,
-          border: monochrome ? '2px solid currentColor' : 'none',
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: Math.round(height * 0.16),
-        }}
-      >
-        <svg
-          viewBox="0 0 370 200"
-          width="100%"
-          height="100%"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <polygon points="97,0 273,0 317,77 53,77" fill={markFg} />
-          <polygon points="0,98 62,98 95,148 28,148" fill={markFg} />
-          <polygon points="308,98 370,98 342,148 275,148" fill={markFg} />
-          <polygon points="95,148 275,148 242,198 128,198" fill={markFg} />
-        </svg>
-      </span>
-      <span
-        style={{
-          fontFamily: "var(--font-jakarta), 'Montserrat', 'Roboto', 'Arial Black', sans-serif",
-          fontWeight: 900,
-          fontSize: Math.round(height * 0.72),
-          letterSpacing: '0.02em',
-          color: textColor,
-          lineHeight: 1,
-        }}
-      >
-        PLATAXI
-      </span>
-    </span>
-  );
-}
-
-/**
- * Plataxi brand mark — yellow squircle badge with the faceted taxi isotype.
- *
- * The badge is a superellipse (|x/a|^5 + |y/b|^5 = 1), not a rect with a corner
- * radius: a rounded rect changes curvature abruptly where the arc meets the
- * straight edge, while a superellipse is continuous, which is what reads as an
- * app icon. Geometry is kept byte-identical to public/plataxi-icon.svg so the
- * inline component and the standalone asset cannot drift.
- *
- * The isotype polygons are unchanged from the original mark — only scaled and
- * centred at 70% of badge width (the mark is 1.85:1, so it needs more width
- * than a tall glyph to carry the same optical weight).
- */
 export function PlataxiLogo({ size = 48, className }: IconProps) {
   return (
     <svg

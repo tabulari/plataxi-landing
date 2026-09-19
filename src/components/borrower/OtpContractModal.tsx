@@ -14,6 +14,7 @@ interface OtpContractModalProps {
   monthlyPayment: number;
   borrowerName: string;
   borrowerId: string;
+  documentNumber: string;
 }
 
 export function OtpContractModal({
@@ -25,6 +26,7 @@ export function OtpContractModal({
   monthlyPayment,
   borrowerName,
   borrowerId,
+  documentNumber,
 }: OtpContractModalProps) {
   const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
   const [timer, setTimer] = useState<number>(60);
@@ -149,7 +151,7 @@ export function OtpContractModal({
           {/* Promissory note excerpt legal box */}
           <div className="bg-bg-soft border border-border rounded-xl p-4 text-xs text-muted-foreground leading-relaxed max-h-40 overflow-y-auto space-y-2">
             <p className="font-semibold text-navy">
-              PAGARÉ NÚMERO CR-{new Date().getFullYear()}-009182
+              PAGARÉ NÚMERO {documentNumber}
             </p>
             <p>
               Por medio del presente instrumento, el suscrito <strong>{borrowerName}</strong> identificado con C.C. <strong>{borrowerId}</strong> declara que debe y pagará incondicionalmente a la orden de <strong>{config.company.legalName}</strong> la suma de <strong>${fmtCOP(amount)} COP</strong> más los intereses corrientes estipulados conforme a la reglamentación de la Superintendencia Financiera de Colombia.
