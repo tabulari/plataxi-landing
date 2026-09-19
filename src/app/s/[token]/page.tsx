@@ -195,13 +195,6 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
               </p>
             </div>
 
-            {/* Términos fijos (legal verbatim en terminos §5) */}
-            <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3.5 text-xs text-amber-900 flex items-start gap-2.5">
-              <p className="leading-relaxed">
-                <strong className="font-semibold">Al tomar el crédito:</strong> ni el plazo ni la forma de pago se pueden cambiar. Ver detalle en Términos y Condiciones §5.
-              </p>
-            </div>
-
             <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"

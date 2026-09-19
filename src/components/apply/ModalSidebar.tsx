@@ -68,11 +68,6 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
         )}
       </ul>
 
-      {/* Plain-language terms note (legal verbatim lives in terminos §5) */}
-      <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] text-white/80 leading-snug max-[760px]:hidden">
-        <b className="font-semibold text-white">Al tomar el crédito:</b> ni el plazo ni la forma de pago se pueden cambiar.
-      </div>
-
       <p className="text-[11px] text-white/50 mt-auto pt-3 max-[760px]:hidden">
         {frozen.isEstimate
           ? 'Cuota estimada. Cargo definitivo se confirma en la oferta.'
