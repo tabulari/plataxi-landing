@@ -406,7 +406,7 @@ export function Nav() {
                         <span className="w-2 h-2 rounded-full bg-green animate-pulse shrink-0" aria-hidden="true" />
                         <span className="truncate overflow-wrap break-words min-w-0">Tu solicitud: <b className="font-bold tabular-nums whitespace-nowrap">{activeSubmission.radicado}</b></span>
                       </span>
-                      <span className="text-sm font-bold underline underline-offset-2 decoration-from-font shrink-0 whitespace-nowrap">Ver estado de la solicitud&nbsp;→</span>
+                      <span className="text-sm font-bold underline underline-offset-2 decoration-from-font shrink-0 whitespace-nowrap">Ver estado de la solicitud</span>
                     </ApplyButton>
                   </div>
                 )}

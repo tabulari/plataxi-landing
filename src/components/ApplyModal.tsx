@@ -173,9 +173,6 @@ export function ApplyModal() {
                         {form.submitStatus === 'success' || isClickable ? '✓' : i}
                       </span>
                       <span className={cn('whitespace-nowrap text-[10px] sm:text-xs flex items-center gap-0.5', isCurrent ? 'font-bold text-navy' : isClickable ? 'font-bold text-navy group-hover:underline' : 'font-medium')}>
-                        {isClickable && !isCurrent && (
-                          <span aria-hidden="true" className="font-bold text-ink leading-none">←</span>
-                        )}
                         <span className="sm:hidden">{stepLabel.short}</span>
                         <span className="hidden sm:inline">{stepLabel.long}</span>
                       </span>
