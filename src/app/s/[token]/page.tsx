@@ -108,7 +108,6 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
                 className="px-6 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-navy-ink transition-colors flex items-center gap-2 focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span>Avanzar a Evaluación de Crédito</span>
-                <span aria-hidden="true">→</span>
               </button>
             </div>
           </div>
@@ -251,7 +250,6 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
                 className="inline-flex items-center gap-2 px-8 py-3 rounded-xl bg-navy text-white text-sm font-extrabold hover:bg-navy-ink transition-colors shadow-md focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span>Ir a Mi Crédito y Plan de Pagos</span>
-                <span aria-hidden="true">→</span>
               </a>
             </div>
           </div>
