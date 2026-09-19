@@ -76,7 +76,7 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
       <p className="text-[11px] text-white/50 mt-auto pt-3 max-[760px]:hidden">
         {frozen.isEstimate
           ? 'Cuota estimada. Cargo definitivo se confirma en la oferta.'
-          : 'Sujeto a verificación. No representa aprobación definitiva.'}
+          : 'Sujeto a verificación. La aprobación se confirma en la oferta.'}
       </p>
     </aside>
   );
