@@ -188,7 +188,7 @@ export function Simulator() {
       </div>
 
       <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {snapAnnouncement}
+        {snapAnnouncement} {debouncedSr}
       </div>
 
       {/* Payment Frequency / Forma de pago Selector */}
@@ -218,10 +218,6 @@ export function Simulator() {
               ? 'Las opciones con * son estimadas.'
               : '\u00A0'}
         </p>
-      </div>
-
-      <div aria-live="polite" aria-atomic="true" className="sr-only">
-        {debouncedSr}
       </div>
 
       {/* Distilled Fintech Results Card - sim usa settledAmount para cuota estable, pero validación es instantánea */}

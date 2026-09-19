@@ -34,7 +34,7 @@ const BENEFITS: Benefit[] = [
     id: 'no-fees',
     Icon: ShieldCheckIcon,
     title: 'Cero cobros previos',
-    body: 'No pagas pólizas, seguros ocultos ni adelantos. Cero trampas.',
+    body: 'No pagas pólizas, seguros ocultos ni adelantos.',
   },
   {
     id: 'flexible',

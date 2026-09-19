@@ -16,7 +16,7 @@ interface TriageCardProps {
 
 function TriageCard({ label, count, icon, tone, onClick }: TriageCardProps) {
   const tones = {
-    critical: 'bg-red-50 border-red-300 text-red-900',
+    critical: 'bg-[#c0253b]/10 border-[#c0253b]/40 text-[#c0253b]',
     warning: 'bg-amber-50 border-amber-300 text-amber-900',
     info: 'bg-blue-50 border-blue-300 text-blue-900',
   } as const;
@@ -60,7 +60,7 @@ export function TriageBanner({ metrics, onSelectFilter }: { metrics: TriageMetri
           label="SLA Expirados"
           count={critical}
           tone="critical"
-          icon={<ClockIcon size={18} className="text-red-700" />}
+          icon={<ClockIcon size={18} className="text-[#c0253b]" />}
           onClick={onSelectFilter}
         />
         <TriageCard

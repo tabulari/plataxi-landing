@@ -34,7 +34,7 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
         aria-invalid={handlers.errors[name] ? true : undefined}
         aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
         className={cn(
-          'h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+          'h-11 min-h-[44px] w-full rounded-xl border border-border bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           className,
         )}
         {...rest}
@@ -406,7 +406,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
                 <strong className="text-navy font-semibold">3. Seguridad y Confidencialidad:</strong> Toda la información viaja cifrada con estándares bancarios (TLS 1.3 / AES-256) y no es compartida con terceros no autorizados.
               </p>
               <p>
-                <strong className="text-navy font-semibold">4. Derechos del Titular:</strong> Usted tiene derecho a conocer, actualizar, rectificar y solicitar la supresión de sus datos personales a través de nuestros canales oficiales de atención.
+                <strong className="text-navy font-semibold">4. Tus derechos:</strong> Tienes derecho a conocer, actualizar, rectificar y solicitar la supresión de sus datos personales escribiéndonos por WhatsApp.
               </p>
             </div>
 

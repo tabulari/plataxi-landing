@@ -146,7 +146,7 @@ export default function ActiveCreditPage() {
             <div className="space-y-3 pt-1">
               <div className="p-3.5 rounded-xl border border-border bg-bg-soft flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-pink-100 text-pink-700 flex items-center justify-center font-bold text-xs">
+                  <div className="w-9 h-9 rounded-lg bg-primary-brand/20 text-primary-dark flex items-center justify-center font-bold text-xs">
                     N
                   </div>
                   <div>
@@ -161,7 +161,7 @@ export default function ActiveCreditPage() {
 
               <div className="p-3.5 rounded-xl border border-border bg-bg-soft flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-bold text-xs">
+                  <div className="w-9 h-9 rounded-lg bg-primary-brand/20 text-primary-dark flex items-center justify-center font-bold text-xs">
                     D
                   </div>
                   <div>
@@ -176,7 +176,7 @@ export default function ActiveCreditPage() {
 
               <div className="p-3.5 rounded-xl border border-border bg-bg-soft flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                  <div className="w-9 h-9 rounded-lg bg-primary-brand/20 text-primary-dark flex items-center justify-center font-bold text-xs">
                     PSE
                   </div>
                   <div>

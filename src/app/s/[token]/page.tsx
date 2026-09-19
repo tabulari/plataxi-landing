@@ -115,8 +115,8 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
 
         {stage === 3 && (
           <div className="bg-white border border-border rounded-xl p-6 shadow-sm text-center space-y-4">
-            <div className="w-14 h-14 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
-              <span className="btn-spinner border-blue-600 border-t-transparent w-7 h-7 border-3" />
+            <div className="w-14 h-14 rounded-full bg-primary-brand/20 text-primary-dark flex items-center justify-center mx-auto">
+              <span className="btn-spinner border-primary-brand border-t-transparent w-7 h-7 border-3" />
             </div>
             <h3 className="text-lg font-extrabold text-navy">Evaluación de Crédito en Curso</h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">

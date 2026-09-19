@@ -7,7 +7,6 @@ import { StructuredData } from "@/components/StructuredData";
 import { SiteUiProvider } from "@/components/site-ui";
 import { SimulatorProvider } from "@/components/simulator-store";
 import { getInitialRates, type RuntimeRatesConfig } from "@/lib/rates-config";
-import { RevealController } from "@/components/RevealController";
 import { GsapProvider } from "@/components/GsapProvider";
 import "./globals.css";
 
@@ -60,8 +59,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: OG_TITLE,
-    description:
-      "Respuesta en minutos. Tasa clara. Sin papeles. Simula y solicita 100% en línea.",
+    description: DESCRIPTION,
     images: ["/og-image.webp", "/og-image.png"],
   },
   icons: {
@@ -107,14 +105,6 @@ export default async function RootLayout({
   return (
     <html lang="es" className={`${jakarta.variable} ${display.variable}`} suppressHydrationWarning>
       <body>
-        {/* Set the JS flag before paint so `.reveal` content is never stranded
-            hidden without JS (matches the prototype's inline head script). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: "document.documentElement.classList.add('js')",
-          }}
-        />
-
         <StructuredData rates={initialRates} />
 
         <a className="skip-link" href="#main">
@@ -143,8 +133,6 @@ export default async function RootLayout({
             </SimulatorProvider>
           </GsapProvider>
         </SiteUiProvider>
-
-        <RevealController />
 
         {config.gtmId && (
           <>

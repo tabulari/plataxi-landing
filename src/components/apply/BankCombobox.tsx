@@ -147,7 +147,7 @@ export function BankCombobox({ value, onChange, onBlur, error }: Props) {
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
           className={cn(
-            'h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white pl-3.5 pr-9 text-sm text-foreground outline-none transition-[border-color,box-shadow,transform] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]',
+            'h-11 min-h-[44px] w-full rounded-xl border border-border bg-white pl-3.5 pr-9 text-sm text-foreground outline-none transition-[border-color,box-shadow,transform] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]',
             value && !isOpen && 'font-medium',
           )}
         />

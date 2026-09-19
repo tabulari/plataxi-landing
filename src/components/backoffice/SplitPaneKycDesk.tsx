@@ -46,7 +46,7 @@ export function SplitPaneKycDesk({
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Compara la información declarada por el usuario con la extracción OCR y el documento escaneado.
+            Compara los datos declarados con la extracción OCR y el documento escaneado.
           </p>
         </div>
 
@@ -54,7 +54,7 @@ export function SplitPaneKycDesk({
           <button
             type="button"
             onClick={() => setShowRejectForm(!showRejectForm)}
-            className="px-4 py-2 rounded-xl bg-red-100 text-red-800 border border-red-300 text-xs font-bold hover:bg-red-200 transition-colors"
+            className="px-4 py-2 rounded-xl bg-[#c0253b]/10 text-[#c0253b] border border-[#c0253b]/40 text-xs font-bold hover:bg-red-200 transition-colors"
           >
             Observación / Rechazar
           </button>
@@ -70,7 +70,7 @@ export function SplitPaneKycDesk({
       </div>
 
       {showRejectForm && (
-        <div className="p-4 rounded-xl bg-red-50 border border-red-200 space-y-3">
+        <div className="p-4 rounded-xl bg-[#c0253b]/5 border border-[#c0253b]/30 space-y-3">
           <label className="block text-xs font-bold text-red-900">
             Motivo de observación o rechazo (se notificará al usuario en su espacio digital):
           </label>
@@ -96,7 +96,7 @@ export function SplitPaneKycDesk({
                 onReject(rejectionNote);
                 setShowRejectForm(false);
               }}
-              className="px-4 py-1.5 text-xs font-bold rounded-lg bg-red-700 text-white hover:bg-red-800 disabled:opacity-50"
+              className="px-4 py-1.5 text-xs font-bold rounded-lg bg-[#c0253b] text-white hover:bg-[#c0253b]/90 disabled:opacity-50"
             >
               Confirmar Rechazo
             </button>

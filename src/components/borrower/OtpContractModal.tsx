@@ -187,7 +187,7 @@ export function OtpContractModal({
             </div>
 
             {errorMsg && (
-              <p role="alert" className="text-xs font-semibold text-red-600">
+              <p role="alert" className="text-xs font-semibold text-destructive">
                 {errorMsg}
               </p>
             )}

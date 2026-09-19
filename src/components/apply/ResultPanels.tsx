@@ -41,7 +41,7 @@ export function ApplicationSuccess({
       <div className="w-14 h-14 rounded-full bg-green flex items-center justify-center mb-3 shadow-md animate-[popIn_0.4s_cubic-bezier(0.2,1.4,0.4,1)] motion-reduce:animate-none">
         <CheckIcon size={32} className="text-ink" />
       </div>
-      <h2 className="text-xl sm:text-2xl font-extrabold text-navy">¡Solicitud en evaluación!</h2>
+      <h2 className="text-xl sm:text-2xl font-extrabold text-navy">Solicitud en evaluación</h2>
       <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-[420px]">
         {workspaceUrl
           ? 'Recibimos tu solicitud. Puedes hacer seguimiento en tiempo real desde tu espacio digital.'
