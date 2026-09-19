@@ -119,18 +119,17 @@ export function Step1({ values, handlers }: {
     <section className="flex-1 flex flex-col gap-5">
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 1 de 3</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 1: Datos personales y de contacto">
-          Cuéntanos de ti
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight">
+          Tus datos
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
           <ShieldCheckIcon size={14} aria-hidden="true" className="text-green-ink shrink-0" />
           Tus datos viajan cifrados. Solo los usamos para tu crédito.
         </p>
-        <p className="text-xs text-muted-foreground mt-2"><span className="text-destructive">*</span> Campos requeridos</p>
       </div>
 
       <div className="flex flex-col gap-4">
-        {fieldEl('fullName', 'Tu nombre completo', handlers, {
+        {fieldEl('fullName', 'Nombre completo', handlers, {
           type: 'text',
           autoComplete: 'name',
           enterKeyHint: 'next',
@@ -154,7 +153,7 @@ export function Step1({ values, handlers }: {
           onChange: (e) => handlers.onFieldChange('idNumber', formatCedula(e.target.value)),
           required: true,
         })}
-        {fieldEl('phone', 'Tu número principal', handlers, {
+        {fieldEl('phone', 'Teléfono principal', handlers, {
           type: 'tel',
           inputMode: 'numeric',
           autoComplete: 'tel',
@@ -169,10 +168,10 @@ export function Step1({ values, handlers }: {
       {/* Contacto secundario — obligatorio */}
       <div className="flex flex-col gap-2">
         <span className="text-sm font-semibold text-foreground">
-          Contacto secundario (familiar o conocido)<Req />
+          Contacto secundario (familiar o conocido)
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {fieldEl('contactName', 'Nombre de contacto', handlers, {
+          {fieldEl('contactName', 'Nombre', handlers, {
             type: 'text',
             autoComplete: 'off',
             enterKeyHint: 'next',
@@ -181,7 +180,7 @@ export function Step1({ values, handlers }: {
             onChange: (e) => handlers.onFieldChange('contactName', formatName(e.target.value)),
             required: true,
           })}
-          {fieldEl('contactPhone', 'Teléfono de contacto', handlers, {
+          {fieldEl('contactPhone', 'Teléfono', handlers, {
             type: 'tel',
             inputMode: 'numeric',
             autoComplete: 'tel',
@@ -230,12 +229,11 @@ export function Step2({
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tus ingresos">
           Tus ingresos
         </h2>
-        <p className="text-xs text-muted-foreground mt-2"><span className="text-destructive">*</span> Campos requeridos</p>
       </div>
 
       {toggleGroup(
         'incomeType',
-        'Ganas por día o por mes*',
+        'Ganas por día o por mes',
         [{ value: 'daily', label: 'Diario' }, { value: 'monthly', label: 'Mensual' }],
         values.incomeType,
         handlers,
@@ -243,7 +241,7 @@ export function Step2({
         true,
       )}
 
-      {fieldEl('income', values.incomeType === 'daily' ? '¿Cuánto ganas al día?' : '¿Cuánto ganas al mes? (aprox)', handlers, {
+      {fieldEl('income', values.incomeType === 'daily' ? 'Ingreso al día' : 'Ingreso al mes (aprox)', handlers, {
         type: 'text',
         inputMode: 'numeric',
         enterKeyHint: 'done',
@@ -255,7 +253,7 @@ export function Step2({
 
       {toggleGroup(
         'hasBank',
-        'Tienes cuenta bancaria*',
+        'Tienes cuenta bancaria',
         [{ value: 'yes', label: 'Sí' }, { value: 'no', label: 'No' }],
         values.hasBank,
         handlers,
