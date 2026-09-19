@@ -216,20 +216,16 @@ export function Nav() {
     const isDark = !scrolled;
 
     return (
-      <>
-        <a href="#simula" className="skip-link">
-          Saltar al simulador
-        </a>
-        <header
-          id="top"
-          className={cn(
-            'fixed top-0 left-0 right-0 z-50 motion-safe:transition-colors motion-safe:duration-300',
+      <header
+        id="top"
+        className={cn(
+          'fixed top-0 left-0 right-0 z-50 motion-safe:transition-colors motion-safe:duration-300',
           open
             ? isDark
               ? 'bg-primary-dark border-b border-white/10'
-              : 'bg-background border-b border-border/60'
+              : 'bg-background/95 backdrop-blur-md border-b border-border/60'
             : scrolled
-            ? 'bg-background border-b border-border/60 shadow-none'
+            ? 'bg-background/85 backdrop-blur-md border-b border-border/60 shadow-none'
             : 'bg-transparent border-b border-transparent shadow-none',
         )}
       >
@@ -432,6 +428,5 @@ export function Nav() {
           </FocusScope.Root>
         </nav>
       </header>
-      </>
   );
 }
