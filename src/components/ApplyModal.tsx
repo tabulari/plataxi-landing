@@ -21,7 +21,6 @@ export function ApplyModal() {
   const [mounted, setMounted] = useState(false);
   const [show, setShow] = useState(false);
   const [frozen, setFrozen] = useState<typeof sim | null>(null);
-  const [liveMsg, setLiveMsg] = useState('');
 
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -60,11 +59,6 @@ export function ApplyModal() {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [applyOpen]);
-
-  useEffect(() => {
-    if (mounted && form.submitStatus !== 'success' && form.submitStatus !== 'error')
-      setLiveMsg(`Paso ${form.step} de 3: ${STEP_TITLES[form.step]}`);
-  }, [form.step, mounted, form.submitStatus]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -130,8 +124,7 @@ export function ApplyModal() {
           'max-[760px]:flex-col max-[760px]:h-auto max-[760px]:max-h-[95vh]',
         )}
       >
-        <h2 id="applyTitle" className="sr-only">Solicitud de credito</h2>
-        <p className="sr-only" aria-live="polite">{liveMsg}</p>
+        <h2 id="applyTitle" className="sr-only">Solicitud de crédito</h2>
 
         <ModalSidebar frozen={frozen} />
 
@@ -159,21 +152,21 @@ export function ApplyModal() {
                       aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado — clic para volver)' : ' (incompleto)'}`}
                       onClick={() => { if (isClickable) form.setStep(i); }}
                       className={cn(
-                        'flex items-center gap-1 sm:gap-1.5 min-h-[30px] sm:min-h-[36px] py-0.5 px-1.5 sm:py-1 sm:px-2.5 rounded-lg transition-all outline-none focus-visible:ring-2 focus-visible:ring-amber-500',
+                        'flex items-center gap-1 sm:gap-1.5 min-h-[44px] sm:min-h-[36px] py-0.5 px-1.5 sm:py-1 sm:px-2.5 rounded-lg transition-[background-color,border-color,color,box-shadow] duration-150 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring',
                         stepDot(i),
-                        isClickable && !isCurrent && 'bg-amber-100/80 border border-amber-300/90 hover:bg-amber-200/90 text-navy cursor-pointer shadow-2xs active:scale-95 group',
+                        isClickable && !isCurrent && 'bg-green/10 border border-green/30 hover:bg-green/20 text-navy cursor-pointer shadow-2xs active:scale-95 group',
                         !isClickable && !isCurrent && 'cursor-default opacity-60',
                       )}
                     >
                       <span
                         className={cn(
-                          'flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full text-[10px] sm:text-xs font-bold transition-all shrink-0 p-0.5',
+                          'flex items-center justify-center w-6 h-6 sm:w-8 sm:h-8 rounded-full text-[10px] sm:text-xs font-bold transition-[background-color,box-shadow,transform] duration-150 ease-out shrink-0 p-0.5',
                           form.submitStatus === 'success'
-                            ? 'bg-amber-400 text-navy font-black ring-2 ring-amber-400/80 shadow-xs'
+                            ? 'bg-green text-ink font-black ring-2 ring-green/80 shadow-xs'
                             : isCurrent
-                            ? 'bg-amber-400 text-navy font-black ring-2 ring-amber-400 shadow-sm scale-105'
+                            ? 'bg-green text-ink font-black ring-2 ring-green shadow-sm scale-105'
                             : isClickable
-                            ? 'bg-amber-400 text-navy font-bold ring-2 ring-amber-400/80 shadow-xs group-hover:scale-105 group-hover:bg-amber-300'
+                            ? 'bg-green text-ink font-bold ring-2 ring-green/80 shadow-xs group-hover:scale-105 group-hover:bg-green-bright'
                             : 'bg-muted text-muted-2 ring-1 ring-inset ring-border',
                         )}
                       >
@@ -181,7 +174,7 @@ export function ApplyModal() {
                       </span>
                       <span className={cn('whitespace-nowrap text-[10px] sm:text-xs flex items-center gap-0.5', isCurrent ? 'font-bold text-navy' : isClickable ? 'font-bold text-navy group-hover:underline' : 'font-medium')}>
                         {isClickable && !isCurrent && (
-                          <span aria-hidden="true" className="font-bold text-amber-900 leading-none">←</span>
+                          <span aria-hidden="true" className="font-bold text-ink leading-none">←</span>
                         )}
                         <span className="sm:hidden">{stepLabel.short}</span>
                         <span className="hidden sm:inline">{stepLabel.long}</span>
@@ -189,13 +182,13 @@ export function ApplyModal() {
                     </button>
 
                     {i < 3 && (
-                      <div
-                        aria-hidden="true"
-                        className={cn(
-                          'w-1.5 sm:w-4 mx-0.5 shrink transition-colors',
-                          i < form.step ? 'h-[2px] bg-amber-400' : 'h-px bg-border',
-                        )}
-                      />
+            <div
+              aria-hidden="true"
+              className={cn(
+                'w-1.5 sm:w-4 mx-0.5 shrink transition-colors',
+                i < form.step ? 'h-[2px] bg-green' : 'h-px bg-border',
+              )}
+            />
                     )}
                   </li>
                 );
@@ -207,7 +200,7 @@ export function ApplyModal() {
                 type="button"
                 aria-label="Cerrar"
                 onClick={closeApply}
-                className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] rounded-lg bg-muted/60 text-muted-foreground hover:bg-muted hover:text-navy transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 shrink-0 mr-1"
+                className="flex items-center justify-center w-11 h-11 min-w-[44px] min-h-[44px] rounded-lg bg-muted/60 text-muted-foreground hover:bg-muted hover:text-navy transition-[background-color,color] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 shrink-0 mr-1"
               >
                 <CloseIcon size={16} />
               </button>
@@ -216,9 +209,10 @@ export function ApplyModal() {
             {/* Dynamic progress bar — always visible below step labels */}
             <div className="h-1 bg-muted overflow-hidden" aria-hidden="true">
               <div
-                className="h-full bg-amber-400 transition-[width] duration-500 ease-out"
+                className="h-full bg-green transition-[transform] duration-500 ease-out origin-left"
                 style={{
-                  width: `${(form.submitStatus === 'success' ? 3 : form.step) * (100 / 3)}%`,
+                  transform: `scaleX(${(form.submitStatus === 'success' ? 3 : form.step) / 3})`,
+                  width: '100%',
                 }}
               />
             </div>
@@ -318,7 +312,7 @@ export function ApplyModal() {
                 size="block"
                 disabled={form.submitStatus === 'pending' || !form.isStepComplete}
                 onClick={() => form.onNext(frozen)}
-                className="w-full bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40 min-h-[46px] text-sm sm:text-base font-bold shadow-xs hover:shadow-md transition-all active:scale-[0.98]"
+                className="w-full bg-green text-ink hover:bg-green-bright border-0 disabled:opacity-40 min-h-[46px] text-sm sm:text-base font-bold shadow-xs hover:shadow-md transition-[background-color,box-shadow,transform,opacity] duration-150 ease-out active:scale-[0.98]"
               >
                 {form.submitStatus === 'pending' ? (<><span className="btn-spinner" aria-hidden="true" /> Enviando…</>)
                   : form.step === 3 ? (<>Enviar solicitud <span aria-hidden="true">→</span></>)

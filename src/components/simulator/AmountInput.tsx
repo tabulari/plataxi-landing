@@ -76,7 +76,7 @@ export function AmountInput({
           </button>
 
           <div className="flex items-center gap-1 sm:gap-1.5 flex-1 min-w-0 justify-center sm:justify-start px-1 sm:px-2">
-            <span className="text-xl sm:text-3xl font-extrabold text-navy leading-none select-none shrink-0">$</span>
+            <span aria-hidden="true" className="text-xl sm:text-3xl font-extrabold text-navy leading-none shrink-0">$</span>
             <input
               id="amount-input"
               ref={inputRef}
@@ -85,9 +85,9 @@ export function AmountInput({
               inputMode="none"
               readOnly
               value={inputText}
-              aria-label="Monto solicitado"
+              aria-label="Monto solicitado (ajusta con los botones o el deslizador)"
               aria-describedby={hint ? 'amountHint' : undefined}
-              className="w-full min-w-0 h-12 min-h-[48px] text-xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight cursor-default select-none"
+              className="w-full min-w-0 h-12 min-h-[48px] text-xl sm:text-3xl font-extrabold text-navy outline-none bg-transparent tabular-nums tracking-tight cursor-default"
             />
           </div>
 
@@ -132,7 +132,7 @@ export function AmountInput({
             aria-valuetext={`$${fmtCOP(amount)}`}
             onChange={handleSliderChange}
             onInput={handleSliderChange}
-            className="relative w-full h-12 min-h-[48px] appearance-none bg-transparent cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2 rounded-full touch-pan-y [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[2.5px] [&::-webkit-slider-thumb]:border-green [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-webkit-slider-thumb]:cursor-pointer motion-safe:[&::-webkit-slider-thumb]:hover:scale-110 motion-safe:[&::-webkit-slider-thumb]:active:scale-125 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-track]:h-2 [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-[2.5px] [&::-moz-range-thumb]:border-green [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(0,0,0,0.18)] [&::-moz-range-thumb]:cursor-pointer motion-safe:[&::-moz-range-thumb]:hover:scale-110 motion-safe:[&::-moz-range-thumb]:active:scale-125 [&::-moz-range-thumb]:transition-transform"
+            className="relative w-full h-12 min-h-[48px] appearance-none bg-transparent cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-full touch-pan-y [&::-webkit-slider-runnable-track]:h-2 [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-[2.5px] [&::-webkit-slider-thumb]:border-green [&::-webkit-slider-thumb]:shadow-[0_2px_8px_rgba(17,17,16,0.18)] [&::-webkit-slider-thumb]:cursor-pointer motion-safe:[&::-webkit-slider-thumb]:hover:scale-110 motion-safe:[&::-webkit-slider-thumb]:active:scale-125 [&::-webkit-slider-thumb]:transition-transform [&::-moz-range-track]:h-2 [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:border-[2.5px] [&::-moz-range-thumb]:border-green [&::-moz-range-thumb]:shadow-[0_2px_8px_rgba(17,17,16,0.18)] [&::-moz-range-thumb]:cursor-pointer motion-safe:[&::-moz-range-thumb]:hover:scale-110 motion-safe:[&::-moz-range-thumb]:active:scale-125 [&::-moz-range-thumb]:transition-transform"
           />
         </div>
         <div className="flex justify-between text-xs text-muted-2 tabular-nums px-1">

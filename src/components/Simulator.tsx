@@ -130,7 +130,7 @@ export function Simulator() {
     track('sim_interact', { control });
   };
 
-  const srText = `Cuota estimada: $${fmtCOP(sim.payment)} ${sim.unit}. Monto: $${fmtCOP(sim.amount)}, plazo: ${sim.term} meses.`;
+  const srText = `Cuota estimada: $${fmtCOP(sim.payment)} ${sim.unit}. Monto: $${fmtCOP(sim.amount)}, plazo: ${sim.term} ${sim.term === 1 ? 'mes' : 'meses'}.`;
   const [debouncedSr, setDebouncedSr] = useState(srText);
   useEffect(() => {
     const id = setTimeout(() => setDebouncedSr(srText), 150);
@@ -180,9 +180,9 @@ export function Simulator() {
         />
         <p id="plazoHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]" aria-live="polite">
           {amount <= 150000
-            ? 'Para montos de hasta $150.000 el plazo disponible es de 1 mes'
+            ? 'Plazo disponible: 1 mes'
             : amount < 300000
-              ? 'Para montos inferiores a $300.000 el plazo máximo es de 2 meses'
+              ? 'Plazo disponible: hasta 2 meses'
               : '\u00A0'}
         </p>
       </div>
@@ -213,8 +213,10 @@ export function Simulator() {
         />
         <p id="freqHint" className="text-xs text-muted-foreground mt-1.5 min-h-[18px]" aria-live="polite">
           {frequencies.find((f) => f.value === frequency)?.estimate
-            ? '* Cuota estimada. El cargo definitivo se confirmará en la oferta.'
-            : 'Las opciones con * son estimadas.'}
+            ? '* Cuota estimada. El cargo definitivo se confirma en la oferta.'
+            : frequencies.some((f) => f.estimate)
+              ? 'Las opciones con * son estimadas.'
+              : '\u00A0'}
         </p>
       </div>
 
@@ -228,6 +230,7 @@ export function Simulator() {
       {/* Action CTA & Single Quiet Trust Line */}
       <div className="pt-2 space-y-2.5">
         <FieldError
+          id="simulator-error"
           message={liveValidity.ok ? '' : liveValidity.message}
           reserveSpace={false}
           iconSize={15}
@@ -244,7 +247,7 @@ export function Simulator() {
           >
             <span className="flex items-center gap-2 min-w-0">
               <span className="w-2.5 h-2.5 rounded-full bg-green shrink-0 animate-pulse" aria-hidden="true" />
-              <span className="truncate">
+              <span className="min-w-0 break-words">
                 Tu solicitud está en evaluación (Radicado:{' '}
                 <b className="font-bold tabular-nums">{activeSubmission.radicado}</b>)
               </span>
@@ -252,9 +255,9 @@ export function Simulator() {
             <ApplyButton
               origin="resume"
               variant="ghost"
-              className="text-xs sm:text-sm font-bold text-navy hover:text-navy underline underline-offset-2 p-0 h-auto shrink-0 bg-transparent hover:bg-transparent shadow-none self-end sm:self-center cursor-pointer focus-visible:ring-1 focus-visible:ring-green"
+              className="text-sm font-bold text-navy hover:text-navy underline underline-offset-2 min-h-[44px] px-2 -my-1 flex items-center shrink-0 bg-transparent hover:bg-transparent shadow-none self-end sm:self-center cursor-pointer focus-visible:ring-2 focus-visible:ring-green"
             >
-              Ver estado →
+              Ver estado
             </ApplyButton>
           </div>
         )}
@@ -262,8 +265,8 @@ export function Simulator() {
           origin="simulator"
           variant="default"
           size="block"
-          disabled={!liveValidity.ok}
-          className="w-full min-h-[52px] h-[52px] bg-green text-ink hover:bg-green-bright disabled:opacity-40 shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer"
+          aria-describedby={liveValidity.ok ? undefined : 'simulator-error'}
+          className="w-full min-h-[52px] py-3 bg-green text-ink hover:bg-green-bright shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer"
         >
           Pedir mi crédito
         </ApplyButton>
@@ -275,9 +278,9 @@ export function Simulator() {
                 clearSubmittedApplication();
                 clearDraft();
               }}
-              className="text-xs text-muted-foreground hover:text-navy underline underline-offset-4 cursor-pointer py-1 transition-colors"
+              className="text-xs text-muted-foreground hover:text-navy underline underline-offset-4 cursor-pointer min-h-[44px] px-2 -my-1 inline-flex items-center transition-colors"
             >
-              ¿Deseas simular otra cuota? Iniciar nueva solicitud
+              Iniciar nueva solicitud
             </button>
           </div>
         )}

@@ -15,7 +15,7 @@ const HEADER_OFFSET = 80;
 const LINKS = [
   { href: '#simula', label: 'Simular cuota' },
   { href: '#beneficios', label: 'Beneficios' },
-  { href: '#preguntas', label: 'Preguntas' },
+  { href: '#preguntas', label: 'Preguntas frecuentes' },
 ];
 
 const SECTION_IDS = LINKS.map((l) => l.href.slice(1));
@@ -39,11 +39,13 @@ export function Nav() {
 
   const handleNavClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (!href.startsWith('#')) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
     const el = document.querySelector(href) as HTMLElement | null;
     if (el) {
       e.preventDefault();
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const y = el.getBoundingClientRect().top + window.pageYOffset - HEADER_OFFSET;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
       history.pushState(null, '', href);
       // 12. Mueve foco a la sección destino para lectores de pantalla (no al toggle)
       setOpen(false);
@@ -73,6 +75,33 @@ export function Nav() {
     document.addEventListener('keydown', onKey);
     return () => document.removeEventListener('keydown', onKey);
   }, [open, close]);
+
+  // Inert background for AT when menu open (HIGH a11y)
+  useEffect(() => {
+    const main = document.getElementById('main');
+    const footer = document.querySelector('footer');
+    const setInert = (el: Element | null, v: boolean) => {
+      if (!el) return;
+      if (v) {
+        el.setAttribute('inert', '');
+        el.setAttribute('aria-hidden', 'true');
+      } else {
+        el.removeAttribute('inert');
+        el.removeAttribute('aria-hidden');
+      }
+    };
+    if (open) {
+      setInert(main, true);
+      setInert(footer, true);
+    } else {
+      setInert(main, false);
+      setInert(footer, false);
+    }
+    return () => {
+      setInert(main, false);
+      setInert(footer, false);
+    };
+  }, [open]);
 
 
 
@@ -219,7 +248,7 @@ export function Nav() {
       <header
         id="top"
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 motion-safe:transition-colors motion-safe:duration-300',
+          'fixed top-0 left-0 right-0 z-50 motion-safe:transition-colors motion-safe:duration-150',
           open
             ? isDark
               ? 'bg-primary-dark border-b border-white/10'
@@ -233,11 +262,11 @@ export function Nav() {
         {!scrolled && !open && (
           <div
             aria-hidden="true"
-            className="absolute inset-x-0 top-0 h-[120px] bg-gradient-to-b from-black/65 via-black/40 to-transparent pointer-events-none"
+            className="absolute inset-x-0 top-0 h-[120px] bg-gradient-to-b from-primary-dark/65 via-primary-dark/40 to-transparent pointer-events-none"
           />
         )}
 
-        <div className="relative z-10 mx-auto max-w-container px-6 flex items-center justify-between h-[68px]">
+        <div className="relative z-10 mx-auto max-w-container px-[max(1.5rem,env(safe-area-inset-inline))] flex items-center justify-between min-h-[68px]">
           <a
             href="#top"
             aria-label={`${config.brandName} — inicio`}
@@ -266,10 +295,10 @@ export function Nav() {
                 <a
                   key={l.href}
                   href={l.href}
-                  aria-current={isActive ? "page" : undefined}
+                  aria-current={isActive ? "true" : undefined}
                   onClick={(e) => handleNavClick(e, l.href)}
                   className={cn(
-                    "min-h-[44px] inline-flex items-center text-sm font-semibold transition-colors py-3.5 relative after:content-[''] after:absolute after:bottom-px after:left-0 after:h-0.5 after:bg-green after:transition-[width] after:duration-200 hover:scale-[1.01] active:scale-[0.98]",
+                    "min-h-[44px] inline-flex items-center text-sm font-semibold leading-none whitespace-nowrap transition-colors py-3.5 relative after:content-[''] after:absolute after:bottom-px after:left-0 after:h-0.5 after:bg-green after:transition-[width] after:duration-200 hover:scale-[1.01] active:scale-[0.98]",
                     scrolled
                       ? isActive
                         ? 'text-navy after:w-full'
@@ -288,14 +317,14 @@ export function Nav() {
                 origin="resume"
                 variant="ghost"
                 className={cn(
-                  'min-h-[36px] h-9 px-3.5 rounded-full inline-flex items-center gap-2 text-xs font-bold border transition-colors shadow-xs cursor-pointer focus-visible:ring-1 focus-visible:ring-green',
+                  'min-h-[44px] h-11 px-3.5 rounded-full inline-flex items-center gap-2 text-sm font-bold border transition-colors shadow-xs cursor-pointer focus-visible:ring-1 focus-visible:ring-green whitespace-nowrap',
                   scrolled
                     ? 'bg-green/10 border-green/30 text-navy hover:bg-green/20'
                     : 'bg-white/15 border-white/25 text-white hover:bg-white/25',
                 )}
               >
                 <span className="w-2 h-2 rounded-full bg-green animate-pulse" aria-hidden="true" />
-                <span>Mi Solicitud ({activeSubmission.radicado})</span>
+                <span className="whitespace-nowrap tabular-nums">Mi solicitud ({activeSubmission.radicado})</span>
               </ApplyButton>
             )}
           </nav>
@@ -308,21 +337,25 @@ export function Nav() {
             aria-controls="navMobile"
             onClick={() => setOpen((o) => !o)}
             className={cn(
-              'md:hidden flex items-center justify-center w-11 h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 transition-transform hover:scale-[1.01] active:scale-[0.98]',
+              'md:hidden flex items-center justify-center w-11 h-11 rounded-lg focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 motion-safe:transition-transform motion-safe:hover:scale-[1.01] motion-safe:active:scale-[0.98]',
               isDark ? 'text-white hover:bg-white/10' : 'text-navy hover:bg-muted',
             )}
           >
-            {open ? <CloseIcon size={26} /> : <HamburgerIcon size={26} />}
+            <span className="relative w-[26px] h-[26px] flex items-center justify-center">
+              <span className={cn('absolute inset-0 flex items-center justify-center motion-safe:transition-[opacity,transform,filter] motion-safe:duration-200', open ? 'opacity-100 scale-100 blur-0' : 'opacity-0 scale-75 blur-[4px]')}><CloseIcon size={26} /></span>
+              <span className={cn('absolute inset-0 flex items-center justify-center motion-safe:transition-[opacity,transform,filter] motion-safe:duration-200', open ? 'opacity-0 scale-75 blur-[4px]' : 'opacity-100 scale-100 blur-0')}><HamburgerIcon size={26} /></span>
+            </span>
           </button>
         </div>
 
         <nav aria-label="Menú móvil" className="md:hidden">
-          {/* Backdrop Scrim — div no button, fuera del trap no debe ser focuseable */}
+          {/* Backdrop Scrim — button for keyboard dismiss */}
           {open && (
-            <div
-              aria-hidden="true"
+            <button
+              type="button"
+              aria-label="Cerrar menú"
               onClick={close}
-              className="fixed inset-0 top-[68px] bg-black/60 backdrop-blur-xs z-40 md:hidden animate-fade-in"
+              className="fixed inset-0 top-[calc(68px+env(safe-area-inset-top,0px))] bg-primary-dark/60 backdrop-blur-xs z-40 md:hidden motion-safe:animate-fade-in"
             />
           )}
 
@@ -342,7 +375,7 @@ export function Nav() {
               {...(!open ? { inert: '' } as unknown as React.HTMLAttributes<HTMLDivElement> : {})}
               aria-hidden={!open || undefined}
               className={cn(
-                'absolute top-full left-0 right-0 z-50 border-b shadow-2xl motion-safe:transition-all motion-safe:duration-200 motion-safe:ease-out',
+                'absolute top-full left-0 right-0 z-50 border-b shadow-2xl motion-safe:transition-[transform,opacity] motion-safe:duration-200 motion-safe:ease-out',
                 isDark
                   ? 'bg-primary-dark border-white/10 text-white'
                   : 'bg-white border-border/80 text-navy',
@@ -354,30 +387,30 @@ export function Nav() {
                 if ((e.target as HTMLElement).closest('a, button')) close();
               }}
             >
-              <div className="px-6 py-5 flex flex-col gap-2">
+              <div className="px-[max(1.5rem,env(safe-area-inset-inline))] py-5 flex flex-col gap-4">
                 {activeSubmission && (
-                  <div className="pb-2 border-b border-white/10">
+                  <div className="pb-3 border-b border-white/10">
                     <ApplyButton
                       origin="resume"
                       variant="ghost"
                       onClick={close}
                       tabIndex={open ? 0 : -1}
                       className={cn(
-                        'w-full min-h-[44px] flex items-center justify-between p-3 rounded-xl text-xs font-semibold border text-left cursor-pointer focus-visible:ring-1 focus-visible:ring-green',
+                        'w-full min-h-[44px] flex items-center justify-between p-3 rounded-xl text-sm font-semibold border text-left cursor-pointer focus-visible:ring-1 focus-visible:ring-green',
                         isDark
                           ? 'bg-white/10 border-white/15 text-white'
                           : 'bg-green/10 border-green/30 text-navy',
                       )}
                     >
-                      <span className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-green animate-pulse" aria-hidden="true" />
-                        <span>Tu solicitud: <b className="font-bold tabular-nums">{activeSubmission.radicado}</b></span>
+                      <span className="flex items-center gap-2 min-w-0">
+                        <span className="w-2 h-2 rounded-full bg-green animate-pulse shrink-0" aria-hidden="true" />
+                        <span className="truncate overflow-wrap break-words min-w-0">Tu solicitud: <b className="font-bold tabular-nums whitespace-nowrap">{activeSubmission.radicado}</b></span>
                       </span>
-                      <span className="text-xs font-bold underline underline-offset-2 shrink-0">Ver estado →</span>
+                      <span className="text-sm font-bold underline underline-offset-2 decoration-from-font shrink-0 whitespace-nowrap">Ver estado de la solicitud&nbsp;→</span>
                     </ApplyButton>
                   </div>
                 )}
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-3">
                   {MOBILE_LINKS.map((l, i) => {
                     const isActive = activeId === l.href.slice(1);
                     return (
@@ -385,11 +418,11 @@ export function Nav() {
                         key={l.href}
                         href={l.href}
                         ref={i === 0 ? firstLinkRef : undefined}
-                        aria-current={isActive ? "page" : undefined}
+                        aria-current={isActive ? "true" : undefined}
                         tabIndex={open ? 0 : -1}
                         onClick={(e) => handleNavClick(e, l.href)}
                         className={cn(
-                          'min-h-[44px] flex items-center text-base font-semibold py-3 px-3.5 rounded-xl transition-colors',
+                          'min-h-[44px] flex items-center text-base font-semibold leading-tight whitespace-nowrap py-3 px-3.5 rounded-xl transition-colors',
                           isDark
                             ? isActive
                               ? 'text-primary-brand bg-primary-brand/15 font-bold'
@@ -418,9 +451,9 @@ export function Nav() {
                     target="#simula"
                     tabIndex={open ? 0 : -1}
                     onClick={close}
-                    className="w-full min-h-[48px] rounded-xl font-bold bg-primary-brand text-primary-dark hover:bg-primary-brand/90 transition-all active:scale-[0.98] shadow-md justify-center text-sm"
+                    className="w-full min-h-[48px] rounded-xl font-bold bg-primary-brand text-primary-dark hover:bg-primary-brand/90 transition-[background-color,box-shadow,transform,opacity] duration-150 ease-out active:scale-[0.98] shadow-md justify-center text-sm"
                   >
-                    Simular mi cuota
+                    Simular cuota
                   </ScrollButton>
                 </div>
               </div>

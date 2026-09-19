@@ -98,34 +98,34 @@ export function validateApplication(
     if (amount <= 150000) {
       return {
         ok: false,
-        message: `Para montos de hasta $${fmtCOP(150000)} el plazo disponible es de 1 mes.`,
+        message: `Elige el plazo de 1 mes, disponible para montos de hasta $${fmtCOP(150000)}.`,
       };
     }
     if (amount < 300000) {
       return {
         ok: false,
-        message: `Para montos inferiores a $${fmtCOP(300000)} el plazo máximo es de 2 meses.`,
+        message: `Elige un plazo de 1 o 2 meses, disponible para montos de hasta $${fmtCOP(300000)}.`,
       };
     }
     return {
       ok: false,
-      message: "La combinación de monto y plazo seleccionada no está disponible.",
+      message: "Elige un plazo de 1 a 3 meses disponible para tu monto.",
     };
   }
 
   if (isFrequencyDisabled(amount, frequency)) {
     if (amount <= 150000) {
-      return { ok: false, message: "Para montos de hasta $150.000 solo está disponible la forma de pago diaria." };
+      return { ok: false, message: "Elige pago diario, disponible para montos de hasta $150.000." };
     }
     if (amount < 300000) {
-      return { ok: false, message: "Para montos inferiores a $300.000 solo están disponibles las formas de pago diaria y semanal." };
+      return { ok: false, message: "Elige pago diario o semanal, disponible hasta $300.000." };
     }
     if (amount < 600000) {
-      return { ok: false, message: "Para montos inferiores a $600.000 la forma de pago mensual no está disponible." };
+      return { ok: false, message: "La forma de pago mensual aplica desde $600.000. Elige otra forma de pago." };
     }
     return {
       ok: false,
-      message: "La forma de pago seleccionada no está disponible.",
+      message: "Elige una forma de pago disponible para tu monto.",
     };
   }
 

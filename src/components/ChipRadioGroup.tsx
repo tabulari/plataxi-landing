@@ -100,8 +100,7 @@ export function ChipRadioGroup<T extends string | number>({
             role="radio"
             aria-checked={active}
             aria-disabled={disabled || undefined}
-            tabIndex={disabled ? -1 : active ? 0 : -1}
-            disabled={disabled}
+            tabIndex={active || disabled ? 0 : -1}
             title={o.title}
             aria-label={disabled && o.title ? `${o.label} — ${o.title}` : undefined}
             className={`chip${active ? " active" : ""}${chipClassName ? ` ${chipClassName}` : ""}${disabled ? " opacity-40 cursor-not-allowed" : ""}`}

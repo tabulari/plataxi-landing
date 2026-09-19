@@ -34,7 +34,7 @@ const fieldEl = (name: FieldName, label: string, handlers: FieldHandlers, props:
         aria-invalid={handlers.errors[name] ? true : undefined}
         aria-describedby={handlers.errors[name] ? `err-${name}` : undefined}
         className={cn(
-          'h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow,transform] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.98]',
+          'h-11 min-h-[44px] w-full rounded-xl border border-gray-300 bg-white px-3.5 text-sm text-foreground outline-none transition-[border-color,box-shadow] placeholder:text-muted-foreground focus:border-primary-brand focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           className,
         )}
         {...rest}
@@ -65,7 +65,7 @@ const toggleGroup = (
           onClick={() => handlers.onFieldChange(name, opt.value)}
           aria-pressed={current === opt.value}
           className={cn(
-            'h-11 rounded-xl border text-sm font-semibold transition-all active:scale-[0.98]',
+            'h-11 rounded-xl border text-sm font-semibold transition-[transform,opacity,background-color,box-shadow,border-color] active:scale-[0.98]',
             current === opt.value
               ? 'bg-green border-green text-ink shadow-sm'
               : 'bg-white border-gray-300 text-foreground hover:border-primary-brand',
@@ -124,7 +124,7 @@ export function Step1({ values, handlers }: {
         </h2>
         <p className="text-xs sm:text-sm text-muted-foreground mt-1 flex items-center gap-1.5">
           <ShieldCheckIcon size={14} aria-hidden="true" className="text-green-ink shrink-0" />
-          Tus datos van cifrados. Solo los usamos para tu crédito.
+          Tus datos viajan cifrados. Solo los usamos para tu crédito.
         </p>
         <p className="text-xs text-muted-foreground mt-2"><span className="text-destructive">*</span> Campos requeridos</p>
       </div>
@@ -134,7 +134,7 @@ export function Step1({ values, handlers }: {
           type: 'text',
           autoComplete: 'name',
           enterKeyHint: 'next',
-          placeholder: 'Ej. Laura Martínez',
+          placeholder: 'Ej. Laura Martínez…',
           value: values.fullName,
           className: 'h-[52px] text-[15px] font-medium',
           onChange: (e) => handlers.onFieldChange('fullName', formatName(e.target.value)),
@@ -149,7 +149,7 @@ export function Step1({ values, handlers }: {
           autoComplete: 'off',
           spellCheck: false,
           enterKeyHint: 'next',
-          placeholder: 'Ej. 1.024.567.890',
+          placeholder: 'Ej. 1.024.567.890…',
           value: values.idNumber,
           onChange: (e) => handlers.onFieldChange('idNumber', formatCedula(e.target.value)),
           required: true,
@@ -159,7 +159,7 @@ export function Step1({ values, handlers }: {
           inputMode: 'numeric',
           autoComplete: 'tel',
           enterKeyHint: 'next',
-          placeholder: 'Ej. 300 123 4567',
+          placeholder: 'Ej. 300 123 4567…',
           value: values.phone,
           onChange: (e) => handlers.onFieldChange('phone', formatPhone(e.target.value)),
           required: true,
@@ -176,7 +176,7 @@ export function Step1({ values, handlers }: {
             type: 'text',
             autoComplete: 'off',
             enterKeyHint: 'next',
-            placeholder: 'Ej. Carlos Martínez',
+            placeholder: 'Ej. Carlos Martínez…',
             value: values.contactName,
             onChange: (e) => handlers.onFieldChange('contactName', formatName(e.target.value)),
             required: true,
@@ -186,7 +186,7 @@ export function Step1({ values, handlers }: {
             inputMode: 'numeric',
             autoComplete: 'tel',
             enterKeyHint: 'next',
-            placeholder: 'Ej. 300 765 4321',
+            placeholder: 'Ej. 300 765 4321…',
             value: values.contactPhone,
             onChange: (e) => handlers.onFieldChange('contactPhone', formatPhone(e.target.value)),
             required: true,
@@ -199,7 +199,7 @@ export function Step1({ values, handlers }: {
         autoComplete: 'email',
         spellCheck: false,
         enterKeyHint: 'next',
-        placeholder: 'tucorreo@ejemplo.com',
+        placeholder: 'tucorreo@ejemplo…',
         value: values.email,
         onChange: (e) => handlers.onFieldChange('email', formatEmail(e.target.value)),
         required: true,
@@ -230,13 +230,12 @@ export function Step2({
         <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 2: Tus ingresos">
           Tus ingresos
         </h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">2 datos para validar tu capacidad de pago.</p>
         <p className="text-xs text-muted-foreground mt-2"><span className="text-destructive">*</span> Campos requeridos</p>
       </div>
 
       {toggleGroup(
         'incomeType',
-        '¿Cuánto ganas? Elige cómo prefieres contarlo',
+        'Ganas por día o por mes*',
         [{ value: 'daily', label: 'Diario' }, { value: 'monthly', label: 'Mensual' }],
         values.incomeType,
         handlers,
@@ -248,7 +247,7 @@ export function Step2({
         type: 'text',
         inputMode: 'numeric',
         enterKeyHint: 'done',
-        placeholder: values.incomeType === 'daily' ? 'Ej. 80.000' : 'Ej. 2.500.000',
+        placeholder: values.incomeType === 'daily' ? 'Ej. 80.000…' : 'Ej. 2.500.000…',
         value: values.income,
         onChange: (e) => handlers.onFieldChange('income', formatIncome(e.target.value)),
         required: true,
@@ -256,7 +255,7 @@ export function Step2({
 
       {toggleGroup(
         'hasBank',
-        '¿Cuenta usted con una entidad bancaria o crediticia?',
+        'Tienes cuenta bancaria*',
         [{ value: 'yes', label: 'Sí' }, { value: 'no', label: 'No' }],
         values.hasBank,
         handlers,
@@ -325,10 +324,10 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
     <section className="flex-1 flex flex-col gap-5 relative" inert={showTerms ? true as unknown as undefined : undefined}>
       <div>
         <p className="text-xs font-semibold tracking-wider uppercase text-green-ink">Paso 3 de 3</p>
-        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight" aria-label="Paso 3: ¿Todo bien?">
-          ¿Todo bien? Revisa y envía
+        <h2 className="text-[clamp(1.125rem,4vw,1.25rem)] font-bold text-navy tracking-tight">
+          Revisa y envía
         </h2>
-        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Un último vistazo antes de mandar tu solicitud.</p>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1">Revisa tus datos antes de enviar tu solicitud.</p>
       </div>
 
       <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs">
@@ -380,12 +379,12 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
             role="dialog"
             aria-modal="true"
             aria-labelledby="terms-drawer-title"
-            className="absolute inset-0 z-20 bg-white rounded-2xl p-5 flex flex-col justify-between border border-border shadow-lg animate-terms-in dark:bg-[#1a1a18] dark:border-white/10"
+            className="absolute inset-0 z-20 bg-white rounded-2xl p-5 flex flex-col justify-between border border-border shadow-lg animate-terms-in"
           >
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2 text-navy font-bold text-sm">
                 <ShieldCheckIcon size={18} className="text-green-ink" />
-                <h3 id="terms-drawer-title">Política de Tratamiento de Datos</h3>
+                <h3 id="terms-drawer-title">Política de Privacidad</h3>
               </div>
               <button
                 ref={termsCloseRef}
@@ -418,7 +417,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
                 href="/legal/privacidad"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[11px] text-muted-2 hover:text-navy underline"
+                className="text-xs text-muted-2 hover:text-navy underline"
               >
                 Ver documento completo ↗
               </a>
@@ -431,7 +430,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
                 }}
                 className="px-4 py-2 min-h-[44px] rounded-xl bg-green text-ink font-bold hover:bg-green-bright border-0 transition-colors focus-visible:ring-2 focus-visible:ring-ring"
               >
-                Entendido y autorizar
+                Autorizar y continuar
               </button>
             </div>
           </div>

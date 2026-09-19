@@ -26,8 +26,9 @@ export function ScrollButton({
         }
         const el = document.querySelector(target);
         if (el) {
+          const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
           const y = el.getBoundingClientRect().top + window.pageYOffset - 80;
-          window.scrollTo({ top: y, behavior: 'smooth' });
+          window.scrollTo({ top: y, behavior: reduce ? 'auto' : 'smooth' });
         }
       }}
       {...rest}

@@ -101,7 +101,7 @@ export function KycDocumentStation({ onComplete }: { onComplete?: () => void }) 
         {docs.map((doc) => (
           <div
             key={doc.id}
-            className={`border rounded-xl p-4 transition-all ${
+            className={`border rounded-xl p-4 transition-[transform,opacity,background-color,box-shadow,border-color] ${
               doc.status === 'rejected'
                 ? 'border-red-300 bg-red-50/50'
                 : doc.status === 'approved'

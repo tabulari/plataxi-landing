@@ -69,8 +69,8 @@ export function ModalSidebar({ frozen }: { frozen: Simulation }) {
       </ul>
 
       {/* Cláusula de inmutabilidad contractual */}
-      <div className="mt-3 rounded-xl border border-amber-400/30 bg-amber-950/30 p-2.5 text-[11px] text-amber-200 leading-snug max-[760px]:hidden">
-        <b className="font-semibold text-amber-300">Condición inmutable:</b> La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.
+      <div className="mt-3 rounded-xl border border-white/10 bg-white/5 p-2.5 text-[11px] text-white/80 leading-snug max-[760px]:hidden">
+        <b className="font-semibold text-white">Condición inmutable:</b> La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.
       </div>
 
       <p className="text-[11px] text-white/50 mt-auto pt-3 max-[760px]:hidden">

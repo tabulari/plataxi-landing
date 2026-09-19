@@ -17,7 +17,6 @@ export function FieldError({
 }: FieldErrorProps) {
   return (
     <span
-      role="alert"
       aria-live="polite"
       aria-atomic="true"
       {...rest}

@@ -6,13 +6,15 @@ import { ApplyButton } from './ApplyButton';
 export function HeroActiveNotice() {
   const submission = useActiveSubmission();
 
-  if (!submission) return null;
+  if (!submission) {
+    return <div role="status" aria-live="polite" aria-atomic="true" className="sr-only" />;
+  }
 
   return (
     <div
       role="status"
       aria-label="Estado de solicitud activa"
-      className="inline-flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 px-3.5 py-2 sm:py-1.5 rounded-2xl sm:rounded-full bg-black/45 backdrop-blur-md border border-white/20 text-white text-xs sm:text-sm font-medium shadow-sm max-w-full"
+      className="inline-flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 px-3.5 py-2 sm:py-1.5 rounded-2xl sm:rounded-full bg-primary-dark/85 backdrop-blur-md border border-white/20 text-white text-xs sm:text-sm font-medium shadow-sm max-w-full"
     >
       {/* Row 1: dot + label */}
       <span className="flex items-center gap-2 min-w-0">
@@ -29,7 +31,7 @@ export function HeroActiveNotice() {
         <ApplyButton
           origin="resume"
           variant="ghost"
-          className="text-xs sm:text-sm font-bold text-green hover:text-green-bright p-0 h-auto bg-transparent hover:bg-transparent shadow-none underline underline-offset-2 cursor-pointer focus-visible:ring-1 focus-visible:ring-green shrink-0"
+          className="text-xs sm:text-sm font-bold text-white hover:text-white underline underline-offset-2 cursor-pointer focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-primary-dark min-h-[44px] min-w-[44px] px-2 -my-1 flex items-center justify-center shrink-0"
         >
           Ver estado
         </ApplyButton>

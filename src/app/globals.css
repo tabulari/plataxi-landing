@@ -227,6 +227,22 @@
   footer button:focus-visible {
     outline-color: #fff !important;
   }
+  /* Adaptive focus on dark surfaces: hero CTA + dark-glass pills over scrim.
+     #111110 outline is invisible on bg-primary-dark / bg-primary-dark/60 —
+     double-ring (white + dark) stays visible on both light and dark. */
+  [data-slot='hero-ctas'] button:focus-visible,
+  [role='status'][aria-label='Estado de solicitud activa'] button:focus-visible {
+    outline: none !important;
+    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #111110 !important;
+    border-radius: 0.5rem;
+  }
+  @media (forced-colors: active) {
+    [data-slot='hero-ctas'] button:focus-visible,
+    [role='status'][aria-label='Estado de solicitud activa'] button:focus-visible {
+      outline: 2px solid CanvasText !important;
+      box-shadow: none !important;
+    }
+  }
 
   /* Form field focus state: soft butter yellow without black outer ring.
      Range inputs and [data-field-bare] inputs opt out — a bare input sits inside

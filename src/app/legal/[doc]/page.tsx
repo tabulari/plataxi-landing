@@ -93,9 +93,14 @@ export default async function LegalDoc({
                 <p>
                   Las solicitudes de crédito están sujetas a la siguiente matriz operativa según el monto de capital aprobado:
                 </p>
-                <div className="overflow-x-auto">
+                <div
+                  tabIndex={0}
+                  role="region"
+                  aria-labelledby="matriz-caption"
+                  className="overflow-x-auto rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
                   <table className="w-full text-xs text-left border border-border rounded-lg overflow-hidden">
-                    <caption className="sr-only">Matriz de montos, plazos y formas de pago VENTANA</caption>
+                    <caption id="matriz-caption" className="sr-only">Matriz de montos, plazos y formas de pago</caption>
                     <thead className="bg-muted font-bold text-navy">
                       <tr>
                         <th scope="col" className="p-2.5 border-b border-border">Rango de Monto</th>
@@ -191,7 +196,7 @@ export default async function LegalDoc({
                   Conforme a la normativa de la Superintendencia Financiera de Colombia, los siguientes servicios son de carácter <strong>estrictamente opcional</strong> y requieren autorización previa y voluntaria del usuario:
                 </p>
 
-                <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-900/50 border border-stone-200 dark:border-stone-800 text-sm space-y-2">
+                <div className="p-4 rounded-xl bg-muted/40 border border-border text-sm space-y-2">
                   <h3 className="font-bold text-foreground">4.1 Servicio de Plataforma Tecnológica (+3.0% sobre el capital)</h3>
                   <p>Beneficios para el conductor:</p>
                   <ul className="list-disc pl-5 space-y-1">
@@ -206,7 +211,7 @@ export default async function LegalDoc({
                   </p>
                 </div>
 
-                <div className="p-4 rounded-xl bg-stone-50 dark:bg-stone-900/50 border border-stone-200 dark:border-stone-800 text-sm space-y-2">
+                <div className="p-4 rounded-xl bg-muted/40 border border-border text-sm space-y-2">
                   <h3 className="font-bold text-foreground">4.2 Servicio de Fianza de Respaldo (+3.6% sobre el capital)</h3>
                   <p>Beneficios de garantía y respaldo:</p>
                   <ul className="list-disc pl-5 space-y-1">
@@ -221,7 +226,7 @@ export default async function LegalDoc({
               </section>
 
               <section id="inmutabilidad" tabIndex={-1} className="space-y-3 scroll-mt-20">
-                <div className="p-4 rounded-xl bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-sm space-y-2">
+                <div className="p-4 rounded-xl bg-muted/40 border border-border text-sm space-y-2">
                   <h3 className="font-bold text-foreground">5. Inmutabilidad de Plazo y Forma de Pago</h3>
                   <p className="font-semibold text-foreground">
                     &ldquo;La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.&rdquo;

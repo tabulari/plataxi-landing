@@ -35,7 +35,7 @@ export function SevenStageStepper({ currentStage }: { currentStage: StageId }) {
       <div className="relative flex items-center justify-between w-full overflow-x-auto pb-3 pt-1 no-scrollbar">
         <div className="absolute left-0 top-4 h-0.5 w-full bg-border -z-0" />
         <div
-          className="absolute left-0 top-4 h-0.5 bg-green transition-all duration-500 -z-0"
+          className="absolute left-0 top-4 h-0.5 bg-green transition-[transform,opacity,background-color,box-shadow,border-color] duration-500 -z-0"
           style={{ width: `${((currentStage - 1) / 6) * 100}%` }}
         />
 
@@ -46,7 +46,7 @@ export function SevenStageStepper({ currentStage }: { currentStage: StageId }) {
           return (
             <div key={s.id} className="flex flex-col items-center min-w-[80px] sm:min-w-[100px] z-10 px-1">
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-extrabold transition-all tabular-nums ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-extrabold transition-[transform,opacity,background-color,box-shadow,border-color] tabular-nums ${
                   isCompleted
                     ? 'bg-green-ink text-white shadow-sm ring-4 ring-green-tint'
                     : isCurrent

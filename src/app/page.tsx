@@ -15,7 +15,7 @@ export default async function Home() {
   return (
     <>
       <Nav />
-      <main>
+      <main id="main">
         {/* 1. Hero — full-bleed, foto + titular + un solo CTA */}
         <Hero />
 

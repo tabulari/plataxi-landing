@@ -88,7 +88,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer me"
               aria-label="Facebook — se abre en pestaña nueva"
-              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-all shrink-0"
+              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-[transform,background-color,color] duration-150 ease-out shrink-0"
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M14 8 h2.5 V5 H14 c-2 0-3.3 1.3-3.3 3.4 V10 H8 v3 h2.7 v8 h3.3 v-8 H16 l.5-3 h-2.8 V8.8 C13.7 8.2 14 8 14 8Z" />
@@ -99,7 +99,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer me"
               aria-label="Instagram — se abre en pestaña nueva"
-              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-all shrink-0"
+              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-[transform,background-color,color] duration-150 ease-out shrink-0"
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -112,7 +112,7 @@ export function Footer() {
               target="_blank"
               rel="noopener noreferrer me"
               aria-label="YouTube — se abre en pestaña nueva"
-              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-all shrink-0"
+              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-[transform,background-color,color] duration-150 ease-out shrink-0"
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42A29.94 29.94 0 0 0 1 12a29.94 29.94 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29.94 29.94 0 0 0 23 12a29.94 29.94 0 0 0-.46-5.58z M9.75 15.5V8.5L15.5 12z" />

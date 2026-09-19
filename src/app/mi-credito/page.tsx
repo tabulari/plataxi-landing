@@ -127,7 +127,7 @@ export default function ActiveCreditPage() {
                 <span className="tabular-nums">{credit.paidInstallments} de {credit.totalInstallments}</span>
               </div>
               <div className="w-full bg-white/20 rounded-full h-2.5 overflow-hidden">
-                <div className="bg-green-bright h-full transition-all duration-500 rounded-full" style={{ width: `${progressPct}%` }} />
+                <div className="bg-green-bright h-full transition-[transform,opacity,background-color,box-shadow,border-color] duration-500 rounded-full" style={{ width: `${progressPct}%` }} />
               </div>
               <p className="text-[11px] text-white/60">Tasa nominal contratada: {credit.monthlyRatePct}</p>
             </div>

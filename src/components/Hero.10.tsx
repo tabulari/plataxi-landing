@@ -53,7 +53,7 @@ export function Hero10() {
                 variant="default"
                 size="lg"
                 target="#simula"
-                className="w-full sm:w-auto min-h-[48px] lg:min-h-[56px] px-8 rounded-lg font-bold bg-primary-brand text-primary-dark hover:bg-primary-brand/90 transition-all active:scale-[0.98] shadow-md hover:shadow-lg"
+                className="w-full sm:w-auto min-h-[48px] lg:min-h-[56px] px-8 rounded-lg font-bold bg-primary-brand text-primary-dark hover:bg-primary-brand/90 transition-[transform,opacity,background-color,box-shadow,border-color] active:scale-[0.98] shadow-md hover:shadow-lg"
               >
                 Simular mi cuota
               </ScrollButton>

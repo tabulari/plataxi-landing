@@ -169,7 +169,7 @@ export function Faq() {
 
           <WhatsAppLink
             ctx="faq"
-            className="inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-lg bg-surface-card text-navy font-bold text-sm transition-all active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-lg bg-surface-card text-navy font-bold text-sm transition-[transform,opacity,background-color,box-shadow,border-color] active:scale-[0.98]"
           >
             <WhatsAppIcon size={18} className="text-[#25D366] shrink-0" />
             <span>Hablar con un asesor</span>

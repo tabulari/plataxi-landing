@@ -100,7 +100,7 @@ export function CtaBanner() {
             <ApplyButton
               origin="cta_banner"
               size="lg"
-              className="w-full min-h-[54px] h-14 bg-green text-ink font-bold shadow-[0_12px_28px_-6px_rgba(246,216,96,0.35),0_8px_10px_-6px_rgba(17,17,16,0.4)] hover:bg-green-bright hover:scale-[1.01] active:scale-[0.98] transition-all text-base rounded-2xl border-0 flex items-center justify-center gap-2"
+              className="w-full min-h-[54px] h-14 bg-green text-ink font-bold shadow-[0_12px_28px_-6px_rgba(246,216,96,0.35),0_8px_10px_-6px_rgba(17,17,16,0.4)] hover:bg-green-bright hover:scale-[1.01] active:scale-[0.98] transition-[transform,background-color,box-shadow] duration-150 ease-out text-base rounded-2xl border-0 flex items-center justify-center gap-2"
             >
               <span>Pedir mi crédito</span>
             </ApplyButton>
@@ -110,7 +110,7 @@ export function CtaBanner() {
               <ScrollButton
                 variant="ghost-dark"
                 target="#simula"
-                className="w-full min-h-[48px] h-12 text-xs font-medium text-white/70 hover:text-white hover:bg-white/5 transition-all flex items-center justify-center gap-1.5 border-0 rounded-xl"
+                className="w-full min-h-[48px] h-12 text-xs font-medium text-white/70 hover:text-white hover:bg-white/5 transition-[background-color,color] duration-150 ease-out flex items-center justify-center gap-1.5 border-0 rounded-xl"
               >
                 <span>Ajustar mi cuota</span>
                 <span className="text-white/40 font-normal">↑</span>

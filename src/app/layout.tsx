@@ -117,7 +117,7 @@ export default async function RootLayout({
 
         <StructuredData rates={initialRates} />
 
-        <a className="skip-link" href="#simula">
+        <a className="skip-link" href="#main">
           Saltar al contenido
         </a>
 

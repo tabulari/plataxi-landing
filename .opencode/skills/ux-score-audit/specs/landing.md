@@ -37,7 +37,7 @@
 | 2 | Section backgrounds: white canvas (`#fff`) with `surface-card`/`bg-card` cards + dark CtaBanner/Footer texture (`footer-texture` honeycomb) — no alternating `soft`/`green-soft` (intentional) | fuzzy⚠️ | `getComputedStyle().backgroundColor` per section |
 | 1 | Wave dividers: 1 bold divider before CtaBanner (5 → 1 minimal, intentional) | fuzzy⚠️ | Count `SectionDivider` SVGs, check viewBox heights |
 | 1 | Every section has h2 (`font-display tracking-tight`); eyebrow is optional (density, not required) | exact | Query h2 in each section |
-| 1 | All h2 use `--font-display` | exact | `getComputedStyle().fontFamily` contains `DM Serif Display` |
+| 1 | All h2 use `--font-display` (`Archivo` via `var(--font-display)`, legacy `DM Serif Display` alias) | exact | `getComputedStyle().fontFamily` contains `Archivo` or `DM Serif Display` |
 | 1 | Vertical rhythm: sections use `mt-16 md:mt-32` + `scroll-mt-[96px]` for Simulate anchor; CtaBanner is `py-16 lg:py-24`. **Documented exception: Hero** uses compact `min-h-[520px] lg:h-[78vh]` per hero-compaction — intentional | range | Check `marginTop`/`scrollMarginTop` per section; Hero matches its compact values |
 | 1 | StickyBar removed — `LandingOverlays` only hosts `ApplyModal` (intentional, no sticky payment bar) | range | Verify no `data-slot="payment-bar"` expected |
 | 1 | CtaBanner has honeycomb texture (`footer-texture` + `footer-grid-drift` + `footer-cursor-glow`) — replaces legacy `dot-grid radial-gradient` | exact | `getComputedStyle().backgroundImage` contains `radial-gradient` (honeycomb) |

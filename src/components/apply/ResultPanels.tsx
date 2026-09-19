@@ -88,26 +88,21 @@ export function ApplicationSuccess({
               <b className="text-navy">{Math.round(terms.nPeriods)} cuotas</b>
             </div>
             <div className="flex justify-between">
-              <span>Interés Legal ({terms.term === 1 ? '3,4%' : terms.term === 2 ? '6,8%' : '10,2%'}):</span>
+              <span>Interés Legal ({terms.monthlyRate != null ? `${(terms.monthlyRate * terms.term * 100).toFixed(1).replace('.', ',')}%` : terms.term === 1 ? '3,4%' : terms.term === 2 ? '6,8%' : '10,2%'}):</span>
               <b className="text-navy">${fmtCOP(legalInterest)}</b>
             </div>
             {platformFee > 0 && (
               <div className="flex justify-between">
-                <span>Plataforma (3.0%):</span>
+                <span>Plataforma ({terms.platformFeeRate != null ? `${terms.platformFeeRate * 100}0%` : '3.0%'}):</span>
                 <b className="text-navy">${fmtCOP(platformFee)}</b>
               </div>
             )}
             {guaranteeFee > 0 && (
               <div className="flex justify-between">
-                <span>Fianza (3.6%):</span>
+                <span>Fianza ({terms.guaranteeFeeRate != null ? `${terms.guaranteeFeeRate * 100}0%` : '3.6%'}):</span>
                 <b className="text-navy">${fmtCOP(guaranteeFee)}</b>
               </div>
             )}
-          </div>
-
-          {/* Cláusula de inmutabilidad */}
-          <div className="rounded-lg border border-amber-300 bg-amber-50 p-2 text-[11px] text-amber-900 leading-snug">
-            <b className="font-semibold text-amber-800">Condición inmutable:</b> La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.
           </div>
         </div>
       )}
@@ -126,7 +121,7 @@ export function ApplicationSuccess({
           href={cta.href}
           target="_blank"
           rel="noopener noreferrer"
-          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[44px] rounded-xl bg-green text-ink font-bold hover:bg-green-bright border-0 transition-all shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] text-sm"
+          className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 min-h-[44px] rounded-xl bg-green text-ink font-bold hover:bg-green-bright border-0 transition-[transform,opacity,background-color,box-shadow,border-color] shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98] text-sm"
         >
           <span>{cta.label}</span>
           <span aria-hidden="true">→</span>
@@ -137,9 +132,9 @@ export function ApplicationSuccess({
         <button
           type="button"
           onClick={onNewApplication}
-          className="mt-3 text-xs font-semibold text-muted-foreground hover:text-navy underline underline-offset-4 transition-colors min-h-[38px] px-3 py-1 flex items-center justify-center cursor-pointer"
+          className="mt-3 text-xs font-semibold text-muted-foreground hover:text-navy underline underline-offset-4 transition-colors min-h-[44px] px-3 py-1 flex items-center justify-center cursor-pointer"
         >
-          ¿Deseas simular o iniciar una nueva solicitud?
+          Simular de nuevo
         </button>
       )}
     </section>
@@ -162,13 +157,13 @@ const ERROR_COPY: Record<string, SubmitErrorCopy> = {
   },
   backend: {
     title: 'Nuestro sistema está tardando más de lo normal',
-    body: 'No fue un problema de tu conexión. Tus datos siguen guardados — puedes reintentar el envío en unos momentos.',
+    body: 'No fue un problema de tu conexión. Tus datos siguen guardados. Puedes reintentar el envío en unos momentos.',
   },
 };
 
 const DEFAULT_ERROR_COPY: SubmitErrorCopy = {
   title: 'No pudimos enviar tu solicitud',
-  body: 'Ocurrió un problema de conexión. Tus datos siguen guardados — puedes reintentar el envío.',
+  body: 'Ocurrió un problema de conexión. Tus datos siguen guardados. Puedes reintentar el envío.',
 };
 
 export function ApplicationError({ code }: { code?: string | null }) {

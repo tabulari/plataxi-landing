@@ -5,28 +5,28 @@ import { z } from "zod";
  * (inline per-field + per-step) AND the server route. Field identifiers are
  * English; user-facing messages/options stay Spanish.
  *
- * IP-163: expanded to 4-step flow (Tus datos → Tu taxi → Tus ingresos → Revisión).
+ * Flow: 3 pasos (Tus datos → Tus ingresos → Revisión) tras ADR-0002.
  */
 
 export const TAXI_ROLES = ["Taxi propio", "Conduzco taxi"] as const;
 export type TaxiRole = (typeof TAXI_ROLES)[number];
 
 const MSG = {
-  fullName: "¿Cómo te llamas? Nombre y apellido.",
-  idNumber: "Revisa tu cédula. 7 a 10 dígitos.",
-  phone: "Teléfono inválido. 10 dígitos, empieza en 3.",
-  contactName: "¿Cómo se llama tu contacto de referencia?",
-  contactPhone: "Teléfono de contacto inválido. 10 dígitos, empieza en 3.",
-  email: "Ese correo no se ve bien.",
+  fullName: "Ingresa tu nombre y apellido.",
+  idNumber: "Revisa tu cédula.",
+  phone: "Revisa tu teléfono.",
+  contactName: "Ingresa el nombre de tu contacto de referencia.",
+  contactPhone: "Revisa el teléfono de tu contacto.",
+  email: "Ingresa un correo válido.",
   taxiRole: "Elige tu rol en el taxi.",
   taxiPlate: "Ingresa la placa del taxi.",
   taxiCompany: "Ingresa la empresa a la que estás afiliado.",
   drivingTime: "Indica cuántos años llevas conduciendo.",
-  income: "Cuéntanos cuánto ganas.",
+  income: "Indica cuánto ganas en números.",
   incomeType: "Elige diario o mensual.",
   hasBank: "Indica si tienes entidad bancaria.",
   bankEntity: "Elige tu entidad bancaria.",
-  consent: "Autoriza el tratamiento de datos para seguir.",
+  consent: "Autoriza el tratamiento de datos para enviar la solicitud.",
 } as const;
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
