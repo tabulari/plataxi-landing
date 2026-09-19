@@ -121,14 +121,14 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
             </div>
             <h3 className="text-lg font-extrabold text-navy">Evaluación de Crédito en Curso</h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
-              Estamos consultando las centrales de riesgo y ejecutando el scoring scoring en tiempo real. Este proceso toma menos de 60 segundos.
+              Estamos consultando las centrales de riesgo y ejecutando el scoring en tiempo real. Este proceso toma menos de 60 segundos.
             </p>
             <button
               type="button"
               onClick={() => setStage(4)}
               className="mt-4 px-6 py-2.5 rounded-xl bg-navy text-white text-sm font-bold hover:bg-navy-ink transition-colors focus-visible:ring-2 focus-visible:ring-ring"
             >
-              Simular Aprobación de Oferta →
+              Simular Aprobación de Oferta
             </button>
           </div>
         )}
@@ -138,7 +138,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
             <div className="flex items-center gap-3 p-4 rounded-xl bg-green-tint border border-green/30 text-green-ink">
               <ShieldCheckIcon size={28} className="text-green flex-shrink-0" />
               <div>
-                <h3 className="text-base font-extrabold">¡Tu crédito ha sido aprobado!</h3>
+                <h3 className="text-base font-extrabold">Tu crédito ha sido aprobado</h3>
                 <p className="text-xs mt-0.5">
                   Revisa las condiciones definitivas antes de proceder a la firma electrónica del contrato.
                 </p>
@@ -187,14 +187,6 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
               </div>
             </div>
 
-            {/* Nota de fórmula en rojo (documento base Plataxi) */}
-            <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-3.5 text-xs text-red-700">
-              <p className="font-semibold mb-0.5">Fórmula de liquidación aplicada:</p>
-              <p className="font-mono text-[11px] leading-relaxed">
-                (nota: capital + % de plazo + plataforma + fianza = cuota dividida en día semana quincena o mes)
-              </p>
-            </div>
-
             <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
@@ -239,7 +231,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
               onClick={() => setStage(7)}
               className="mt-4 px-6 py-2.5 rounded-xl bg-green-ink text-white text-sm font-bold hover:bg-green-soft-ink transition-colors focus-visible:ring-2 focus-visible:ring-ring"
             >
-              Ver Mi Crédito Activo →
+              Ver Mi Crédito Activo
             </button>
           </div>
         )}
@@ -249,7 +241,7 @@ export default function BorrowerWorkspacePage({ params }: { params: Promise<{ to
             <div className="w-14 h-14 rounded-full bg-green-ink text-white flex items-center justify-center mx-auto shadow-md">
               <CheckIcon size={32} />
             </div>
-            <h3 className="text-xl font-extrabold text-navy">¡Crédito Activo y Desembolsado!</h3>
+            <h3 className="text-xl font-extrabold text-navy">Crédito activo y desembolsado</h3>
             <p className="text-sm text-muted-foreground max-w-md mx-auto">
               Tu crédito ha sido desembolsado exitosamente. Ya puedes consultar tu plan de pagos y subir comprobantes desde tu mesa de gestión.
             </p>

@@ -161,7 +161,7 @@ export function KycDocumentStation({ onComplete }: { onComplete?: () => void }) 
                 {doc.status === 'uploading' && (
                   <span className="inline-flex items-center gap-2 text-xs font-bold text-navy bg-white px-3 py-1.5 rounded-full border border-border">
                     <span className="btn-spinner border-navy border-t-transparent" />
-                    Subiendo...
+                    Subiendo…
                   </span>
                 )}
 

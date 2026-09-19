@@ -117,7 +117,7 @@ export function Benefits() {
           />
         </div>
 
-        {/* 2 white / 2 cream for Bento diversity (was 4 cream on white) */}
+        {/* Bento: alternate card surfaces */}
         <div className="grid grid-cols-1 sm:grid-cols-2 stack:grid-cols-4 gap-5 lg:gap-6">
           {BENEFITS.map((b, i) => (
             <div

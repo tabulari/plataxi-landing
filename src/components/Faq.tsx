@@ -130,7 +130,7 @@ export function Faq() {
             Todo claro sobre tu crédito
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed pt-1">
-            Todo lo que necesitas saber antes de solicitar, explicado con honestidad y sin tecnicismos bancarios.
+            Tasas, cuotas y requisitos, con los números reales del simulador.
           </p>
         </div>
 
@@ -171,7 +171,7 @@ export function Faq() {
             ctx="faq"
             className="inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-lg bg-surface-card text-navy font-bold text-sm transition-[transform,opacity,background-color,box-shadow,border-color] active:scale-[0.98]"
           >
-            <WhatsAppIcon size={18} className="text-[#25D366] shrink-0" />
+            <WhatsAppIcon size={18} className="text-green-ink shrink-0" />
             <span>Hablar con un asesor</span>
           </WhatsAppLink>
         </div>

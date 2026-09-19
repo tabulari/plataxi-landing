@@ -68,7 +68,7 @@ export function CtaBanner() {
         <div
           ref={panelRef}
           data-cta="panel"
-          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 p-6 sm:p-10 lg:p-16 rounded-3xl bg-white/[0.04] ring-1 ring-primary-brand/20 shadow-[0_0_80px_-10px_rgba(246,196,8,0.22),0_0_30px_-5px_rgba(246,196,8,0.12)]"
+          className="relative flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16 p-6 sm:p-10 lg:p-16 rounded-3xl bg-white/[0.04] ring-1 ring-primary-brand/20 shadow-[0_0_80px_-10px_rgba(246,216,96,0.22),0_0_30px_-5px_rgba(246,216,96,0.12)]"
         >
           {/* Left Column: Pure, Saturated Value Anchor */}
           <div className="flex-1 min-w-0 relative space-y-5 text-left">
@@ -79,7 +79,7 @@ export function CtaBanner() {
             >
               Plata lista para rodar,{' '}
               <mark className="inline-block bg-background text-primary-dark px-2.5 py-0.5 rounded-lg shadow-xs">
-                sin filas ni enredos.
+                sin papeleo de banco.
               </mark>
             </h2>
 
@@ -91,7 +91,7 @@ export function CtaBanner() {
             </p>
           </div>
 
-          {/* Right Column: VARIANT B — Titanium Light Capsule */}
+          {/* Action panel */}
           <div
             data-cta="action-block"
             className="flex flex-col justify-center items-stretch gap-3 w-full sm:w-[310px] lg:shrink-0 lg:pl-10 relative"

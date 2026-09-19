@@ -219,7 +219,7 @@ export function OtpContractModal({
             {isVerifying ? (
               <>
                 <span className="btn-spinner" />
-                <span>Firmando Pagaré...</span>
+                <span>Firmando pagaré…</span>
               </>
             ) : (
               <>

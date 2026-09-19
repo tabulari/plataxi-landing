@@ -201,7 +201,7 @@ export default function ActiveCreditPage() {
             {proofSuccess && (
               <div className="p-3.5 rounded-xl bg-green-tint border border-green/30 text-green-ink text-xs font-bold flex items-center gap-2">
                 <VerifiedCircleIcon size={18} />
-                <span>¡Comprobante enviado a verificación! Código de conciliación registrado.</span>
+                <span>Comprobante enviado a verificación Código de conciliación registrado.</span>
               </div>
             )}
 
@@ -246,7 +246,7 @@ export default function ActiveCreditPage() {
                 {isSubmittingProof ? (
                   <>
                     <span className="btn-spinner" />
-                    <span>Verificando comprobante...</span>
+                    <span>Verificando comprobante…</span>
                   </>
                 ) : (
                   <>

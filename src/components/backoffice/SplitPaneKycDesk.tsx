@@ -78,7 +78,7 @@ export function SplitPaneKycDesk({
             rows={2}
             value={rejectionNote}
             onChange={(e) => setRejectionNote(e.target.value)}
-            placeholder="Ej. La fotocopia de la cédula está borrosa o la fecha del extracto bancario supera los 30 días..."
+            placeholder="Ej. La fotocopia de la cédula está borrosa o la fecha del extracto bancario supera los 30 días…"
             className="w-full text-xs p-2.5 rounded-lg border border-red-300 bg-white outline-none focus:ring-2 focus:ring-red-500/20"
           />
           <div className="flex justify-end gap-2">

@@ -94,7 +94,7 @@ export function ApplicationsTable({
           <SearchCheckIcon size={16} className="absolute left-3 top-3 text-muted-2" />
           <input
             type="text"
-            placeholder="Buscar por radicado, nombre o C.C..."
+            placeholder="Buscar por radicado, nombre o C.C…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value.replace(/\s{2,}/g, ' '))}
             className="w-full h-9 pl-9 pr-3 text-xs bg-white border border-border rounded-lg outline-none focus:border-ring focus:ring-2 focus:ring-ring/20"

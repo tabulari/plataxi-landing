@@ -17,7 +17,7 @@ export function SimulateSection({ children }: { children: React.ReactNode }) {
             className="flex items-center justify-center gap-2.5 text-sm font-semibold text-green-ink hover:text-green-ink/80 transition-colors py-3 min-h-[44px]"
           >
             <span className="wa-ico" aria-hidden="true" />
-            Hablar con un asesor
+            Consulta tu caso por WhatsApp
           </WhatsAppLink>
         </div>
       </div>
