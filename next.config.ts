@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/privacidad", destination: "/legal/privacidad" },
       { source: "/terminos", destination: "/legal/terminos" },
+      { source: "/habeas-data", destination: "/legal/habeas-data" },
     ];
   },
   // The root layout is force-dynamic (server reads Core's live rates), so Next

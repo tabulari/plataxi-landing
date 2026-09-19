@@ -12,6 +12,7 @@ const DOCS: Record<string, string> = {
   terminos: "Términos y condiciones",
   privacidad: "Política de Privacidad",
   seguridad: "Política de Seguridad",
+  "habeas-data": "Tratamiento de Datos Personales (Habeas Data)",
 };
 
 export function generateStaticParams() {
@@ -55,7 +56,7 @@ export default async function LegalDoc({
     <div className="legal-page">
       <div className="legal-wrap">
         <Link className="legal-back" href="/">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+          <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M15 18 l-6-6 6-6" />
           </svg>
           Volver a {config.brandName}
@@ -94,11 +95,12 @@ export default async function LegalDoc({
                 </p>
                 <div className="overflow-x-auto">
                   <table className="w-full text-xs text-left border border-border rounded-lg overflow-hidden">
+                    <caption className="sr-only">Matriz de montos, plazos y formas de pago VENTANA</caption>
                     <thead className="bg-muted font-bold text-navy">
                       <tr>
-                        <th className="p-2.5 border-b border-border">Rango de Monto</th>
-                        <th className="p-2.5 border-b border-border">Plazo Disponible</th>
-                        <th className="p-2.5 border-b border-border">Formas de Pago</th>
+                        <th scope="col" className="p-2.5 border-b border-border">Rango de Monto</th>
+                        <th scope="col" className="p-2.5 border-b border-border">Plazo Disponible</th>
+                        <th scope="col" className="p-2.5 border-b border-border">Formas de Pago</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-border">
@@ -125,6 +127,13 @@ export default async function LegalDoc({
                     </tbody>
                   </table>
                 </div>
+                <p className="text-[11px] text-muted-foreground mt-2">
+                  * Plazo y forma de pago inmutables tras desembolso — ver{' '}
+                  <Link href="#inmutabilidad" className="underline font-semibold hover:text-foreground">
+                    §5 Inmutabilidad
+                  </Link>
+                  .
+                </p>
               </section>
 
               <section className="space-y-3">
@@ -176,7 +185,7 @@ export default async function LegalDoc({
                 </ul>
               </section>
 
-              <section id="servicios-opcionales" className="space-y-4">
+              <section id="servicios-opcionales" tabIndex={-1} className="space-y-4 scroll-mt-20">
                 <h2>4. Servicios Opcionales de Valor Agregado</h2>
                 <p className="text-sm leading-relaxed">
                   Conforme a la normativa de la Superintendencia Financiera de Colombia, los siguientes servicios son de carácter <strong>estrictamente opcional</strong> y requieren autorización previa y voluntaria del usuario:
@@ -211,11 +220,11 @@ export default async function LegalDoc({
                 </div>
               </section>
 
-              <section className="space-y-3">
+              <section id="inmutabilidad" tabIndex={-1} className="space-y-3 scroll-mt-20">
                 <div className="p-4 rounded-xl bg-stone-100 dark:bg-stone-900 border border-stone-300 dark:border-stone-700 text-sm space-y-2">
                   <h3 className="font-bold text-foreground">5. Inmutabilidad de Plazo y Forma de Pago</h3>
                   <p className="font-semibold text-foreground">
-                    "La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito."
+                    &ldquo;La persona no puede cambiar ni el plazo ni la forma de pago después de tomado el crédito.&rdquo;
                   </p>
                   <p className="text-xs text-muted-foreground">
                     Una vez formalizada la solicitud y emitido el pagaré digital con la modalidad escogida (diario, semanal, quincenal o mensual), los términos quedan sellados de forma definitiva para la vida del crédito sin posibilidad de novación ni reestructuración unilateral.

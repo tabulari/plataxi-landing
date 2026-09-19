@@ -160,10 +160,10 @@ export function Footer() {
       {/* Compliance Bar */}
       <div className="border-t border-primary-brand/10">
         <div className="mx-auto max-w-container px-6 py-5 space-y-3">
-          <p className="text-xs text-white/45 text-center leading-relaxed">
+          <p className="text-xs text-white/55 text-center leading-relaxed">
             {config.company.legalName} · NIT {config.company.nit} · {config.company.address} · {config.company.contactPhone}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/45 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55 text-center sm:text-left">
             <p suppressHydrationWarning>© {new Date().getFullYear()} {config.brandName}. Todos los derechos reservados.</p>
             <p>Sujeto a la Ley 1581 de 2012 (Habeas Data).</p>
           </div>
