@@ -33,14 +33,14 @@
 
 | Pts | Criterion | Precision | Verify With |
 |-----|-----------|-----------|-------------|
-| 2 | Section order: Hero → Simulate → Benefits → Faq → CtaBanner (Benefits replaces Requirements+HowItWorks — intentional Plataxi 4-section IA) | fuzzy⚠️ | `<section>` order by DOM position |
-| 2 | Section backgrounds: white canvas (`#fff`) with `surface-card`/`bg-card` cards + dark CtaBanner/Footer texture (`footer-texture` honeycomb) — no alternating `soft`/`green-soft` (intentional) | fuzzy⚠️ | `getComputedStyle().backgroundColor` per section |
-| 1 | Wave dividers: 1 bold divider before CtaBanner (5 → 1 minimal, intentional) | fuzzy⚠️ | Count `SectionDivider` SVGs, check viewBox heights |
-| 1 | Every section has h2 (`font-display tracking-tight`); eyebrow is optional (density, not required) | exact | Query h2 in each section |
-| 1 | All h2 use `--font-display` (`Archivo` via `var(--font-display)`, legacy `DM Serif Display` alias) | exact | `getComputedStyle().fontFamily` contains `Archivo` or `DM Serif Display` |
-| 1 | Vertical rhythm: sections use `mt-16 md:mt-32` + `scroll-mt-[96px]` for Simulate anchor; CtaBanner is `py-16 lg:py-24`. **Documented exception: Hero** uses compact `min-h-[520px] lg:h-[78vh]` per hero-compaction — intentional | range | Check `marginTop`/`scrollMarginTop` per section; Hero matches its compact values |
-| 1 | StickyBar removed — `LandingOverlays` only hosts `ApplyModal` (intentional, no sticky payment bar) | range | Verify no `data-slot="payment-bar"` expected |
-| 1 | CtaBanner has honeycomb texture (`footer-texture` + `footer-grid-drift` + `footer-cursor-glow`) — replaces legacy `dot-grid radial-gradient` | exact | `getComputedStyle().backgroundImage` contains `radial-gradient` (honeycomb) |
+| 2 | Section order: Hero → Simulate → Requirements → HowItWorks → Faq → CtaBanner | fuzzy⚠️ | `<section>` order by DOM position |
+| 2 | Section backgrounds alternate correctly: white → soft → white → green-soft → white → navy-deep | fuzzy⚠️ | `getComputedStyle().backgroundColor` per section |
+| 1 | Wave dividers between sections (5 total, amplitudes: soft/soft/medium/medium/bold) | fuzzy⚠️ | Count `SectionDivider` SVGs, check viewBox heights |
+| 1 | Every section has eyebrow (`uppercase tracking-widest text-xs`) + h2 (`font-display tracking-tight`) | exact | Query eyebrow and h2 in each section |
+| 1 | All h2 use `--font-display` | exact | `getComputedStyle().fontFamily` contains `DM Serif Display` |
+| 1 | Vertical rhythm: sections use `py-16 lg:py-24` (96px desktop). **Documented exception: Hero** uses `pt-12 pb-8 lg:pt-16 lg:pb-12` (compact ~75vh hero per the hero-compaction redesign — intentional, not a deviation to flag) | range | `getComputedStyle().paddingTop` matches 64px/96px on non-Hero sections; Hero matches its compact values |
+| 1 | StickyBar visible when past hero CTAs and simulator not in viewport | range | Scroll past hero → bar has `show` class; scroll to simulator → bar hidden |
+| 1 | CtaBanner has dot-grid background pattern (on child `div.absolute` with `radial-gradient`) | exact | `getComputedStyle()` on first `div.absolute` child of CtaBanner section contains `radial-gradient` |
 
 ## Surface Context
 
@@ -113,12 +113,11 @@ back to the browser default `1px auto` ring.
 | Nav | h-68px, sticky/fixed, bg-background/85 backdrop-blur-md |
 | Hero | Full-bleed photo hero (`/hero-updated.jpeg`, `objectPosition: '75% 36%'`), scrim calibrated for WCAG AA, capped height (`min-h-[520px] ... max-h-[750px]`) ensuring CTA above the fold, reactive `HeroActiveNotice` pill |
 | Phone | Photo-based hero (hero-updated.jpeg fill, not phone shell) — Category 8 Phone Hero is reserved, not active for Plataxi photo hero |
-| Simulator | glow border-t-[3px] primary-brand/40, chip radio group, WAAPI payment flash (scale+blur 220ms), services expand `grid 0fr→1fr` with `Info` icon |
-| Requirements | Replaced by Benefits (see below) |
-| HowItWorks | Reserved, not rendered (commented in `page.tsx`) — intentional |
-| Benefits | Panoramic `aspect-[3/2] sm:aspect-[2/1] rounded-3xl` + 4-card bento `grid-cols-1 sm:grid-cols-2 stack:grid-cols-4`, alternating `bg-white`/`bg-surface-card`, `p-6 sm:p-7`, `gap-5 lg:gap-6` |
+| Simulator | green glow border-t-[3px], chip radio group, flash animation |
+| Requirements | max-w-lg, 18px icons, 20px animated checks, counter chip |
+| HowItWorks | 4-step white cards (rounded-lg, shadow-sm) on green-soft, progressive left-border accent (bg-green/25→50→75→100), step 4 destination treatment (bordered badge, ring-1 ring-green/30, green glow); grid 1→2→4 cols; compact mobile (p-3, w-8 badges, text-xs); CTA after step 4; timeline connector at lg+ |
 | Faq | max-w-3xl, clean cards on surface-card, single-open on mobile, WA CTA at bottom, FAQPage JSON-LD |
-| CtaBanner | honeycomb `footer-texture` + `footer-grid-drift` + `footer-cursor-glow`, contained action panel (bg-white/[0.04] ring-1 ring-white/10 rounded-2xl), CheckCircleIcon bullets, urgency subtext, conditional disbursement. **Eyebrow uses `text-green-bright` (#2bbd6a)** — the standard `--green` fails AA (4.06:1) on the lightened panel bg; green-bright = 5.73:1 |
+| CtaBanner | dot-grid bg, contained action panel (bg-white/[0.04] ring-1 ring-white/10 rounded-2xl), CheckCircleIcon bullets, urgency subtext, conditional disbursement. **Eyebrow uses `text-green-bright` (#2bbd6a)** — the standard `--green` fails AA (4.06:1) on the lightened panel bg; green-bright = 5.73:1 |
 | Footer | 2-tier structure: (1) 4-col responsive grid (`sm:col-span-2` Brand+Socials / Plataforma / Soporte), (2) compliance & legal strip (`border-t border-primary-brand/10` with Razón social · NIT · Domicilio · Teléfono, copyright © + Habeas Data Ley 1581 note at text-white/55); metallic honeycomb `footer-texture` + `footer-grid-drift` with interactive `footer-cursor-glow`. WhatsApp consolidated in Simulator + FAQ; support in footer uses mailto and PQRS. Social icons (Facebook, Instagram, YouTube) $\ge 44\times 44\text{px}$ with `aria-hidden` SVGs and explicit `aria-label`s; links have `min-h-[44px]` |
-| StickyBar | Removed — no sticky bar (only `ApplyModal` in `LandingOverlays`) |
-| SectionDividers | 1 bold divider before CtaBanner (minimal, intentional) |
+| StickyBar | bg-white/95, safe-area-inset-bottom padding, shows past hero/simulator hidden |
+| SectionDividers | 5 total: soft/soft/medium/medium/bold amplitudes |
