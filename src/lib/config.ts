@@ -81,6 +81,22 @@ export function findUnresolvedPlaceholders(env: Env = process.env): PlaceholderK
   });
 }
 
+/**
+ * Company identity is compiled in (not env), so the env-based guard cannot see it.
+ * Returns the identity fields that still hold prototype values. Pure/injectable.
+ */
+export function findPlaceholderIdentity(identity: {
+  whatsappPhone: string;
+  company: { nit: string; address: string; contactPhone: string };
+}): string[] {
+  const bad: string[] = [];
+  if (identity.whatsappPhone === "573001234567") bad.push("whatsappPhone");
+  if (identity.company.contactPhone === "+573001234567") bad.push("company.contactPhone");
+  if (/x{3}/i.test(identity.company.nit)) bad.push("company.nit");
+  if (/pendiente/i.test(identity.company.address)) bad.push("company.address");
+  return bad;
+}
+
 /** Placeholder sentinel for the monthly rate (dev/test fallback). */
 export const PLACEHOLDER_MONTHLY_RATE = 0.034;
 
@@ -250,4 +266,12 @@ if (
   process.env.NEXT_PUBLIC_PLATAXI_ALLOW_PLACEHOLDERS !== "true"
 ) {
   assertProductionConfig();
+  const placeholderIdentity = findPlaceholderIdentity(config);
+  if (placeholderIdentity.length > 0) {
+    throw new Error(
+      "Refusing to build for production: prototype company identity in src/lib/config.ts. " +
+        "Replace these literals with real values:\n  - " +
+        placeholderIdentity.join("\n  - "),
+    );
+  }
 }

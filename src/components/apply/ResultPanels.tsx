@@ -1,12 +1,13 @@
 'use client';
 
 import { config } from '@/lib/config';
+import type { SubmitErrorCode } from '@/lib/application-schema';
 import { CheckIcon, AlertCircleIcon } from '../icons';
 
 const WHATSAPP_FOLLOWUP_MESSAGE =
   'Hola, quiero hacer seguimiento a mi solicitud de crédito.';
 
-import { fmtCOP, type Simulation } from '@/lib/credit';
+import { fmtCOP, fmtPct, type Simulation } from '@/lib/credit';
 import { capFreq, type Values } from './use-application-form';
 
 export function ApplicationSuccess({
@@ -32,7 +33,7 @@ export function ApplicationSuccess({
         label: 'Continuar el seguimiento por WhatsApp',
       };
 
-  const legalInterest = terms?.legalInterestAmount ?? (terms ? Math.round(terms.amount * 0.034 * terms.term) : 0);
+  const legalInterest = terms?.legalInterestAmount ?? (terms ? Math.round(terms.amount * (terms.monthlyRate ?? config.credit.monthlyRate) * terms.term) : 0);
   const platformFee = terms?.platformFeeAmount ?? 0;
   const guaranteeFee = terms?.guaranteeFeeAmount ?? 0;
 
@@ -88,18 +89,18 @@ export function ApplicationSuccess({
               <b className="text-navy">{Math.round(terms.nPeriods)} cuotas</b>
             </div>
             <div className="flex justify-between">
-              <span>Interés Legal ({terms.monthlyRate != null ? `${(terms.monthlyRate * terms.term * 100).toFixed(1).replace('.', ',')}%` : terms.term === 1 ? '3,4%' : terms.term === 2 ? '6,8%' : '10,2%'}):</span>
+              <span>Interés Legal ({fmtPct((terms.monthlyRate ?? config.credit.monthlyRate) * terms.term, 1)}%):</span>
               <b className="text-navy">${fmtCOP(legalInterest)}</b>
             </div>
             {platformFee > 0 && (
               <div className="flex justify-between">
-                <span>Plataforma ({terms.platformFeeRate != null ? `${terms.platformFeeRate * 100}0%` : '3.0%'}):</span>
+                <span>Plataforma ({fmtPct(terms.platformFeeRate ?? config.credit.platformFeeRate, 1)}%):</span>
                 <b className="text-navy">${fmtCOP(platformFee)}</b>
               </div>
             )}
             {guaranteeFee > 0 && (
               <div className="flex justify-between">
-                <span>Fianza ({terms.guaranteeFeeRate != null ? `${terms.guaranteeFeeRate * 100}0%` : '3.6%'}):</span>
+                <span>Fianza ({fmtPct(terms.guaranteeFeeRate ?? config.credit.guaranteeFeeRate, 1)}%):</span>
                 <b className="text-navy">${fmtCOP(guaranteeFee)}</b>
               </div>
             )}
@@ -146,7 +147,7 @@ type SubmitErrorCopy = {
   body: string;
 };
 
-const ERROR_COPY: Record<string, SubmitErrorCopy> = {
+const ERROR_COPY: Record<SubmitErrorCode, SubmitErrorCopy> = {
   rate_limited: {
     title: 'Son demasiadas solicitudes por ahora',
     body: 'Espera unos segundos y vuelve a intentar. Tus datos siguen guardados.',
@@ -155,19 +156,26 @@ const ERROR_COPY: Record<string, SubmitErrorCopy> = {
     title: 'Esa cédula ya está registrada',
     body: 'Ya existe una solicitud con este documento. Si crees que es un error, contáctanos.',
   },
+  identity_conflict: {
+    title: 'Tu teléfono o correo ya está registrado',
+    body: 'Ese teléfono o correo ya está asociado a otro documento de identidad. Revisa tus datos o contáctanos si crees que es un error.',
+  },
+  invalid: {
+    title: 'Revisa tus datos',
+    body: 'No pudimos aceptar alguno de los datos. Vuelve atrás, corrígelo y envía de nuevo. Tus datos siguen guardados.',
+  },
   backend: {
     title: 'Nuestro sistema está tardando más de lo normal',
     body: 'No fue un problema de tu conexión. Tus datos siguen guardados. Puedes reintentar el envío en unos momentos.',
   },
+  connection: {
+    title: 'No pudimos enviar tu solicitud',
+    body: 'Ocurrió un problema de conexión. Tus datos siguen guardados. Puedes reintentar el envío.',
+  },
 };
 
-const DEFAULT_ERROR_COPY: SubmitErrorCopy = {
-  title: 'No pudimos enviar tu solicitud',
-  body: 'Ocurrió un problema de conexión. Tus datos siguen guardados. Puedes reintentar el envío.',
-};
-
-export function ApplicationError({ code }: { code?: string | null }) {
-  const copy = (code ? ERROR_COPY[code] : undefined) ?? DEFAULT_ERROR_COPY;
+export function ApplicationError({ code }: { code?: SubmitErrorCode | null }) {
+  const copy = ERROR_COPY[code ?? 'connection'];
   return (
     <section className="flex-1 flex flex-col items-center justify-center text-center py-8">
       <div className="w-[72px] h-[72px] rounded-full bg-muted ring-1 ring-border flex items-center justify-center mb-5 shadow-lg animate-[popIn_0.4s_cubic-bezier(0.2,1.4,0.4,1)] motion-reduce:animate-none">

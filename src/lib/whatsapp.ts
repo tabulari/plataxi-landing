@@ -31,3 +31,9 @@ export function buildWhatsAppUrl(
     buildWhatsAppMessage(ctx, sim),
   )}`;
 }
+
+/** Handoff for an applicant with no bank account: the form cannot continue, but the lead should not be lost. */
+export function buildNoBankWhatsAppUrl(): string {
+  const message = "Hola, no tengo cuenta bancaria y quiero saber cómo puedo acceder al crédito.";
+  return `https://wa.me/${config.whatsappPhone}?text=${encodeURIComponent(message)}`;
+}

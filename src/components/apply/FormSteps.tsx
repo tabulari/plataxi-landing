@@ -9,6 +9,7 @@ import {
 } from '@/lib/application-schema';
 import { capFreq, type Values } from './use-application-form';
 import { displayBankName } from '@/lib/banks';
+import { buildNoBankWhatsAppUrl } from '@/lib/whatsapp';
 import { BankCombobox } from './BankCombobox';
 import { cn } from '@/lib/utils';
 import { CloseIcon, ShieldCheckIcon } from '../icons';
@@ -101,14 +102,14 @@ export function Step1({ values, handlers }: {
     return `${d.slice(0, 3)} ${d.slice(3, 6)} ${d.slice(6)}`;
   };
 
+  // Unicode-aware: keeps ü/ñ/accents and capitalises accented initials (Álvaro, Argüello).
   const formatName = (val: string) => {
     return val
-      .replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s'-]/g, '')
+      .replace(/[^\p{L}\s'-]/gu, '')
       .replace(/^\s+/, '')
       .replace(/\s{2,}/g, ' ')
-      .replace(/([^\W_]+[^\s-]*) */g, (txt) => {
-        return txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase();
-      });
+      .toLocaleLowerCase('es-CO')
+      .replace(/(^|[\s-])(\p{L})/gu, (_m, sep: string, ch: string) => sep + ch.toLocaleUpperCase('es-CO'));
   };
 
   const formatEmail = (val: string) => {
@@ -274,7 +275,18 @@ export function Step2({
 
       {values.hasBank === 'no' && (
         <div className="flex items-start gap-2 text-xs text-destructive bg-destructive/5 border border-destructive/20 rounded-xl px-3.5 py-3 motion-safe:animate-step-in">
-          <p className="leading-relaxed">Para acceder al crédito necesitas tener una cuenta bancaria o producto crediticio activo.</p>
+          <p className="leading-relaxed">
+            Para acceder al crédito necesitas tener una cuenta bancaria o producto crediticio activo.{' '}
+            <a
+              href={buildNoBankWhatsAppUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold underline underline-offset-2"
+            >
+              Escríbenos por WhatsApp y te ayudamos
+            </a>
+            .
+          </p>
         </div>
       )}
     </section>

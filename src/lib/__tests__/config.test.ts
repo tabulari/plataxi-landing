@@ -4,6 +4,7 @@ import {
   PLACEHOLDERS,
   findUnresolvedPlaceholders,
   findUnresolvedRate,
+  findPlaceholderIdentity,
   assertProductionConfig,
 } from "@/lib/config";
 
@@ -67,6 +68,26 @@ describe("production placeholder guard", () => {
       "https://core.example.com/api/v1/sessions/rates-config",
     );
     vi.unstubAllEnvs();
+  });
+});
+
+describe("company identity guard", () => {
+  const real = {
+    whatsappPhone: "573101112233",
+    company: { nit: "901.234.567-8", address: "Cra 7 # 71-21, Bogotá", contactPhone: "+573101112233" },
+  };
+
+  it("flags every prototype identity value", () => {
+    expect(
+      findPlaceholderIdentity({
+        whatsappPhone: "573001234567",
+        company: { nit: "XXX.XXX.XXX-X", address: "Domicilio pendiente, Colombia", contactPhone: "+573001234567" },
+      }),
+    ).toEqual(["whatsappPhone", "company.contactPhone", "company.nit", "company.address"]);
+  });
+
+  it("passes once real values are in place", () => {
+    expect(findPlaceholderIdentity(real)).toEqual([]);
   });
 });
 

@@ -294,6 +294,12 @@ describe("formatters", () => {
     expect(fmtCOP(1000000)).toBe("1.000.000");
   });
 
+  it("fmtPct renders fee rates without float noise (regression: '30%' / '3.5999…%')", () => {
+    expect(fmtPct(0.03, 1)).toBe("3,0");
+    expect(fmtPct(0.036, 1)).toBe("3,6");
+    expect(fmtPct(0.034 * 3, 1)).toBe("10,2");
+  });
+
   it("fmtPct renders with a comma decimal separator", () => {
     expect(fmtPct(0.034, 1)).toBe("3,4");
     expect(fmtPct(0.068, 1)).toBe("6,8");

@@ -6,6 +6,7 @@ import { ModalSidebar } from './apply/ModalSidebar';
 import { Step1, Step2, Step3 } from './apply/FormSteps';
 import { ApplicationSuccess, ApplicationError } from './apply/ResultPanels';
 import { useSiteUi } from './site-ui';
+import { EDITABLE_ERROR_CODES } from '@/lib/application-schema';
 import { useSimulator } from './simulator-store';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -86,7 +87,8 @@ export function ApplyModal() {
   useEffect(() => {
     if (!mounted || !modalRef.current) return;
     if (form.submitStatus === 'success' || form.submitStatus === 'error') {
-      modalRef.current.querySelector<HTMLButtonElement>('button')?.focus();
+      // The first button is the (disabled) step-1 dot, so target the close button explicitly.
+      modalRef.current.querySelector<HTMLButtonElement>('button[aria-label="Cerrar"]')?.focus();
     }
   }, [form.submitStatus, mounted]);
 
@@ -150,7 +152,7 @@ export function ApplyModal() {
                       title={isClickable ? `Volver al paso ${i}: ${stepLabel.long}` : undefined}
                       aria-current={isCurrent ? 'step' : undefined}
                       aria-label={`Ir a paso ${i}: ${STEP_TITLES[i]}${isCurrent ? ' (actual)' : isCompleted ? ' (completado — clic para volver)' : ' (incompleto)'}`}
-                      onClick={() => { if (isClickable) form.setStep(i); }}
+                      onClick={() => { if (isClickable) form.goToStep(i); }}
                       className={cn(
                         'flex items-center gap-1 sm:gap-1.5 min-h-[44px] sm:min-h-[36px] py-0.5 px-1.5 sm:py-1 sm:px-2.5 rounded-lg transition-[background-color,border-color,color,box-shadow] duration-150 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring',
                         stepDot(i),
@@ -302,7 +304,11 @@ export function ApplyModal() {
                 </Button>
               </div>
             ) : form.submitStatus === 'error' ? (
-              <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={() => form.submit(frozen)}>Reintentar envío <span aria-hidden="true">→</span></Button>
+              form.submitErrorCode && EDITABLE_ERROR_CODES.includes(form.submitErrorCode) ? (
+                <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={() => form.goToStep(1)}>Revisar mis datos</Button>
+              ) : (
+                <Button variant="default" size="block" className="bg-green text-ink hover:bg-green-bright border-0" onClick={() => form.submit(frozen)}>Reintentar envío <span aria-hidden="true">→</span></Button>
+              )
             ) : (
               <Button
                 variant="default"

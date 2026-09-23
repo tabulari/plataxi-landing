@@ -78,7 +78,7 @@ export function Footer() {
               <PlataxiWordmark variant="white" height={32} />
             </a>
             <p className="text-sm text-white/70 leading-relaxed max-w-sm">
-              Microcréditos para taxistas en Colombia. Sin fiador y directo a tu cuenta.
+              Microcréditos para taxistas en Colombia, directo a tu cuenta.
             </p>
           </div>
 
