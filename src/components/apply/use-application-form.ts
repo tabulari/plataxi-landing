@@ -8,6 +8,7 @@ import {
   STEP_FIELDS,
   validateField,
   type FieldName,
+  type SubmitErrorCode as ErrorCode,
 } from '@/lib/application-schema';
 import { track } from '@/lib/analytics';
 import {
@@ -20,12 +21,7 @@ import {
 } from '@/lib/draft-storage';
 
 export type SubmitStatus = 'idle' | 'pending' | 'success' | 'error';
-export type SubmitErrorCode =
-  | 'rate_limited'
-  | 'national_id_already_registered'
-  | 'backend'
-  | 'connection'
-  | null;
+export type SubmitErrorCode = ErrorCode | null;
 export type Values = Record<FieldName, string>;
 
 export const FIELDS: FieldName[] = [
@@ -118,7 +114,9 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
 
       setErrors((prev) => ({ ...prev, ...next }));
       if (firstBad) {
-        modalRef.current?.querySelector<HTMLElement>(`[name="${firstBad}"]`)?.focus();
+        // The bank combobox input is named "bank" while its field key is bankEntity.
+        const inputName = firstBad === 'bankEntity' ? 'bank' : firstBad;
+        modalRef.current?.querySelector<HTMLElement>(`[name="${inputName}"]`)?.focus();
         return false;
       }
       return true;
@@ -141,28 +139,15 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     setSubmitStatus('pending');
     track('apply_submit', { amount: frozen.amount, term: frozen.term, frequency: frozen.frequency });
     const payload = { ...values, consent, terms: frozen };
+    setSubmitErrorCode(null);
     let code: SubmitErrorCode = null;
     try {
-      const w = window as unknown as { __forceApplicationError?: boolean; __forceApplicationSuccess?: boolean; __forceApplicationWorkspace?: boolean };
-      const forceError = typeof window !== 'undefined' && w.__forceApplicationError;
-      const forceSuccess = typeof window !== 'undefined' && w.__forceApplicationSuccess;
-      const withWorkspace = typeof window !== 'undefined' && w.__forceApplicationWorkspace;
-      const testQuery = forceError
-        ? '?forceError=1'
-        : forceSuccess
-          ? `?forceSuccess=1${withWorkspace ? '&withWorkspace=1' : ''}`
-          : '';
-      const res = await fetch(`/api/application${testQuery}`, {
+      const res = await fetch('/api/application', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
       });
       if (!res.ok) {
-        try {
-          const errBody = (await res.json()) as { code?: SubmitErrorCode } | null;
-          code = errBody?.code ?? (res.status === 429 ? 'rate_limited' : 'connection');
-        } catch {
-          code = res.status === 429 ? 'rate_limited' : 'connection';
-        }
-        if (res.status === 429) code = 'rate_limited';
+        const errBody = (await res.json().catch(() => null)) as { code?: ErrorCode } | null;
+        code = res.status === 429 ? 'rate_limited' : (errBody?.code ?? 'connection');
         throw new Error(`submit failed (${res.status})`);
       }
       const data = (await res.json()) as { radicado: string; workspaceUrl?: string | null };
@@ -171,21 +156,20 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
       setWorkspaceUrl(data.workspaceUrl ?? null);
       setSubmittedAt(now);
       clearDraft();
-      if (frozen) {
-        saveSubmittedApplication({
-          radicado: data.radicado,
-          workspaceUrl: data.workspaceUrl ?? null,
-          submittedAt: now,
-          values,
-          terms: frozen,
-        });
-      }
+      saveSubmittedApplication({
+        radicado: data.radicado,
+        workspaceUrl: data.workspaceUrl ?? null,
+        submittedAt: now,
+        values,
+        terms: frozen,
+      });
       setSubmitStatus('success');
-      setSubmitErrorCode(null);
       track('apply_submit_success', { radicado: data.radicado });
     } catch {
+      // A thrown fetch (offline, DNS) never reaches the status branch above.
+      code ??= 'connection';
       setSubmitStatus('error');
-      setSubmitErrorCode((prev) => prev ?? code);
+      setSubmitErrorCode(code);
       track('apply_submit_error', { code });
     }
   }, [values, consent]);
@@ -210,13 +194,17 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
       setSubmitErrorCode(null);
       if (onRestoredSubmission && submitted.terms) {
         const t = submitted.terms as Simulation;
+        // Reprice with the rates frozen at submit time, not today's defaults, so
+        // the resumed panel shows the same cuota Core recorded.
         const fresh = calculatePayment(
           t.amount,
           t.term,
           t.frequency,
-          config.credit.monthlyRate,
+          t.monthlyRate ?? config.credit.monthlyRate,
           t.acceptsPlatform ?? (t.platformFeeAmount ? t.platformFeeAmount > 0 : false),
           t.acceptsGuarantee ?? (t.guaranteeFeeAmount ? t.guaranteeFeeAmount > 0 : false),
+          t.platformFeeRate ?? config.credit.platformFeeRate,
+          t.guaranteeFeeRate ?? config.credit.guaranteeFeeRate,
         );
         onRestoredSubmission(fresh);
       }
@@ -247,6 +235,13 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
     setWorkspaceUrl(null);
     setSubmittedAt(null);
     return false;
+  }, []);
+
+  /** Jump to a completed step. From the error panel this returns to the form so the applicant can edit. */
+  const goToStep = useCallback((n: number) => {
+    setStep(n);
+    setSubmitStatus((s) => (s === 'error' ? 'idle' : s));
+    setSubmitErrorCode(null);
   }, []);
 
   const resetForm = useCallback(() => {
@@ -291,7 +286,7 @@ export function useApplicationForm(modalRef: React.RefObject<HTMLDivElement | nu
   }, [step, values, consent]);
 
   return {
-    step, setStep,
+    step, setStep, goToStep,
     values, onFieldChange, onFieldBlur,
     consent, setConsent,
     errors, consentError, setConsentError,

@@ -90,6 +90,27 @@ export const CONSENT_MESSAGE = MSG.consent;
 export const CONSENT_TEXT =
   "Autorizo el tratamiento de mis datos personales conforme a la Política de Privacidad y la Ley 1581 de 2012 (Habeas Data).";
 
+/**
+ * Every failure code the submit endpoint can return, and the only place they
+ * are declared. The route emits them, the form hook reads them, and the error
+ * panel maps them to copy. `invalid` and `identity_conflict` are fixable by the
+ * applicant (edit and resend); the rest are not.
+ */
+export type SubmitErrorCode =
+  | "rate_limited"
+  | "national_id_already_registered"
+  | "identity_conflict"
+  | "invalid"
+  | "backend"
+  | "connection";
+
+/** Codes where retrying the same payload can never succeed. */
+export const EDITABLE_ERROR_CODES: readonly SubmitErrorCode[] = [
+  "national_id_already_registered",
+  "identity_conflict",
+  "invalid",
+];
+
 /** Validate one field; returns the error message ("" when valid). */
 export function validateField(name: FieldName, value: string): string {
   const schema = fieldSchemas[name];
