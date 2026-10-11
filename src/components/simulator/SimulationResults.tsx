@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Info } from 'lucide-react';
+import { CheckIcon } from '../icons';
 import { fmtCOP, fmtPct, type Frequency } from '@/lib/credit';
 import { config } from '@/lib/config';
 import { useSimulator } from '../simulator-store';
@@ -117,17 +118,25 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
           )}
         >
           <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="opt-platform"
-              checked={acceptsPlatform}
-              onChange={(e) => setAcceptsPlatform(e.target.checked)}
-              className="mt-0.5 h-6 w-6 rounded accent-primary-brand border-border cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            />
             <div className="flex-1 text-xs min-w-0">
               <div className="flex items-center justify-between gap-2">
-                <label htmlFor="opt-platform" className="font-semibold text-navy cursor-pointer min-h-[44px] flex items-center -my-1 py-1 gap-1.5">
-                  Servicio de plataforma <span className="font-normal text-muted-foreground">· {fmtPct(platformFeeRate, 1)}%</span>
+                <label className="font-semibold text-navy cursor-pointer min-h-[44px] flex items-center -my-1 py-1 gap-2.5">
+                  <input
+                    type="checkbox"
+                    id="opt-platform"
+                    checked={acceptsPlatform}
+                    onChange={(e) => setAcceptsPlatform(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="grid h-6 w-6 shrink-0 place-items-center rounded-none border-[1.5px] border-primary-brand bg-white text-transparent transition-colors peer-checked:border-primary-brand-check-border peer-checked:bg-primary-brand peer-checked:text-primary-dark peer-focus-visible:ring-2 peer-focus-visible:ring-primary-brand peer-focus-visible:ring-offset-2"
+                  >
+                    <CheckIcon size={15} className="stroke-[3.5]" />
+                  </span>
+                  <span>
+                    Servicio de plataforma <span className="font-normal text-muted-foreground">· {fmtPct(platformFeeRate, 1)}%</span>
+                  </span>
                 </label>
                 <span
                   className={`text-sm font-semibold tabular-nums transition-[color] duration-150 ease-out shrink-0 ${acceptsPlatform ? 'text-navy' : 'text-muted-foreground line-through'}`}
@@ -187,17 +196,25 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
           acceptsGuarantee ? 'border-primary-brand' : 'border-border',
         )}>
           <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="opt-guarantee"
-              checked={acceptsGuarantee}
-              onChange={(e) => setAcceptsGuarantee(e.target.checked)}
-              className="mt-0.5 h-6 w-6 rounded accent-primary-brand border-border cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            />
             <div className="flex-1 text-xs min-w-0">
               <div className="flex items-center justify-between gap-2">
-                <label htmlFor="opt-guarantee" className="font-semibold text-navy cursor-pointer min-h-[44px] flex items-center -my-1 py-1 gap-1.5">
-                  Fianza de respaldo <span className="font-normal text-muted-foreground">· {fmtPct(guaranteeFeeRate, 1)}%</span>
+                <label className="font-semibold text-navy cursor-pointer min-h-[44px] flex items-center -my-1 py-1 gap-2.5">
+                  <input
+                    type="checkbox"
+                    id="opt-guarantee"
+                    checked={acceptsGuarantee}
+                    onChange={(e) => setAcceptsGuarantee(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="grid h-6 w-6 shrink-0 place-items-center rounded-none border-[1.5px] border-primary-brand bg-white text-transparent transition-colors peer-checked:border-primary-brand-check-border peer-checked:bg-primary-brand peer-checked:text-primary-dark peer-focus-visible:ring-2 peer-focus-visible:ring-primary-brand peer-focus-visible:ring-offset-2"
+                  >
+                    <CheckIcon size={15} className="stroke-[3.5]" />
+                  </span>
+                  <span>
+                    Fianza de respaldo <span className="font-normal text-muted-foreground">· {fmtPct(guaranteeFeeRate, 1)}%</span>
+                  </span>
                 </label>
                 <span
                   className={`text-sm font-semibold tabular-nums transition-[color,opacity] duration-150 ease-out shrink-0 ${acceptsGuarantee ? 'text-navy' : 'text-muted-foreground line-through'}`}
