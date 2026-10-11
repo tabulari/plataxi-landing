@@ -1,7 +1,9 @@
 'use client';
 
 import { useMemo, useRef, useState, useEffect } from 'react';
-import { fmtCOP, validateApplication, isTermDisabled, isFrequencyDisabled, type Frequency } from '@/lib/credit';
+import { ChevronDown } from 'lucide-react';
+import { fmtCOP, fmtPct, validateApplication, isTermDisabled, isFrequencyDisabled, type Frequency } from '@/lib/credit';
+import { config } from '@/lib/config';
 import { useSimulator } from './simulator-store';
 import { ChipRadioGroup } from './ChipRadioGroup';
 import { ApplyButton } from './ApplyButton';
@@ -29,6 +31,37 @@ const STEP_TITLES: Record<1 | 2 | 3, string> = {
   3: 'Tu solicitud',
 };
 
+/**
+ * Select nativo compacto para editar un valor directo en la fila de la tabla
+ * del paso 3 (plazo, forma de pago, fianza). Mismo tamaño táctil (44px) que
+ * los chips, con foco visible.
+ */
+function TableSelect({
+  label,
+  value,
+  onChange,
+  children,
+}: {
+  label: string;
+  value: string | number;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <span className="relative inline-flex items-center">
+      <select
+        aria-label={label}
+        value={value}
+        onChange={onChange}
+        className="appearance-none bg-transparent text-sm font-bold text-navy text-right min-h-[44px] py-2 pl-3 pr-7 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary-brand rounded-none"
+      >
+        {children}
+      </select>
+      <ChevronDown size={14} aria-hidden="true" className="pointer-events-none absolute right-1.5 text-muted-foreground" />
+    </span>
+  );
+}
+
 export function Simulator() {
   const {
     amount,
@@ -44,6 +77,8 @@ export function Simulator() {
     setAmount,
     setTerm,
     setFrequency,
+    acceptsGuarantee,
+    setAcceptsGuarantee,
   } = useSimulator();
 
   const frequencies = useMemo(
@@ -165,6 +200,16 @@ export function Simulator() {
   // El paso 3 muestra exactamente el mismo desglose que congela el modal al
   // abrirse: ambos leen este mismo objeto sim a través de summaryBreakdown.
   const summary = useMemo(() => summaryBreakdown(sim), [sim]);
+
+  // Derivados para las filas estáticas de la tabla del paso 3 (misma fórmula
+  // que apply/summary.ts; las filas editables —plazo, frecuencia, fianza— se
+  // leen directo del store/sim).
+  const monthlyRate = sim.monthlyRate ?? config.credit.monthlyRate;
+  const platformRate = sim.platformFeeRate ?? config.credit.platformFeeRate;
+  const guaranteeRate = sim.guaranteeFeeRate ?? config.credit.guaranteeFeeRate;
+  const legalInterest = sim.legalInterestAmount ?? Math.round(sim.amount * monthlyRate * sim.term);
+  const platformFee = sim.platformFeeAmount ?? 0;
+  const fianzaRef = Math.round(sim.amount * guaranteeRate);
 
   return (
     <form
@@ -333,9 +378,10 @@ export function Simulator() {
       </div>
       ) : (
       <div className="space-y-4 min-w-0">
-      {/* Paso 3 — la solicitud completa sobre fondo blanco, con plazo y forma de
-          pago aún editables. Los números salen del mismo snapshot que congela el
-          modal al abrirse, así que lo que se ve aquí es lo que se verá allá. */}
+      {/* Paso 3 — la solicitud completa sobre fondo blanco. Plazo, forma de
+          pago y fianza se editan directo en la tabla (selects inline). Los
+          números salen del mismo sim que congela el modal al abrirse, así que
+          lo que se ve aquí es lo que se verá allá. */}
       <button
         type="button"
         onClick={() => goStep(2)}
@@ -353,59 +399,91 @@ export function Simulator() {
         </p>
       </div>
 
-      {/* Detalle de la solicitud — los mismos datos que mostraba el sidebar oscuro */}
-      <dl className="border border-border/80 rounded-none divide-y divide-border/80 tabular-nums">
-        {summary.rows.map((row) => (
-          <div key={row.label} className="flex items-baseline justify-between gap-3 px-4 py-2.5">
-            <dt className="text-xs sm:text-sm text-muted-foreground">{row.label}</dt>
-            <dd className="text-sm font-bold text-navy text-right">{row.value}</dd>
+      {/* Detalle de la solicitud — filas locales (no summary.rows) porque Plazo,
+          Forma de pago y Fianza llevan control inline. FormSteps (modal) sigue
+          leyendo summaryBreakdown(frozen): si cambian etiquetas u orden,
+          sincronizar ambos. Bordes en amarillo de marca, como el chip activo. */}
+      <dl className="border border-primary-brand rounded-none divide-y divide-primary-brand tabular-nums">
+        <div className="flex items-center justify-between gap-3 px-4 py-1.5">
+          <dt className="text-xs sm:text-sm text-muted-foreground">Capital</dt>
+          <dd className="text-sm font-bold text-navy text-right">{`$${fmtCOP(sim.amount)}`}</dd>
+        </div>
+        <div className="flex items-center justify-between gap-3 px-4 py-1.5">
+          <dt className="text-xs sm:text-sm text-muted-foreground">Plazo</dt>
+          <dd>
+            <TableSelect
+              label="Plazo"
+              value={term}
+              onChange={(e) => {
+                markInteract('term');
+                setTerm(Number(e.target.value));
+              }}
+            >
+              {terms.map((t) => (
+                <option key={t.value} value={t.value} disabled={t.disabled} title={t.title}>
+                  {t.label}
+                </option>
+              ))}
+            </TableSelect>
+          </dd>
+        </div>
+        <div className="flex items-center justify-between gap-3 px-4 py-1.5">
+          <dt className="text-xs sm:text-sm text-muted-foreground">Forma de pago</dt>
+          <dd>
+            <TableSelect
+              label="Forma de pago"
+              value={frequency}
+              onChange={(e) => {
+                markInteract('frequency');
+                setFrequency(e.target.value as Frequency);
+              }}
+            >
+              {frequencies.map((f) => (
+                <option
+                  key={f.value}
+                  value={f.value}
+                  disabled={f.disabled}
+                  title={(f as { title?: string }).title}
+                >
+                  {f.estimate ? `${f.label} *` : f.label}
+                </option>
+              ))}
+            </TableSelect>
+          </dd>
+        </div>
+        <div className="flex items-center justify-between gap-3 px-4 py-1.5">
+          <dt className="text-xs sm:text-sm text-muted-foreground">Nº pagos</dt>
+          <dd className="text-sm font-bold text-navy text-right">{`${Math.round(sim.nPeriods)} cuotas`}</dd>
+        </div>
+        <div className="flex items-center justify-between gap-3 px-4 py-1.5">
+          <dt className="text-xs sm:text-sm text-muted-foreground">{`Interés Legal (${fmtPct(monthlyRate * sim.term, 1)}%)`}</dt>
+          <dd className="text-sm font-bold text-navy text-right">{`$${fmtCOP(legalInterest)}`}</dd>
+        </div>
+        {platformFee > 0 && (
+          <div className="flex items-center justify-between gap-3 px-4 py-1.5">
+            <dt className="text-xs sm:text-sm text-muted-foreground">{`Plataforma (${fmtPct(platformRate, 1)}%)`}</dt>
+            <dd className="text-sm font-bold text-navy text-right">{`$${fmtCOP(platformFee)}`}</dd>
           </div>
-        ))}
+        )}
+        <div className="flex items-center justify-between gap-3 px-4 py-1.5">
+          <dt className="text-xs sm:text-sm text-muted-foreground">{`Fianza (${fmtPct(guaranteeRate, 1)}%)`}</dt>
+          <dd>
+            <TableSelect
+              label="Financiar fianza"
+              value={acceptsGuarantee ? 'included' : 'excluded'}
+              onChange={(e) => {
+                markInteract('guarantee');
+                setAcceptsGuarantee(e.target.value === 'included');
+              }}
+            >
+              <option value="included">{`Incluida · $${fmtCOP(fianzaRef)}`}</option>
+              <option value="excluded">No incluida</option>
+            </TableSelect>
+          </dd>
+        </div>
       </dl>
 
       <p className="text-[11px] leading-relaxed text-muted-foreground -mt-1">{summary.note}</p>
-
-      {/* Plazo y forma de pago siguen ajustables desde aquí */}
-      <div>
-        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2" id="reqTermLabel">
-          Plazos
-        </p>
-        <ChipRadioGroup
-          className="grid grid-cols-3 gap-2.5"
-          ariaLabelledBy="reqTermLabel"
-          options={terms}
-          value={term}
-          onChange={(v) => {
-            markInteract('term');
-            setTerm(v);
-          }}
-        />
-      </div>
-
-      <div>
-        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2" id="reqFreqLabel">
-          Forma de pago
-        </p>
-        <ChipRadioGroup
-          className="grid grid-cols-2 sm:grid-cols-3 gap-2.5"
-          ariaLabelledBy="reqFreqLabel"
-          options={frequencies.map((f) => ({
-            value: f.value,
-            label: f.estimate ? `${f.label} *` : f.label,
-            disabled: f.disabled,
-            title: (f as { title?: string }).title,
-          }))}
-          value={frequency}
-          onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
-        />
-        <p className="text-xs text-muted-foreground mt-1.5 min-h-[18px]">
-          {frequencies.find((f) => f.value === frequency)?.estimate
-            ? '* Cuota estimada. El cargo definitivo se confirma en la oferta.'
-            : frequencies.some((f) => f.estimate)
-              ? 'Las opciones con * son estimadas.'
-              : '\u00A0'}
-        </p>
-      </div>
 
       <div aria-live="polite" aria-atomic="true" className="sr-only">
         {debouncedSr}
