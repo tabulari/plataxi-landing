@@ -113,7 +113,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
         <div
           className={cn(
             'rounded-none border p-3.5 space-y-2 bg-muted/20',
-            acceptsPlatform ? 'border-green/40' : 'border-border',
+            acceptsPlatform ? 'border-primary-brand' : 'border-border',
           )}
         >
           <div className="flex items-start gap-3">
@@ -122,7 +122,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
               id="opt-platform"
               checked={acceptsPlatform}
               onChange={(e) => setAcceptsPlatform(e.target.checked)}
-              className="mt-0.5 h-6 w-6 rounded accent-green border-border cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="mt-0.5 h-6 w-6 rounded accent-primary-brand border-border cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             />
             <div className="flex-1 text-xs min-w-0">
               <div className="flex items-center justify-between gap-2">
@@ -184,7 +184,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
         {/* 2. Fianza de respaldo */}
         <div className={cn(
           'rounded-none border p-3.5 space-y-2 bg-muted/20',
-          acceptsGuarantee ? 'border-green/40' : 'border-border',
+          acceptsGuarantee ? 'border-primary-brand' : 'border-border',
         )}>
           <div className="flex items-start gap-3">
             <input
@@ -192,7 +192,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
               id="opt-guarantee"
               checked={acceptsGuarantee}
               onChange={(e) => setAcceptsGuarantee(e.target.checked)}
-              className="mt-0.5 h-6 w-6 rounded accent-green border-border cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="mt-0.5 h-6 w-6 rounded accent-primary-brand border-border cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             />
             <div className="flex-1 text-xs min-w-0">
               <div className="flex items-center justify-between gap-2">

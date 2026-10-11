@@ -490,7 +490,7 @@ a:focus-visible {
   padding: 0.625rem 0.875rem;
   min-height: 44px;
   border-radius: 0px;
-  border: 1.5px solid var(--border);
+  border: 1.5px solid var(--color-primary-brand);
   background: #fff;
   color: var(--navy-ink);
   font-size: 0.875rem;
