@@ -40,8 +40,8 @@ function AccordionTrigger({
         {...props}
       >
         {children}
-        <div className="pointer-events-none ml-auto w-8 h-8 rounded-none bg-secondary-surface border border-primary-brand flex items-center justify-center shrink-0 transition-colors">
-          <ChevronDownIcon className="h-4 w-4 shrink-0 stroke-[2.5] text-primary-brand transition-transform duration-200 ease-out group-aria-expanded:rotate-180" />
+        <div className="pointer-events-none ml-auto w-8 h-8 rounded-none bg-primary-brand border border-primary-brand-check-border flex items-center justify-center shrink-0 transition-colors">
+          <ChevronDownIcon className="h-4 w-4 shrink-0 stroke-[2.5] text-primary-dark transition-transform duration-200 ease-out group-aria-expanded:rotate-180" />
         </div>
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
