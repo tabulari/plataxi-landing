@@ -173,7 +173,7 @@ export function HowItWorks() {
                   alt="Conductor de taxi con crédito aprobado en Plataxi"
                   fill
                   sizes="(min-width: 980px) 600px, 100vw"
-                  className="object-contain object-bottom scale-105 stack:scale-[1.08] origin-bottom"
+                  className="object-contain object-bottom scale-100 stack:scale-[1.08] origin-bottom"
                   priority={false}
                 />
               </div>
