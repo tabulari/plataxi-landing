@@ -6,15 +6,15 @@ export function Hero() {
   return (
     <section
       aria-labelledby="hero-heading"
-      className="relative w-full min-h-[520px] sm:min-h-[580px] md:min-h-[620px] lg:h-[78vh] lg:min-h-[640px] lg:max-h-[750px] xl:max-h-[780px] overflow-hidden flex items-center bg-secondary-surface"
+      className="relative w-full min-h-[520px] sm:min-h-[580px] md:min-h-[620px] lg:h-[88vh] lg:min-h-[640px] lg:max-h-[800px] xl:max-h-[830px] overflow-hidden flex items-center bg-secondary-surface"
     >
       <Image
-        src="/hero-update-image.jpeg"
-        alt="Taxista colombiano con Plataxi"
+        src="/hero-conductor-acordeon.jpeg"
+        alt="Taxista sonriendo con pulgar arriba y monumento del acordeón vallenato al fondo"
         fill
         priority
         sizes="100vw"
-        className="object-cover object-[58%_55%]"
+        className="object-cover object-[66%_50%] md:object-[82%_50%] lg:object-[84%_50%] stack:object-[60%_50%]"
       />
 
       {/* Scrim: subtle contrast boost for text */}
