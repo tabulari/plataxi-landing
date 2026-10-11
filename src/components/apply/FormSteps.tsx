@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import * as FocusScope from '@radix-ui/react-focus-scope';
-import { fmtCOP } from '@/lib/credit';
+import { fmtCOP, type Simulation } from '@/lib/credit';
 import {
   CONSENT_TEXT,
   type FieldName,
 } from '@/lib/application-schema';
-import { capFreq, type Values } from './use-application-form';
+import { type Values } from './use-application-form';
+import { summaryBreakdown } from './summary';
 import { displayBankName } from '@/lib/banks';
 import { buildNoBankWhatsAppUrl } from '@/lib/whatsapp';
 import { BankCombobox } from './BankCombobox';
@@ -301,7 +302,7 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
   consentError: string;
   setConsent: (v: boolean) => void;
   setConsentError: (v: string) => void;
-  frozen: { amount: number; term: number; payment: number; unit: string; frequency: string; periodRate: number };
+  frozen: Simulation;
 }) {
   const [showTerms, setShowTerms] = useState(false);
   const termsCloseRef = useRef<HTMLButtonElement>(null);
@@ -317,11 +318,14 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
     if (showTerms) termsCloseRef.current?.focus();
   }, [showTerms]);
 
+  // El desglose de la solicitud se calcula una sola vez (mismo helper que el
+  // paso 3 del simulador y el sidebar), de modo que los tres sitios muestran
+  // exactamente las mismas cifras.
+  const summary = useMemo(() => summaryBreakdown(frozen), [frozen]);
+
+  // Los datos de la solicitation viven en el bloque "Tu solicitud" de arriba;
+  // acá queda solo lo que el usuario escribió.
   const reviewRows: { k: string; v: string; full?: boolean }[] = [
-    { k: 'Monto solicitado', v: `$${fmtCOP(frozen.amount)} COP` },
-    { k: 'Cuota estimada', v: `$${fmtCOP(frozen.payment)} ${frozen.unit}` },
-    { k: 'Plazo', v: `${frozen.term} ${frozen.term === 1 ? 'mes' : 'meses'}` },
-    { k: 'Forma de pago', v: capFreq(frozen.frequency as 'daily' | 'weekly' | 'biweekly' | 'monthly') },
     { k: 'Nombre completo', v: values.fullName || '—', full: true },
     { k: 'Cédula de ciudadanía', v: values.idNumber || '—' },
     { k: 'Teléfono', v: values.phone || '—' },
@@ -340,13 +344,45 @@ export function Step3({ values, consent, consentError, setConsent, setConsentErr
         <p className="text-xs sm:text-sm text-muted-foreground mt-1">Revisa tus datos antes de enviar tu solicitud.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs">
-        {reviewRows.map(({ k, v, full }) => (
-          <div key={k} className={cn('flex flex-col gap-1 min-w-0', full && 'col-span-2')}>
-            <span className="text-muted-2 font-medium">{k}</span>
-            <span className="font-semibold text-navy text-[clamp(0.75rem,2.5vw,0.875rem)] break-words">{v}</span>
+      {/* Tu solicitud y Tus datos van en dos columnas en desktop: al quitar el
+          sidebar oscuro quedaron ~260px de ancho libre, y usarlos para poner
+          these blocks side by side es lo que hace que el paso 3 entre completo
+          en la altura del viewport sin barra de scroll. */}
+      <div className="grid grid-cols-1 max-[760px]:grid-cols-1 sm:grid-cols-2 gap-5 items-start">
+        {/* Tu solicitud — sobre fondo blanco, en tokens claros. Reemplaza al
+            sidebar oscuro del modal con el mismo contenido y las mismas cifras. */}
+        <section aria-label="Tu solicitud" className="border border-border/80 rounded-xl bg-white overflow-hidden">
+          <div className="px-4 py-3 bg-secondary-surface border-b border-border/80">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Tu solicitud</p>
+            <p className="text-2xl font-extrabold text-navy tabular-nums tracking-tight leading-tight mt-0.5">
+              {summary.payment}
+              <span className="text-sm font-semibold text-muted-foreground ml-1.5">{summary.unit}</span>
+            </p>
           </div>
-        ))}
+          <dl className="divide-y divide-border/80 tabular-nums">
+            {summary.rows.map((row) => (
+              <div key={row.label} className="flex items-baseline justify-between gap-3 px-4 py-2">
+                <dt className="text-xs sm:text-sm text-muted-foreground">{row.label}</dt>
+                <dd className="text-sm font-bold text-navy text-right">{row.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <p className="text-[11px] leading-relaxed text-muted-foreground px-4 py-2.5 border-t border-border/80 bg-secondary-surface/40">
+            {summary.note}
+          </p>
+        </section>
+
+        <div>
+          <p className="text-xs font-semibold tracking-wider uppercase text-muted-foreground mb-2.5">Tus datos</p>
+          <div className="grid grid-cols-2 gap-3 p-4 bg-muted rounded-xl border border-border/80 text-xs">
+            {reviewRows.map(({ k, v, full }) => (
+              <div key={k} className={cn('flex flex-col gap-1 min-w-0', full && 'col-span-2')}>
+                <span className="text-muted-2 font-medium">{k}</span>
+                <span className="font-semibold text-navy text-[clamp(0.75rem,2.5vw,0.875rem)] break-words">{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <label className="flex gap-3 items-start text-xs sm:text-sm cursor-pointer min-h-[44px] py-2 -m-2 p-2 rounded-lg">

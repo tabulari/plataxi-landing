@@ -7,6 +7,7 @@ import { ChipRadioGroup } from './ChipRadioGroup';
 import { ApplyButton } from './ApplyButton';
 import { AmountInput } from './simulator/AmountInput';
 import { SimulationResults } from './simulator/SimulationResults';
+import { summaryBreakdown } from './apply/summary';
 import { FieldError } from './FieldError';
 import { track } from '@/lib/analytics';
 import { clearDraft, clearSubmittedApplication } from '@/lib/draft-storage';
@@ -21,6 +22,12 @@ const ALL_FREQUENCIES: { value: Frequency; label: string; estimate?: true }[] = 
   { value: 'bimonthly', label: 'Bimestral', estimate: true },
   { value: 'quarterly', label: 'Trimestral', estimate: true },
 ];
+
+const STEP_TITLES: Record<1 | 2 | 3, string> = {
+  1: 'Arma tu crédito',
+  2: 'Tu cuota',
+  3: 'Tu solicitud',
+};
 
 export function Simulator() {
   const {
@@ -90,6 +97,24 @@ export function Simulator() {
   const [snapAnnouncement, setSnapAnnouncement] = useState('');
   const activeSubmission = useActiveSubmission();
 
+  // Wizard estilo Dribbble: paso 1 = formulario, paso 2 = cuota, paso 3 = solicitud
+  // editable que reemplaza el sidebar oscuro del modal. Si hay solicitud activa al
+  // montar, se arranca en el paso 2 (antes el banner era visible de inmediato).
+  const [step, setStep] = useState<1 | 2 | 3>(activeSubmission ? 2 : 1);
+  const stepHeadingRef = useRef<HTMLParagraphElement>(null);
+  const prevStepRef = useRef(step);
+  const goStep = (next: 1 | 2 | 3) => {
+    if (next === step) return;
+    setStep(next);
+    track('sim_step', { step: next });
+  };
+  useEffect(() => {
+    if (prevStepRef.current !== step) {
+      prevStepRef.current = step;
+      stepHeadingRef.current?.focus({ preventScroll: true });
+    }
+  }, [step]);
+
   // Anuncio accesible cuando el plazo o forma de pago hacen auto-snap por cambio de monto
   const prevTermRef = useRef(term);
   const prevFrequencyRef = useRef(frequency);
@@ -137,14 +162,31 @@ export function Simulator() {
     return () => clearTimeout(id);
   }, [srText]);
 
+  // El paso 3 muestra exactamente el mismo desglose que congela el modal al
+  // abrirse: ambos leen este mismo objeto sim a través de summaryBreakdown.
+  const summary = useMemo(() => summaryBreakdown(sim), [sim]);
+
   return (
     <form
       ref={simRef}
       id="simulator"
       aria-label="Simulador de crédito"
       onSubmit={(e) => e.preventDefault()}
-      className="bg-card border border-green/20 border-t-[3px] border-t-green/40 rounded-2xl p-5 sm:p-8 shadow-md space-y-6"
+      className="bg-white border border-border/80 rounded-none p-5 sm:p-6 shadow-sm space-y-5"
     >
+      {/* Indicador de paso (wizard estilo Dribbble) — recibe foco al cambiar de paso */}
+      <p
+        ref={stepHeadingRef}
+        tabIndex={-1}
+        aria-live="polite"
+        className="text-xs font-bold uppercase tracking-wider text-muted-foreground outline-none"
+      >
+        {`Paso ${step} de 3 — ${STEP_TITLES[step]}`}
+      </p>
+
+      {/* Paso 1 — formulario (monto, plazo, frecuencia) + NEXT */}
+      {step === 1 ? (
+      <div className="space-y-5 min-w-0">
       {/* Amount Input with Stepper & Slider */}
       <AmountInput
         amount={amount}
@@ -163,14 +205,13 @@ export function Simulator() {
 
       {/* Plazo — chips 1-3 con reglas de disponibilidad según monto */}
       <div>
-        <p className="text-sm font-semibold text-foreground mb-1.5" id="plazoLabel">
+        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2" id="plazoLabel">
           Plazos
         </p>
         <ChipRadioGroup
-          className="flex flex-wrap gap-2"
+          className="grid grid-cols-3 gap-2.5"
           ariaLabelledBy="plazoLabel"
           ariaDescribedBy="plazoHint"
-          hideCheck
           options={terms}
           value={term}
           onChange={(v) => {
@@ -193,15 +234,13 @@ export function Simulator() {
 
       {/* Payment Frequency / Forma de pago Selector */}
       <div>
-        <p className="text-sm font-semibold text-foreground mb-1.5" id="freqLabel">
+        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2" id="freqLabel">
           Forma de pago
         </p>
         <ChipRadioGroup
-          className="flex flex-wrap gap-2"
+          className="grid grid-cols-2 sm:grid-cols-3 gap-2.5"
           ariaLabelledBy="freqLabel"
           ariaDescribedBy="freqHint"
-          chipClassName="chip-freq"
-          hideCheck
           options={frequencies.map((f) => ({
             value: f.value,
             label: f.estimate ? `${f.label} *` : f.label,
@@ -220,26 +259,51 @@ export function Simulator() {
         </p>
       </div>
 
-      {/* Distilled Fintech Results Card - sim usa settledAmount para cuota estable, pero validación es instantánea */}
-      <SimulationResults sim={sim} frequency={frequency} />
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {debouncedSr}
+      </div>
 
-      {/* Action CTA & Single Quiet Trust Line */}
-      <div className="pt-2 space-y-2.5">
+      {/* NEXT estilo Dribbble */}
+      <div className="pt-1 space-y-2.5">
         <FieldError
-          id="simulator-error"
           message={liveValidity.ok ? '' : liveValidity.message}
           reserveSpace={false}
           iconSize={15}
-          className={cn('text-sm transition-[opacity,transform] duration-150 ease-out', liveValidity.ok ? 'h-0 overflow-hidden opacity-0' : 'h-auto mb-2 opacity-100')}
+          className={cn('text-sm transition-all', liveValidity.ok ? 'h-0 overflow-hidden' : 'h-auto mb-2')}
           role={liveValidity.ok ? undefined : 'alert'}
           aria-live="polite"
           aria-hidden={liveValidity.ok ? true : undefined}
         />
+        <button
+          type="button"
+          onClick={() => goStep(2)}
+          disabled={!liveValidity.ok}
+          className="w-full min-h-[48px] rounded-none bg-primary-brand text-primary-dark hover:bg-primary-brand/90 disabled:opacity-40 shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary-brand focus-visible:ring-offset-2"
+        >
+          Ver mi cuota →
+        </button>
+      </div>
+      </div>
+      ) : step === 2 ? (
+      <div className="space-y-4 min-w-0">
+      {/* Paso 2 — resumen de cuota + avance a la solicitud */}
+      <button
+        type="button"
+        onClick={() => goStep(1)}
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-navy underline underline-offset-4 cursor-pointer py-1.5 min-h-[44px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green rounded-none"
+      >
+        ← Ajustar monto o plazo
+      </button>
+      {/* Distilled Fintech Results Card - sim usa settledAmount para cuota estable, pero validación es instantánea */}
+      <SimulationResults sim={sim} frequency={frequency} />
+
+      {/* Action CTA & Single Quiet Trust Line */}
+      <div className="pt-1 space-y-2.5">
         {activeSubmission && (
           <div
             role="status"
             aria-label="Solicitud activa encontrada"
-            className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3.5 rounded-xl bg-green/10 border border-green/30 text-xs sm:text-sm text-navy"
+            className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3.5 rounded-none bg-green/10 border border-green/30 text-xs sm:text-sm text-navy"
           >
             <span className="flex items-center gap-2 min-w-0">
               <span className="w-2.5 h-2.5 rounded-full bg-green shrink-0 animate-pulse" aria-hidden="true" />
@@ -257,12 +321,114 @@ export function Simulator() {
             </ApplyButton>
           </div>
         )}
+        <button
+          type="button"
+          onClick={() => goStep(3)}
+          disabled={!liveValidity.ok}
+          className="w-full min-h-[48px] rounded-none bg-primary-brand text-primary-dark hover:bg-primary-brand/90 disabled:opacity-40 shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary-brand focus-visible:ring-offset-2"
+        >
+          Ver mi solicitud →
+        </button>
+      </div>
+      </div>
+      ) : (
+      <div className="space-y-4 min-w-0">
+      {/* Paso 3 — la solicitud completa sobre fondo blanco, con plazo y forma de
+          pago aún editables. Los números salen del mismo snapshot que congela el
+          modal al abrirse, así que lo que se ve aquí es lo que se verá allá. */}
+      <button
+        type="button"
+        onClick={() => goStep(2)}
+        className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-navy underline underline-offset-4 cursor-pointer py-1.5 min-h-[44px] transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green rounded-none"
+      >
+        ← Volver a ver mi cuota
+      </button>
+
+      {/* Cuota destacada */}
+      <div className="bg-secondary-surface border border-border/80 rounded-none px-4 py-3.5 text-center">
+        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Tu cuota</p>
+        <p className="text-3xl sm:text-4xl font-extrabold text-navy tracking-tight tabular-nums leading-tight mt-1">
+          {summary.payment}
+          <span className="text-base font-bold text-muted-foreground ml-1">{summary.unit}</span>
+        </p>
+      </div>
+
+      {/* Detalle de la solicitud — los mismos datos que mostraba el sidebar oscuro */}
+      <dl className="border border-border/80 rounded-none divide-y divide-border/80 tabular-nums">
+        {summary.rows.map((row) => (
+          <div key={row.label} className="flex items-baseline justify-between gap-3 px-4 py-2.5">
+            <dt className="text-xs sm:text-sm text-muted-foreground">{row.label}</dt>
+            <dd className="text-sm font-bold text-navy text-right">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <p className="text-[11px] leading-relaxed text-muted-foreground -mt-1">{summary.note}</p>
+
+      {/* Plazo y forma de pago siguen ajustables desde aquí */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2" id="reqTermLabel">
+          Plazos
+        </p>
+        <ChipRadioGroup
+          className="grid grid-cols-3 gap-2.5"
+          ariaLabelledBy="reqTermLabel"
+          options={terms}
+          value={term}
+          onChange={(v) => {
+            markInteract('term');
+            setTerm(v);
+          }}
+        />
+      </div>
+
+      <div>
+        <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-2" id="reqFreqLabel">
+          Forma de pago
+        </p>
+        <ChipRadioGroup
+          className="grid grid-cols-2 sm:grid-cols-3 gap-2.5"
+          ariaLabelledBy="reqFreqLabel"
+          options={frequencies.map((f) => ({
+            value: f.value,
+            label: f.estimate ? `${f.label} *` : f.label,
+            disabled: f.disabled,
+            title: (f as { title?: string }).title,
+          }))}
+          value={frequency}
+          onChange={(v) => { markInteract('frequency'); setFrequency(v); }}
+        />
+        <p className="text-xs text-muted-foreground mt-1.5 min-h-[18px]">
+          {frequencies.find((f) => f.value === frequency)?.estimate
+            ? '* Cuota estimada. El cargo definitivo se confirma en la oferta.'
+            : frequencies.some((f) => f.estimate)
+              ? 'Las opciones con * son estimadas.'
+              : '\u00A0'}
+        </p>
+      </div>
+
+      <div aria-live="polite" aria-atomic="true" className="sr-only">
+        {debouncedSr}
+      </div>
+
+      {/* Aceptar = el CTA final, que vive en este paso */}
+      <div className="pt-1 space-y-2.5">
+        <FieldError
+          id="simulator-error"
+          message={liveValidity.ok ? '' : liveValidity.message}
+          reserveSpace={false}
+          iconSize={15}
+          className={cn('text-sm transition-[opacity,transform] duration-150 ease-out', liveValidity.ok ? 'h-0 overflow-hidden opacity-0' : 'h-auto mb-2 opacity-100')}
+          role={liveValidity.ok ? undefined : 'alert'}
+          aria-live="polite"
+          aria-hidden={liveValidity.ok ? true : undefined}
+        />
         <ApplyButton
           origin="simulator"
           variant="default"
           size="block"
           aria-describedby={liveValidity.ok ? undefined : 'simulator-error'}
-          className="w-full min-h-[52px] py-3 bg-green text-ink hover:bg-green-bright shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer"
+          className="w-full min-h-[52px] py-3 rounded-none bg-primary-brand text-primary-dark hover:bg-primary-brand/90 shadow-sm hover:shadow-md transition-[transform,opacity,background-color,box-shadow] active:scale-[0.96] text-base font-bold border-0 cursor-pointer"
         >
           Pedir mi crédito
         </ApplyButton>
@@ -281,6 +447,8 @@ export function Simulator() {
           </div>
         )}
       </div>
+      </div>
+      )}
     </form>
   );
 }

@@ -131,7 +131,13 @@ test.describe('Submit failure recovery', () => {
       localStorage.setItem('plataxi_draft_v1', btoa(unescape(encodeURIComponent(JSON.stringify(draft)))));
     });
     await page.locator('#simula').scrollIntoViewIfNeeded();
-    await page.getByRole('button', { name: /pedir mi crédito|iniciar solicitud|ver estado/i }).first().click();
+    // The simulator is a 3-step wizard and the final CTA lives on step 3, so the
+    // modal has to be reached by walking the steps. Each click auto-waits for the
+    // next step's button instead of sleeping a fixed amount.
+    const sim = page.locator('#simulator');
+    await sim.getByRole('button', { name: 'Ver mi cuota' }).click();
+    await sim.getByRole('button', { name: 'Ver mi solicitud' }).click();
+    await sim.getByRole('button', { name: 'Pedir mi crédito' }).click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
     return dialog;

@@ -16,8 +16,8 @@ export interface FaqRates {
 
 /**
  * Las FAQ se construyen a partir de las tasas servidas por Core (financial_settings
- * vía rates-config): un solo source de verdad con el simulador. Nada de montos
- * planos en COP — los montos dependen del capital que elija el usuario.
+ * vía rates-config): un solo source de verdad con el simulador. Solo preguntas con datos
+ * aprobados por legal/producto (sin inventar tasas, sellos ni terceros no suscritos).
  */
 export function buildFaqs(rates: FaqRates): Faq[] {
   return [
@@ -25,6 +25,18 @@ export function buildFaqs(rates: FaqRates): Faq[] {
       q: '¿Qué incluye mi cuota? ¿Hay intereses ocultos?',
       answer: `Sin interés oculto. Tu cuota 1 a 3 meses ya incluye solo dos rubros fijos y claros: administración (${fmtPct(rates.platformFeeRate, 1)}% del capital, prorrateado por cuota) y fianza (${fmtPct(rates.guaranteeFeeRate, 1)}% del capital). Eliges abono diario, semanal, quincenal o mensual y pagas cuota fija sin sorpresas.`,
       icon: 'document',
+    },
+    {
+      q: '¿Quién otorga y administra mi crédito?',
+      answer:
+        'Plataxi S.A.S. otorga y administra tu crédito de manera directa y 100% digital, sin intermediarios ni cobros por fuera de la plataforma.',
+      icon: 'shield',
+    },
+    {
+      q: '¿Cómo realizo el pago de mis cuotas?',
+      answer:
+        'Pagas de forma fácil y digital mediante transferencia a través de Nequi, DaviPlata o tu cuenta bancaria, eligiendo la frecuencia que mejor se adapte a tu trabajo (diaria, semanal, quincenal o mensual).',
+      icon: 'refresh',
     },
     {
       q: '¿Simular o solicitar me baja puntos o afecta en Datacrédito?',

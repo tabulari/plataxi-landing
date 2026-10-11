@@ -1,4 +1,3 @@
-import { WhatsAppLink } from './WhatsAppLink';
 import { SimulateAnim } from './SimulateAnim';
 
 export function SimulateSection({ children }: { children: React.ReactNode }) {
@@ -10,15 +9,8 @@ export function SimulateSection({ children }: { children: React.ReactNode }) {
             Calcula cuánto pagas y a qué plazo
           </h2>
         </div>
-        <div data-sim="card" className="mx-auto max-w-3xl flex flex-col gap-4">
+        <div data-sim="card" className="mx-auto max-w-xl flex flex-col gap-4">
           {children}
-          <WhatsAppLink
-            ctx="simula"
-            className="flex items-center justify-center gap-2.5 text-sm font-semibold text-green-ink hover:text-green-ink/80 transition-colors py-3 min-h-[44px]"
-          >
-            <span className="wa-ico" aria-hidden="true" />
-            Consulta tu caso por WhatsApp
-          </WhatsAppLink>
         </div>
       </div>
     </SimulateAnim>

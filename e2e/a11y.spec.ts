@@ -29,10 +29,14 @@ test("apply modal (open) has no axe violations", async ({ page }) => {
   await page.goto("/");
   await page.locator("#simula").scrollIntoViewIfNeeded();
   await page.waitForTimeout(600);
-  await page
-    .getByRole("button", { name: /iniciar solicitud|pedir mi crédito/i })
-    .first()
-    .click();
+  // The simulator is a 3-step wizard and the final CTA lives on step 3, so the
+  // modal has to be reached by walking the steps rather than by clicking a
+  // button that is not on the first screen.
+  const sim = page.locator("#simulator");
+  for (const label of ["Ver mi cuota", "Ver mi solicitud", "Pedir mi crédito"]) {
+    await sim.getByRole("button", { name: label }).first().click();
+    await page.waitForTimeout(350);
+  }
   await page.getByRole("dialog").waitFor();
   const results = await new AxeBuilder({ page })
     .include("[role='dialog']")

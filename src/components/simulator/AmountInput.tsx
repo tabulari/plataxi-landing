@@ -59,18 +59,18 @@ export function AmountInput({
       {/* Amount Input Control */}
       <div>
         <div className="mb-1.5">
-          <label htmlFor="amount-input" className="text-sm font-semibold text-foreground">
+          <label htmlFor="amount-input" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
             ¿Cuánto dinero necesitas?
           </label>
         </div>
 
-        <div className="field-shell flex items-center gap-2 sm:gap-3 bg-white rounded-[12px] p-1.5 sm:p-2 border border-border transition-[border-color,box-shadow]">
+        <div className="field-shell flex items-center gap-2 sm:gap-3 bg-white rounded-none p-1.5 sm:p-2 border border-border transition-[border-color,box-shadow]">
           <button
             type="button"
             aria-label="Disminuir monto"
             onClick={() => bump(-1)}
             disabled={amount <= amountMin}
-            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-none bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
           >
             <MinusIcon size={18} />
           </button>
@@ -96,7 +96,7 @@ export function AmountInput({
             aria-label="Aumentar monto"
             onClick={() => bump(1)}
             disabled={amount >= amountMax}
-            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-md bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+            className="flex-shrink-0 flex items-center justify-center w-11 h-11 min-h-11 min-w-11 sm:w-12 sm:h-12 sm:min-h-[48px] sm:min-w-[48px] rounded-none bg-muted hover:bg-primary-brand/30 text-foreground disabled:opacity-35 transition-colors outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
           >
             <PlusIcon size={18} />
           </button>

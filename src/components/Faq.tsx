@@ -12,8 +12,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
-import { WhatsAppLink } from './WhatsAppLink';
-import { WhatsAppIcon } from './icons';
 
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
@@ -121,17 +119,14 @@ export function Faq() {
       ref={containerRef}
       id="preguntas"
       aria-labelledby="faq-heading"
-      className="mt-16 md:mt-32 relative"
+      className="mt-16 md:mt-32 pb-20 md:pb-28 relative"
     >
       <div className="mx-auto max-w-container px-6">
         {/* Centred header + single stacked column, as in the reference. */}
-        <div data-faq="header" className="text-center max-w-2xl mx-auto space-y-2 mb-10 lg:mb-12">
+        <div data-faq="header" className="text-center max-w-2xl mx-auto mb-10 lg:mb-12">
           <h2 id="faq-heading" className="text-section font-display font-bold text-navy">
             Todo claro sobre tu crédito
           </h2>
-          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed pt-1">
-            Tasas, cuotas y requisitos, con los números reales del simulador.
-          </p>
         </div>
 
         <div className="max-w-3xl mx-auto">
@@ -142,7 +137,7 @@ export function Faq() {
                 id={`faq-${i}`}
                 value={`faq-${i}`}
                 data-faq="item"
-                className="rounded-lg bg-surface-card overflow-hidden"
+                className="rounded-none bg-white border border-border/80 shadow-2xs overflow-hidden"
               >
                 <AccordionTrigger className="px-6 py-5 text-left text-base font-bold text-navy hover:no-underline gap-4 active:scale-[0.97] transition-transform">
                   <span className="leading-snug text-left">{faq.q}</span>
@@ -158,23 +153,6 @@ export function Faq() {
           </Accordion>
         </div>
 
-        {/* Still-have-a-question bar, now centred under the stack */}
-        <div className="max-w-3xl mx-auto mt-10 pt-8 border-t border-border/70 text-center space-y-4">
-          <div className="space-y-1">
-            <h3 className="text-base font-bold text-navy">¿Tienes una duda diferente?</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Nuestro equipo te atiende directamente por WhatsApp para revisar tu caso particular en minutos.
-            </p>
-          </div>
-
-          <WhatsAppLink
-            ctx="faq"
-            className="inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-lg bg-surface-card text-navy font-bold text-sm transition-[transform,opacity,background-color,box-shadow,border-color] active:scale-[0.98]"
-          >
-            <WhatsAppIcon size={18} className="text-green-ink shrink-0" />
-            <span>Hablar con un asesor</span>
-          </WhatsAppLink>
-        </div>
 
         {/* Static noscript fallback for crawlers & non-JS */}
         <noscript>

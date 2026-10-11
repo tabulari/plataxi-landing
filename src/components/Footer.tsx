@@ -1,54 +1,12 @@
 'use client';
 
-import { useRef } from 'react';
 import Link from 'next/link';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { useGSAP } from '@gsap/react';
 import { config } from '@/lib/config';
 import { PlataxiWordmark } from './icons';
-
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger);
-}
 
 const HEADER_OFFSET = 80;
 
 export function Footer() {
-  const footerRef = useRef<HTMLElement>(null);
-
-  useGSAP(() => {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion || !footerRef.current) return;
-
-    const cols = footerRef.current.querySelectorAll('[data-footer-col]');
-    if (!cols.length) return;
-
-    gsap.fromTo(
-      cols,
-      { y: 20, autoAlpha: 0 },
-      {
-        y: 0,
-        autoAlpha: 1,
-        stagger: 0.1,
-        duration: 0.5,
-        ease: 'power2.out',
-        scrollTrigger: {
-          trigger: footerRef.current,
-          start: 'top 85%',
-          once: true,
-        },
-      },
-    );
-  }, { scope: footerRef });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
-    const el = e.currentTarget;
-    const r = el.getBoundingClientRect();
-    el.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
-    el.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
-  };
-
   const handleHashClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (!href.startsWith('#')) return;
     const el = document.querySelector(href);
@@ -61,24 +19,21 @@ export function Footer() {
   };
 
   return (
-    <footer ref={footerRef} onMouseMove={handleMouseMove} className="relative bg-primary-dark text-white overflow-hidden footer-texture footer-grid-drift">
-      {/* Cursor spotlight — purely visual, no pointer events */}
-      <div aria-hidden="true" className="footer-cursor-glow pointer-events-none absolute inset-0" />
-
+    <footer className="relative bg-primary-dark text-white">
       <div className="mx-auto max-w-container px-6 pt-12 pb-10 lg:pt-16 lg:pb-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
         {/* Brand & Social */}
         <div data-footer-col className="sm:col-span-2 flex flex-col justify-between space-y-5">
           <div className="space-y-3">
             <a
               href="#top"
-              aria-label={`${config.brandName} (inicio)`}
+              aria-label={`${config.brandName} — inicio`}
               onClick={(e) => handleHashClick(e, '#top')}
               className="inline-flex items-center min-h-[44px]"
             >
               <PlataxiWordmark variant="white" height={32} />
             </a>
             <p className="text-sm text-white/70 leading-relaxed max-w-sm">
-              Microcréditos para taxistas en Colombia, directo a tu cuenta.
+              Microcréditos para taxistas en Colombia. Sin filas, sin fiador y directo a tu cuenta.
             </p>
           </div>
 
@@ -87,8 +42,8 @@ export function Footer() {
               href={config.social.facebook}
               target="_blank"
               rel="noopener noreferrer me"
-              aria-label="Facebook (abre en pestaña nueva)"
-              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark active:scale-[0.97] transition-[transform,background-color,color] duration-150 ease-out shrink-0"
+              aria-label="Facebook — se abre en pestaña nueva"
+              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-all shrink-0"
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M14 8 h2.5 V5 H14 c-2 0-3.3 1.3-3.3 3.4 V10 H8 v3 h2.7 v8 h3.3 v-8 H16 l.5-3 h-2.8 V8.8 C13.7 8.2 14 8 14 8Z" />
@@ -98,8 +53,8 @@ export function Footer() {
               href={config.social.instagram}
               target="_blank"
               rel="noopener noreferrer me"
-              aria-label="Instagram (abre en pestaña nueva)"
-              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark active:scale-[0.97] transition-[transform,background-color,color] duration-150 ease-out shrink-0"
+              aria-label="Instagram — se abre en pestaña nueva"
+              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-all shrink-0"
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -111,8 +66,8 @@ export function Footer() {
               href={config.social.youtube}
               target="_blank"
               rel="noopener noreferrer me"
-              aria-label="YouTube (abre en pestaña nueva)"
-              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark active:scale-[0.97] transition-[transform,background-color,color] duration-150 ease-out shrink-0"
+              aria-label="YouTube — se abre en pestaña nueva"
+              className="inline-flex items-center justify-center w-11 h-11 rounded-xl text-white/70 hover:bg-primary-brand hover:text-primary-dark hover:scale-105 active:scale-[0.97] transition-all shrink-0"
             >
               <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42A29.94 29.94 0 0 0 1 12a29.94 29.94 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29.94 29.94 0 0 0 23 12a29.94 29.94 0 0 0-.46-5.58z M9.75 15.5V8.5L15.5 12z" />
@@ -145,6 +100,13 @@ export function Footer() {
           >
             Centro de ayuda
           </a>
+          <a
+            href="#como-funciona"
+            onClick={(e) => handleHashClick(e, '#como-funciona')}
+            className="text-sm text-white/70 hover:text-primary-brand transition-colors flex items-center min-h-[44px]"
+          >
+            Cómo funciona
+          </a>
           <a href={`mailto:${config.contactEmail}`} className="text-sm text-white/70 hover:text-primary-brand transition-colors flex items-center min-h-[44px]">
             Contacto
           </a>
@@ -160,10 +122,10 @@ export function Footer() {
       {/* Compliance Bar */}
       <div className="border-t border-primary-brand/10">
         <div className="mx-auto max-w-container px-6 py-5 space-y-3">
-          <p className="text-xs text-white/55 text-center leading-relaxed">
-            {config.company.legalName} · NIT {config.company.nit} · {config.company.address} · {config.company.contactPhone}
+          <p className="text-xs text-white/45 text-center leading-relaxed">
+            {config.company.legalName}
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/55 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/45 text-center sm:text-left">
             <p suppressHydrationWarning>© {new Date().getFullYear()} {config.brandName}. Todos los derechos reservados.</p>
             <p>Sujeto a la Ley 1581 de 2012 (Habeas Data).</p>
           </div>

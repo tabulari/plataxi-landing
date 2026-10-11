@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef } from 'react';
-import Image from 'next/image';
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { LightningIcon, ShieldCheckIcon, CalendarIcon, CreditCardIcon } from './icons';
@@ -34,7 +33,7 @@ const BENEFITS: Benefit[] = [
     id: 'no-fees',
     Icon: ShieldCheckIcon,
     title: 'Cero cobros previos',
-    body: 'No pagas pólizas, seguros ocultos ni adelantos.',
+    body: 'No pagas pólizas, seguros ocultos ni adelantos. Cero trampas.',
   },
   {
     id: 'flexible',
@@ -99,33 +98,22 @@ export function Benefits() {
       className="mt-16 md:mt-32"
     >
       <div className="mx-auto max-w-container px-6">
-        <div ref={headerRef} className="max-w-3xl lg:max-w-4xl mx-auto text-center mb-10 lg:mb-12">
+        <div ref={headerRef} className="max-w-3xl lg:max-w-4xl mx-auto text-center mb-10 lg:mb-12 space-y-3">
           <h2 id="benefits-heading" className="text-section font-display font-bold text-navy">
             Tu crédito, a tu propio ritmo
           </h2>
+          <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto">
+            Financiación clara para lo que tu taxi necesita: SOAT, llantas, mantenimiento o reparaciones imprevistas, con cupos de hasta {MAX_AMOUNT}.
+          </p>
         </div>
 
-        {/* Section panoramic image preserved — inDrive 2:1 aspect ratio with rounded-3xl */}
-        <div className="relative w-full aspect-[3/2] sm:aspect-[2/1] rounded-3xl overflow-hidden mb-8 lg:mb-10 shadow-xs border border-border/40">
-          <Image
-            src="/hero-conductor.webp"
-            alt="Conductor de taxi colombiano consultando su celular junto a su vehículo"
-            fill
-            sizes="(min-width: 1120px) 1072px, 100vw"
-            className="object-cover"
-            priority={false}
-          />
-        </div>
-
-        {/* Bento: alternate card surfaces */}
+        {/* 4 tarjetas de beneficios en tarjetas blancas sobre fondo crema */}
         <div className="grid grid-cols-1 sm:grid-cols-2 stack:grid-cols-4 gap-5 lg:gap-6">
-          {BENEFITS.map((b, i) => (
+          {BENEFITS.map((b) => (
             <div
               key={b.id}
               data-benefit="card"
-              className={`flex flex-col gap-4 rounded-2xl p-6 sm:p-7 shadow-2xs hover:shadow-xs transition-shadow duration-200 ${
-                i % 2 === 0 ? 'bg-white border border-border/40' : 'bg-surface-card'
-              }`}
+              className="flex flex-col gap-4 rounded-2xl p-6 sm:p-7 bg-white border border-border/50 shadow-2xs hover:shadow-xs transition-shadow duration-200"
             >
               <div className="w-12 h-12 rounded-xl bg-primary-brand/20 text-primary-dark flex items-center justify-center shrink-0">
                 <b.Icon size={24} className="text-primary-dark stroke-[2.2]" aria-hidden="true" />

@@ -36,6 +36,18 @@
     --color-secondary-text-aa-rgb: 112 111 99; /* #706f63 */
     --color-secondary-text-aa: rgb(var(--color-secondary-text-aa-rgb));
 
+    /* Darker yellow derived from --color-primary-brand (#f6d860) for check
+       borders — NOT a sixth brand color. Every channel is multiplied by 0.65,
+       which scales luminance uniformly and therefore keeps the hue exactly at
+       48°, so this is a darkened brand yellow rather than a new hue.
+       It exists because the brand yellow on the cream surface is only 1.35:1,
+       too faint for a badge outline to read as a crisp edge. At 3.19:1 against
+       cream the outline separates from its own background, which is what makes
+       the check badge look sharp. Hard-coded rather than color-mix() so it
+       resolves on older Android WebViews (same reason as the token above). */
+    --color-primary-brand-check-border-rgb: 160 140 62; /* #a08c3e */
+    --color-primary-brand-check-border: rgb(var(--color-primary-brand-check-border-rgb));
+
     /* ===== Feedback (user state, not brand identity) =====
        Error uses a dedicated red (#c0253b, 5.8:1 on white — WCAG AA for small
        text). Success stays on the brand palette. */
@@ -124,7 +136,8 @@
     --border-2: var(--color-secondary-border);
     --hint-ink: var(--color-primary-dark);
     --hint-bg: var(--color-secondary-surface);
-      }
+    --radius: 0rem;
+  }
 
   * {
     box-sizing: border-box;
@@ -225,22 +238,6 @@
   footer a:focus-visible,
   footer button:focus-visible {
     outline-color: #fff !important;
-  }
-  /* Adaptive focus on dark surfaces: hero CTA + dark-glass pills over scrim.
-     #111110 outline is invisible on bg-primary-dark / bg-primary-dark/60 —
-     double-ring (white + dark) stays visible on both light and dark. */
-  [data-slot='hero-ctas'] button:focus-visible,
-  [role='status'][aria-label='Estado de solicitud activa'] button:focus-visible {
-    outline: none !important;
-    box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #111110 !important;
-    border-radius: 0.5rem;
-  }
-  @media (forced-colors: active) {
-    [data-slot='hero-ctas'] button:focus-visible,
-    [role='status'][aria-label='Estado de solicitud activa'] button:focus-visible {
-      outline: 2px solid CanvasText !important;
-      box-shadow: none !important;
-    }
   }
 
   /* Form field focus state: soft butter yellow without black outer ring.
@@ -373,8 +370,8 @@ a:focus-visible {
   display: flex;
   gap: 13px;
   align-items: flex-start;
-  background: rgb(var(--color-secondary-surface-rgb)/0.5);
-  border: 1px solid rgb(var(--color-primary-brand-rgb)/0.5);
+  background: #fff7ed;
+  border: 1px solid #fcd9b6;
   border-radius: 14px;
   padding: 18px 20px;
   margin-bottom: 38px;
@@ -388,9 +385,9 @@ a:focus-visible {
   margin: 0;
   font-size: 0.90625rem;
   line-height: 1.55;
-  color: rgb(var(--color-primary-dark));
+  color: #8a5520;
 }
-.legal-draft b { color: rgb(var(--color-primary-dark)); }
+.legal-draft b { color: #7a4513; }
 .legal-body h2 {
   font-size: 1.25rem;
   font-weight: 800;
@@ -457,15 +454,42 @@ a:focus-visible {
   vertical-align: -2px;
 }
 
+/* ===== modal de solicitud: encaje en pantallas de escritorio bajas =====
+   El modal no lleva scroll en desktop, así que en una ventana baja (un
+   portatil de 768px de alto) el formulario se pasaria del alto disponible y el
+   pie —el boton de accion— quedaria cortado. En vez de recortarlo o devolver
+   la barra, aqui se aprieta el ritmo: menos padding vertical y menos leading.
+   Solo aplica a desktop; en movil el modal si scrollea. */
+@media (min-width: 761px) and (max-height: 860px) {
+  .apply-modal-form.apply-modal-form {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+  .apply-modal-form > div {
+    row-gap: 0.75rem;
+  }
+  .apply-modal-footer.apply-modal-footer {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  /* La barra de pasos tambien cede: sus botones siguen en 44px de alto (target
+     tactil intacto), lo que se aprieta es el padding vertical de la fila. */
+  .apply-modal-steps.apply-modal-steps {
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+  }
+}
+
 /* ===== chip radio buttons ===== */
 .chip {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.375rem;
-  padding: 0.6875rem 1rem;
+  padding: 0.625rem 0.875rem;
   min-height: 44px;
-  border-radius: 999px;
+  border-radius: 0px;
   border: 1.5px solid var(--border);
   background: #fff;
   color: var(--navy-ink);
@@ -480,8 +504,8 @@ a:focus-visible {
   transform: scale(0.97);
 }
 .chip:hover:not(.active):not(:disabled) {
-  border-color: #b0bac8;
-  background: var(--bg-soft);
+  border-color: var(--color-primary-brand);
+  background: var(--color-secondary-surface);
 }
 .chip:disabled {
   opacity: 0.4;
@@ -513,6 +537,28 @@ a:focus-visible {
   opacity: 1;
   transform: scale(1);
   filter: blur(0);
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: var(--color-secondary-surface);
+  color: var(--color-primary-brand);
+  /* Derived darker brand yellow, not the brand token itself: on cream the
+     brand yellow is 1.35:1 and the outline disappears into the badge fill. */
+  border: 1.5px solid var(--color-primary-brand-check-border);
+  border-radius: 0;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+/* The badge grows from 18px to 22px and its glyph from 12px to 14px so the
+   check carries the same visual weight as the HowItWorks badges. The stroke
+   stays at 3.5, already set by the <Check> glyph itself. */
+.chip.active .ck svg {
+  width: 14px;
+  height: 14px;
 }
 @media (prefers-reduced-motion: reduce) {
   .chip .ck { transition: none; }
@@ -520,7 +566,7 @@ a:focus-visible {
 
 /* Frequency chips — seamless with base chip */
 .chip-freq {
-  padding: 0.6875rem 1rem;
+  padding: 0.625rem 0.875rem;
   justify-content: center;
 }
 
@@ -534,6 +580,14 @@ a:focus-visible {
   background-size: contain;
   flex-shrink: 0;
 }
+
+/* ===== payment number flash ===== */
+@keyframes flash {
+  0%   { opacity: 1; }
+  30%  { opacity: 0.4; }
+  60%  { opacity: 1; }
+}
+.flash { animation: flash 0.28s ease-out; }
 
 /* ===== footer texture & animations ===== */
 .footer-texture {
@@ -590,6 +644,7 @@ section:hover .footer-cursor-glow {
   .animate-overlay-out,
   .animate-pulse { animation: none !important; }
   .btn-spinner { animation: none !important; }
+  .flash { animation: none !important; }
   .footer-grid-drift { animation: none !important; }
   [data-footer-col] { opacity: 1 !important; transform: none !important; visibility: visible !important; }
 }

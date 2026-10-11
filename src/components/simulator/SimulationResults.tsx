@@ -67,17 +67,21 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
   const monthlyRate = sim.monthlyRate ?? config.credit.monthlyRate;
 
   return (
-    <div className="mt-6 pt-6 border-t border-border/80 space-y-4">
-      {/* Result Box — Cuota Estimada */}
-      <div className="rounded-xl bg-card border border-border p-4 sm:p-6 shadow-2xs">
-        <div className="flex flex-col items-center text-center gap-2 sm:gap-2.5">
+    <div className="space-y-4">
+      {/* Result Box — Cuota Estimada (hero crema claro sobre tarjeta blanca) */}
+      <div className="rounded-none bg-secondary-surface border border-primary-brand/50 p-5 sm:p-6 shadow-2xs relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full bg-primary-brand/40 blur-2xl"
+        />
+        <div className="relative flex flex-col items-center text-center gap-2 sm:gap-2.5">
           <span className="text-xs font-bold uppercase tracking-wider text-green-ink block">Tu cuota estimada</span>
           <div
             ref={paymentRef}
-            className="font-extrabold text-navy leading-none tabular-nums text-[clamp(1.875rem,8vw,2.625rem)] tracking-tight inline-flex items-baseline justify-center gap-1.5 sm:gap-2"
+            className="font-extrabold text-navy leading-none tabular-nums text-[clamp(2rem,1.5rem+3vw,2.75rem)] tracking-tight inline-flex items-baseline justify-center gap-1.5 sm:gap-2"
           >
             <span>${fmtCOP(displayPayment)}</span>
-            <span className="text-[clamp(0.875rem,2.5vw,1.125rem)] font-semibold text-muted-2 tracking-normal">{sim.unit}</span>
+            <span className="text-base sm:text-lg font-semibold text-muted-foreground tracking-normal">{sim.unit}</span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-md pt-0.5">
             Cuota fija con interés del {fmtPct(monthlyRate * sim.term, 1)}% ({sim.term} {sim.term === 1 ? 'mes' : 'meses'})
@@ -108,7 +112,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
         {/* 1. Servicio de plataforma */}
         <div
           className={cn(
-            'rounded-xl border p-3.5 space-y-2 bg-muted/20',
+            'rounded-none border p-3.5 space-y-2 bg-muted/20',
             acceptsPlatform ? 'border-green/40' : 'border-border',
           )}
         >
@@ -179,7 +183,7 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
 
         {/* 2. Fianza de respaldo */}
         <div className={cn(
-          'rounded-xl border p-3.5 space-y-2 bg-muted/20',
+          'rounded-none border p-3.5 space-y-2 bg-muted/20',
           acceptsGuarantee ? 'border-green/40' : 'border-border',
         )}>
           <div className="flex items-start gap-3">
