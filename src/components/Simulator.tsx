@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { MinusIcon, PlusIcon } from './icons';
 import { fmtCOP, fmtPct, validateApplication, isTermDisabled, isFrequencyDisabled, type Frequency } from '@/lib/credit';
 import { config } from '@/lib/config';
 import { useSimulator } from './simulator-store';
@@ -406,7 +407,31 @@ export function Simulator() {
       <dl className="border border-primary-brand rounded-none divide-y divide-primary-brand tabular-nums">
         <div className="flex items-center justify-between gap-3 px-4 py-1.5">
           <dt className="text-xs sm:text-sm text-muted-foreground">Capital</dt>
-          <dd className="text-sm font-bold text-navy text-right">{`$${fmtCOP(sim.amount)}`}</dd>
+          <dd className="inline-flex items-center gap-1.5">
+            <button
+              type="button"
+              aria-label="Disminuir monto"
+              onClick={() => {
+                markInteract('amount');
+                setAmount(amount - amountStepBig, true);
+              }}
+              className="grid min-h-[44px] min-w-[44px] place-items-center rounded-none border-[1.5px] border-primary-brand bg-secondary-surface text-primary-dark transition-transform active:scale-95 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary-brand"
+            >
+              <MinusIcon size={16} />
+            </button>
+            <span className="text-sm font-bold text-navy tabular-nums min-w-[92px] text-center">{`$${fmtCOP(sim.amount)}`}</span>
+            <button
+              type="button"
+              aria-label="Aumentar monto"
+              onClick={() => {
+                markInteract('amount');
+                setAmount(amount + amountStepBig, true);
+              }}
+              className="grid min-h-[44px] min-w-[44px] place-items-center rounded-none border-[1.5px] border-primary-brand bg-secondary-surface text-primary-dark transition-transform active:scale-95 cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary-brand"
+            >
+              <PlusIcon size={16} />
+            </button>
+          </dd>
         </div>
         <div className="flex items-center justify-between gap-3 px-4 py-1.5">
           <dt className="text-xs sm:text-sm text-muted-foreground">Plazo</dt>
