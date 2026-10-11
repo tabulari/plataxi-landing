@@ -540,8 +540,8 @@ a:focus-visible {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: var(--color-secondary-surface);
-  color: var(--color-primary-brand);
+  background: var(--color-primary-brand);
+  color: var(--color-primary-dark);
   /* Derived darker brand yellow, not the brand token itself: on cream the
      brand yellow is 1.35:1 and the outline disappears into the badge fill. */
   border: 1.5px solid var(--color-primary-brand-check-border);
