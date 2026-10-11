@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { Info } from 'lucide-react';
+import { CheckIcon } from '../icons';
 import { fmtCOP, fmtPct, type Frequency } from '@/lib/credit';
 import { config } from '@/lib/config';
 import { useSimulator } from '../simulator-store';
@@ -67,17 +68,21 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
   const monthlyRate = sim.monthlyRate ?? config.credit.monthlyRate;
 
   return (
-    <div className="mt-6 pt-6 border-t border-border/80 space-y-4">
-      {/* Result Box — Cuota Estimada */}
-      <div className="rounded-xl bg-card border border-border p-4 sm:p-6 shadow-2xs">
-        <div className="flex flex-col items-center text-center gap-2 sm:gap-2.5">
+    <div className="space-y-4">
+      {/* Result Box — Cuota Estimada (hero crema claro sobre tarjeta blanca) */}
+      <div className="rounded-none bg-secondary-surface border border-primary-brand/50 p-5 sm:p-6 shadow-2xs relative overflow-hidden">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full bg-primary-brand/40 blur-2xl"
+        />
+        <div className="relative flex flex-col items-center text-center gap-2 sm:gap-2.5">
           <span className="text-xs font-bold uppercase tracking-wider text-green-ink block">Tu cuota estimada</span>
           <div
             ref={paymentRef}
-            className="font-extrabold text-navy leading-none tabular-nums text-[clamp(1.875rem,8vw,2.625rem)] tracking-tight inline-flex items-baseline justify-center gap-1.5 sm:gap-2"
+            className="font-extrabold text-navy leading-none tabular-nums text-[clamp(2rem,1.5rem+3vw,2.75rem)] tracking-tight inline-flex items-baseline justify-center gap-1.5 sm:gap-2"
           >
             <span>${fmtCOP(displayPayment)}</span>
-            <span className="text-[clamp(0.875rem,2.5vw,1.125rem)] font-semibold text-muted-2 tracking-normal">{sim.unit}</span>
+            <span className="text-base sm:text-lg font-semibold text-muted-foreground tracking-normal">{sim.unit}</span>
           </div>
           <p className="text-xs text-muted-foreground leading-relaxed max-w-md pt-0.5">
             Cuota fija con interés del {fmtPct(monthlyRate * sim.term, 1)}% ({sim.term} {sim.term === 1 ? 'mes' : 'meses'})
@@ -108,22 +113,30 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
         {/* 1. Servicio de plataforma */}
         <div
           className={cn(
-            'rounded-xl border p-3.5 space-y-2 bg-muted/20',
-            acceptsPlatform ? 'border-green/40' : 'border-border',
+            'rounded-none border p-3.5 space-y-2 bg-muted/20',
+            acceptsPlatform ? 'border-primary-brand' : 'border-border',
           )}
         >
           <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="opt-platform"
-              checked={acceptsPlatform}
-              onChange={(e) => setAcceptsPlatform(e.target.checked)}
-              className="mt-0.5 h-6 w-6 rounded accent-green border-border cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            />
             <div className="flex-1 text-xs min-w-0">
               <div className="flex items-center justify-between gap-2">
-                <label htmlFor="opt-platform" className="font-semibold text-navy cursor-pointer min-h-[44px] flex items-center -my-1 py-1 gap-1.5">
-                  Servicio de plataforma <span className="font-normal text-muted-foreground">· {fmtPct(platformFeeRate, 1)}%</span>
+                <label className="font-semibold text-navy cursor-pointer min-h-[44px] flex items-center -my-1 py-1 gap-2.5">
+                  <input
+                    type="checkbox"
+                    id="opt-platform"
+                    checked={acceptsPlatform}
+                    onChange={(e) => setAcceptsPlatform(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="grid h-6 w-6 shrink-0 place-items-center rounded-none border-[1.5px] border-primary-brand bg-white text-transparent transition-colors peer-checked:border-primary-brand-check-border peer-checked:bg-primary-brand peer-checked:text-primary-dark peer-focus-visible:ring-2 peer-focus-visible:ring-primary-brand peer-focus-visible:ring-offset-2"
+                  >
+                    <CheckIcon size={15} className="stroke-[3.5]" />
+                  </span>
+                  <span>
+                    Servicio de plataforma <span className="font-normal text-muted-foreground">· {fmtPct(platformFeeRate, 1)}%</span>
+                  </span>
                 </label>
                 <span
                   className={`text-sm font-semibold tabular-nums transition-[color] duration-150 ease-out shrink-0 ${acceptsPlatform ? 'text-navy' : 'text-muted-foreground line-through'}`}
@@ -179,21 +192,29 @@ export function SimulationResults({ sim }: { sim: SimData; frequency?: Frequency
 
         {/* 2. Fianza de respaldo */}
         <div className={cn(
-          'rounded-xl border p-3.5 space-y-2 bg-muted/20',
-          acceptsGuarantee ? 'border-green/40' : 'border-border',
+          'rounded-none border p-3.5 space-y-2 bg-muted/20',
+          acceptsGuarantee ? 'border-primary-brand' : 'border-border',
         )}>
           <div className="flex items-start gap-3">
-            <input
-              type="checkbox"
-              id="opt-guarantee"
-              checked={acceptsGuarantee}
-              onChange={(e) => setAcceptsGuarantee(e.target.checked)}
-              className="mt-0.5 h-6 w-6 rounded accent-green border-border cursor-pointer shrink-0 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-            />
             <div className="flex-1 text-xs min-w-0">
               <div className="flex items-center justify-between gap-2">
-                <label htmlFor="opt-guarantee" className="font-semibold text-navy cursor-pointer min-h-[44px] flex items-center -my-1 py-1 gap-1.5">
-                  Fianza de respaldo <span className="font-normal text-muted-foreground">· {fmtPct(guaranteeFeeRate, 1)}%</span>
+                <label className="font-semibold text-navy cursor-pointer min-h-[44px] flex items-center -my-1 py-1 gap-2.5">
+                  <input
+                    type="checkbox"
+                    id="opt-guarantee"
+                    checked={acceptsGuarantee}
+                    onChange={(e) => setAcceptsGuarantee(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="grid h-6 w-6 shrink-0 place-items-center rounded-none border-[1.5px] border-primary-brand bg-white text-transparent transition-colors peer-checked:border-primary-brand-check-border peer-checked:bg-primary-brand peer-checked:text-primary-dark peer-focus-visible:ring-2 peer-focus-visible:ring-primary-brand peer-focus-visible:ring-offset-2"
+                  >
+                    <CheckIcon size={15} className="stroke-[3.5]" />
+                  </span>
+                  <span>
+                    Fianza de respaldo <span className="font-normal text-muted-foreground">· {fmtPct(guaranteeFeeRate, 1)}%</span>
+                  </span>
                 </label>
                 <span
                   className={`text-sm font-semibold tabular-nums transition-[color,opacity] duration-150 ease-out shrink-0 ${acceptsGuarantee ? 'text-navy' : 'text-muted-foreground line-through'}`}

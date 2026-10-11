@@ -1,18 +1,18 @@
 "use client";
 
 import { useRef } from "react";
-import { VerifiedCircleIcon } from "./icons";
+import { CheckIcon } from "./icons";
 
 /**
  * Accessible chip radiogroup (ported from `app.js` setupRadioGroup). Implements
  * role="radiogroup"/role="radio" + aria-checked, roving tabindex (active = 0,
  * others = −1), and full keyboard nav: Arrow (Left/Right/Up/Down), Home, End,
- * Space/Enter. State is conveyed by more than color (green ring + check icon).
+ * Space/Enter. State is conveyed by more than color (yellow ring + check icon).
  */
 
 const Check = () => (
   <span className="ck" aria-hidden="true">
-    <VerifiedCircleIcon size={16} />
+    <CheckIcon size={12} className="stroke-[3.5]" />
   </span>
 );
 

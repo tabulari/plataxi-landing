@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useApplicationForm, useDraftAutoSave, STEP_TITLES } from './apply/use-application-form';
-import { ModalSidebar } from './apply/ModalSidebar';
 import { Step1, Step2, Step3 } from './apply/FormSteps';
 import { ApplicationSuccess, ApplicationError } from './apply/ResultPanels';
 import { useSiteUi } from './site-ui';
@@ -110,7 +109,7 @@ export function ApplyModal() {
     <div
       className={cn(
         'fixed inset-0 z-[100] flex items-center justify-center transition-colors duration-200',
-        show ? 'bg-black/40' : 'bg-black/0 pointer-events-none',
+        show ? 'bg-black/25' : 'bg-black/0 pointer-events-none',
       )}
       ref={overlayRef}
       onMouseDown={(e) => { if (e.target === overlayRef.current) closeApply(); }}
@@ -121,20 +120,24 @@ export function ApplyModal() {
         aria-modal="true"
         aria-labelledby="applyTitle"
         className={cn(
-          'relative flex w-full max-w-[860px] h-[min(688px,90vh)] max-h-[90vh] bg-white rounded-2xl shadow-lg overflow-hidden transition-[transform,opacity] duration-200 ease-out',
+          // Desktop sizes to its own content: no fixed height and no inner
+          // scroll, so the whole form is visible at once. The content column is
+          // wide enough (the sidebar used to eat 260px) that the 3-step form
+          // fits inside 900px of viewport height. Below 760px the modal goes
+          // full-height and the form is allowed to scroll, because a 3-step
+          // form cannot fit a phone.
+          'relative flex w-full max-w-[860px] max-h-[92vh] bg-white rounded-2xl border border-border shadow-lg overflow-hidden transition-[transform,opacity] duration-200 ease-out',
           show ? 'opacity-100 scale-100' : 'opacity-0 scale-95',
-          'max-[760px]:flex-col max-[760px]:h-auto max-[760px]:max-h-[95vh]',
+          'max-[760px]:flex-col max-[760px]:h-[95vh]',
         )}
       >
         <h2 id="applyTitle" className="sr-only">Solicitud de crédito</h2>
-
-        <ModalSidebar frozen={frozen} />
 
         <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
           {/* Step header — always visible ─────────────────────────────── */}
           <div className="shrink-0 bg-card border-b border-border">
             <div className="flex items-center gap-1 pr-1">
-              <ol className="flex-1 flex items-center justify-between sm:justify-start gap-0.5 sm:gap-2 px-2 sm:px-5 pt-1.5 sm:pt-2 pb-1 sm:pb-1.5" aria-label="Progreso del formulario">
+              <ol className="apply-modal-steps flex-1 flex items-center justify-between sm:justify-start gap-0.5 sm:gap-2 px-2 sm:px-5 pt-1.5 sm:pt-2 pb-1 sm:pb-1.5" aria-label="Progreso del formulario">
               {[1, 2, 3].map((i) => {
                 const isClickable = form.submitStatus !== 'success' && i < form.step;
                 const isCurrent = form.submitStatus === 'success' ? i === 3 : i === form.step;
@@ -231,7 +234,11 @@ export function ApplyModal() {
           <form
             ref={formScrollRef}
             noValidate
-            className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-6 py-5 flex flex-col gap-4"
+            // The rhythm between blocks is uniform (gap-5) and matches the gap
+            // inside each step, so no step reads tighter than another. Overflow
+            // is off on desktop — the form is fully visible — and on below 760px,
+            // where three steps cannot fit a phone, it scrolls instead.
+            className="apply-modal-form flex-1 px-5 sm:px-6 py-5 flex flex-col gap-5 max-[760px]:overflow-y-auto max-[760px]:overscroll-contain"
             onSubmit={(e) => {
               e.preventDefault();
               if (form.submitStatus === 'pending' || form.submitStatus === 'success') return;
@@ -280,7 +287,7 @@ export function ApplyModal() {
             </div>
           </form>
 
-          <div className="shrink-0 bg-card flex items-center justify-between gap-3 px-5 sm:px-6 py-3.5 sm:py-4 border-t border-border">
+          <div className="apply-modal-footer shrink-0 bg-card flex items-center justify-between gap-3 px-5 sm:px-6 py-3.5 sm:py-4 border-t border-border">
             {form.submitStatus === 'success' ? (
               <div className="flex items-center justify-between w-full gap-3">
                 <Button
